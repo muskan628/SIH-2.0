@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Performance</title>
+  <link rel="stylesheet" href="/static/css/student-dashboard.css">
+  <link rel="stylesheet" href="/static/css/student-performance.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Main Content -->
+  <div class="main">
+    <div class="topbar">
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <h1 id="welcomeMsg">Student Performance 👋</h1>
+      <button class="logout-btn">Logout</button>
+    </div>
+
+    <!-- Performance Cards -->
+    <div class="cards">
+      <div class="card"><h3>Overall Marks</h3><p id="overallMarks">0%</p></div>
+      <div class="card"><h3>Assignments</h3><p id="assignmentMarks">0%</p></div>
+      <div class="card"><h3>Quizzes</h3><p id="quizMarks">0%</p></div>
+      <div class="card"><h3>Attendance</h3><p id="attendanceCard">0%</p></div>
+    </div>
+
+    <!-- Marks Table -->
+    <h3>Subject-wise Marks</h3>
+    <table id="marksTable">
+      <tr><th>Subject</th><th>Marks Obtained</th><th>Total Marks</th><th>Grade</th><th>Date</th></tr>
+    </table>
+
+    <!-- Chart -->
+    <div class="chart-container">
+      <canvas id="performanceChart"></canvas>
+    </div>
+
+    <!-- Activities -->
+    <div class="activities">
+      <h3>Other Activities</h3>
+      <ul id="activityList"></ul>
+    </div>
+  </div>
+
+  <!-- JS File -->
+  <script src="/static/js/student-performance.js"></script>
+</body>
+</html>
