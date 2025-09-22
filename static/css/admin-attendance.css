@@ -1,0 +1,140 @@
+/* 
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+
+    h1, h2 {
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #f4f4f4;
+    }
+
+    .submit-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #2e8b57;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .submit-btn:hover {
+      background-color: #246b45;
+    }
+
+    .back-link {
+      margin-bottom: 20px;
+      display: inline-block;
+    } */
+  
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9f9f9;
+      padding: 40px;
+      color: #333;
+    }
+
+    h1, h2, h3 {
+      color: #2c3e50;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #3498db;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    th, td {
+      padding: 12px 16px;
+      border: 1px solid #e1e1e1;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    label {
+      margin-right: 15px;
+    }
+
+    .submit-btn {
+      margin-top: 20px;
+      padding: 10px 25px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background-color: #219150;
+    }
+
+    @media (max-width: 600px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      th {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+      }
+
+      td {
+        position: relative;
+        padding-left: 50%;
+        border: none;
+        border-bottom: 1px solid #eee;
+      }
+
+      td:before {
+        position: absolute;
+        top: 12px;
+        left: 16px;
+        width: 45%;
+        white-space: nowrap;
+        font-weight: bold;
+      }
+
+      td:nth-of-type(1):before { content: "UID"; }
+      td:nth-of-type(2):before { content: "Name"; }
+      td:nth-of-type(3):before { content: "Attendance"; }
+    }
