@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Records</title>
+<link rel="stylesheet" href="/static/css/student-record.css">
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <h2>Dashboard</h2>
+  <ul>
+    <li>🏠 Home</li>
+    <li>📘 Notes</li>
+    <li>💳 Fees</li>
+    <li>📊 Performance</li>
+    <li>📝 Exam</li>
+  </ul>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <div class="topbar">
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <h1>Student Records 📑</h1>
+    <button class="logout-btn">Logout</button>
+  </div>
+
+  <div class="controls" style="margin-bottom:15px; display:flex; gap:15px;">
+  <input type="text" id="searchInput" placeholder="🔎 Search by Name or Roll No" 
+         style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid #ccc;">
+  
+  <select id="filterPerformance" style="padding:8px 12px; border-radius:8px; border:1px solid #ccc;">
+    <option value="">Filter by Performance</option>
+    <option value="Excellent">Excellent</option>
+    <option value="Good">Good</option>
+    <option value="Average">Average</option>
+    <option value="Needs Improvement">Needs Improvement</option>
+  </select>
+</div>
+
+  <!-- Student Records Table -->
+  <table id="recordsTable">
+    <tr>
+      <th>Roll No</th>
+      <th>Name</th>
+      <th>Stream</th>
+      <th>Contact</th>
+      <th>Attendance</th>
+      <th>Fees Pending</th>
+      <th>Performance</th>
+    </tr>
+  </table>
+</div>
+<script src="/static/js/student-record.js"></script>
+</body>
+</html>
