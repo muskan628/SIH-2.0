@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Performance</title>
+<style>
+/* Global */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+html, body {
+  width: 100%;
+  height: 100%;
+  background: #f5f5f5;
+  color: #333;
+}
+
+/* Fullscreen Container */
+.performance-container {
+  width: 100%;
+  height: 100%;
+  background: white;
+  border-radius: 0; /* remove rounded corners for fullscreen */
+  padding: 30px;
+  box-shadow: none; /* remove card shadow */
+  overflow-y: auto; /* scroll if content is long */
+}
+
+/* Title */
+.performance-container h1 {
+  text-align: center;
+  font-size: 32px;
+  color: #4facfe;
+  margin-bottom: 30px;
+}
+
+/* Student Summary */
+.summary {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #f0f8ff;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
+.summary div { text-align: center; }
+.summary h3 { color: #555; font-size: 20px; margin-bottom: 10px; }
+.summary p { font-size: 24px; font-weight: bold; color: #4facfe; }
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+th, td { padding: 15px; text-align: center; }
+th { background: #4facfe; color: white; font-weight: 500; }
+tr:nth-child(even) { background: #f0f8ff; }
+tr:hover { background: #e6f2ff; }
+
+.chart-container {
+  margin: 30px 0;
+  background: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  max-width: 600px;   /* set max width */
+  margin-left: auto;   /* center horizontally */
+  margin-right: auto;
+}
+#marksChart {
+  height: 300px;       /* set height */
+}
+
+
+/* Activities */
+.activities {
+  margin-top: 30px;
+  padding: 25px;
+  background: #f9f9f9;
+  border-radius: 12px;
+}
+.activities h2 { color: #4facfe; margin-bottom: 15px; }
+.activities ul { list-style: none; padding-left: 0; }
+.activities ul li {
+  padding: 12px;
+  margin: 8px 0;
+  border-left: 5px solid #4facfe;
+  background: white;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+.activities ul li:hover { background: #e6f2ff; }
+
+</style>
+</head>
+<body>
+<a href="student-dashboard.html"></a>
+<div class="performance-container">
+  <h1>📊 Student Performance Report</h1>
+
+  <!-- Student Summary -->
+  <div class="summary">
+    <div>
+      <h3>Total Marks</h3>
+      <p id="totalMarks">0</p>
+    </div>
+    <div>
+      <h3>Percentage</h3>
+      <p id="percentage">0%</p>
+    </div>
+    <div>
+      <h3>Grade</h3>
+      <p id="grade">N/A</p>
+    </div>
+  </div>
+
+  <!-- Subject Marks Table -->
+  <h2>Subject-wise Marks</h2>
+  <table>
+    <tr>
+      <th>Subject</th>
+      <th>Max Marks</th>
+      <th>Obtained Marks</th>
+    </tr>
+    <tbody id="marksTable"></tbody>
+  </table>
+
+  <!-- Chart -->
+  <div class="chart-container">
+    <canvas id="marksChart"></canvas>
+  </div>
+
+  <!-- Activities -->
+  <div class="activities">
+    <h2>Other Activities</h2>
+    <ul id="activityList"></ul>
+  </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Example Student Data
+const performanceData = {
+  subjects: [
+    {name:"Maths", max:100, obtained:88},
+    {name:"DBMS", max:100, obtained:74},
+    {name:"AI", max:100, obtained:91},
+    {name:"Networking", max:100, obtained:80},
+    {name:"DSA", max:100, obtained:86}
+  ],
+  activities: [
+    "Participated in Hackathon 2025",
+    "Won 1st Prize in Coding Contest",
+    "Member of University Football Team",
+    "Organized Tech Fest Workshop"
+  ]
+};
+
+// Populate Table
+const marksTable = document.getElementById("marksTable");
+let totalObtained = 0, totalMax = 0;
+performanceData.subjects.forEach(sub => {
+  const row = document.createElement("tr");
+  row.innerHTML = `<td>${sub.name}</td><td>${sub.max}</td><td>${sub.obtained}</td>`;
+  marksTable.appendChild(row);
+  totalObtained += sub.obtained;
+  totalMax += sub.max;
+});
+
+// Summary
+document.getElementById("totalMarks").innerText = `${totalObtained}/${totalMax}`;
+const percentage = ((totalObtained/totalMax)*100).toFixed(2);
+document.getElementById("percentage").innerText = percentage + "%";
+
+// Grade Calculation
+let grade = "C";
+if(percentage >= 85) grade = "A";
+else if(percentage >= 70) grade = "B";
+document.getElementById("grade").innerText = grade;
+
+// Activities
+const activityList = document.getElementById("activityList");
+performanceData.activities.forEach(act=>{
+  const li = document.createElement("li");
+  li.innerText = act;
+  activityList.appendChild(li);
+});
+
+// Chart
+const ctx = document.getElementById("marksChart").getContext("2d");
+new Chart(ctx, {
+  type: "bar",
+  data: {
+    labels: performanceData.subjects.map(s=>s.name),
+    datasets: [{
+      label: "Marks Obtained",
+      data: performanceData.subjects.map(s=>s.obtained),
+      backgroundColor: "#4facfe"
+    }]
+  },
+  options: {
+    responsive:true,
+    scales:{ y:{ beginAtZero:true, max:100 } }
+  }
+});
+</script>
+
+</body>
+</html>
