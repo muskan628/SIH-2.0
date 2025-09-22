@@ -13,6 +13,11 @@
     background: #f2f5f9;
   }
 
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
   /* Layout */
   .container {
     display: flex;
@@ -21,53 +26,81 @@
 
   /* Sidebar */
   .sidebar {
-    width: 250px;
-    background: #3498db;
-    color: #fff;
-    flex-shrink: 0;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    width: 220px;
+    background: #4facfe;
+    color: white;
+    padding: 25px 20px;
+    position: fixed;
+    height: 100%;
+    border-radius: 0 15px 15px 0;
+    overflow-y: auto;
   }
 
   .sidebar h2 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 35px;
     font-size: 22px;
+    font-weight: bold;
   }
 
-  .sidebar .profile {
-    text-align: center;
+  .sidebar ul {
+    list-style: none;
+    padding-left: 0;
   }
 
-  .sidebar .profile img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    margin-bottom: 10px;
-  }
-
-  .sidebar a {
-    display: block;
-    color: #fff;
-    text-decoration: none;
-    padding: 10px;
-    border-radius: 6px;
+  .sidebar ul li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    cursor: pointer;
     transition: 0.3s;
   }
 
-  .sidebar a:hover {
-    background: #2980b9;
+  .sidebar ul li:hover {
+    background: rgba(255,255,255,0.2);
   }
 
-  /* Main content */
-  .main-content {
+  /* Main Content */
+  .main {
+    margin-left: 220px;
+    padding: 30px 20px;
     flex: 1;
-    padding: 30px;
-    overflow-x: auto;
   }
 
+  /* Topbar */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+  }
+
+  .topbar h1 {
+    font-size: 26px;
+    color: #222;
+  }
+
+  .logout-btn {
+    background: #4facfe;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .logout-btn:hover {
+    opacity: 0.85;
+  }
+
+  /* Form container */
   .form-container {
     background: #fff;
     padding: 25px 30px;
@@ -115,6 +148,7 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    table-layout: auto;
   }
 
   table th, table td {
@@ -134,35 +168,28 @@
     color: #fff;
   }
 
-  table.courses-table textarea {
+  table textarea {
     width: 100%;
     min-height: 30px;
     box-sizing: border-box;
     padding: 6px;
     resize: vertical;
-    white-space: normal;
     overflow: auto;
   }
 
   .last-result textarea {
     min-height: 40px;
-    box-sizing: border-box;
-    padding: 6px;
     white-space: nowrap;
     overflow-x: auto;
     resize: horizontal;
   }
 
- /* Increase width only for Pass and AUID / Roll No */
+  /* Increase width for Pass and Roll No */
   .last-result textarea[name="roll"],
   .last-result textarea[name="pass"],
-   .last-result textarea[name="reappear"],
-   .last-result textarea[name="board"]{
-    min-width: 80px;  /* wider box */
-    /* height remains default */
-    white-space: nowrap;
-    overflow-x: auto;
-    resize: horizontal;
+  .last-result textarea[name="reappear"],
+  .last-result textarea[name="board"] {
+    min-width: 80px;
   }
 
   .btn {
@@ -188,7 +215,10 @@
       flex: 1 1 45%;
     }
     .sidebar {
-      width: 200px;
+      width: 180px;
+    }
+    .main {
+      margin-left: 180px;
     }
   }
 
@@ -198,11 +228,27 @@
     }
     .sidebar {
       width: 100%;
+      height: auto;
+      position: relative;
       flex-direction: row;
       overflow-x: auto;
-      gap: 10px;
+      border-radius: 0;
+      padding: 10px;
     }
-    .main-content {
+    .sidebar h2 {
+      display: none;
+    }
+    .sidebar ul {
+      display: flex;
+      gap: 10px;
+      flex-wrap: nowrap;
+    }
+    .sidebar ul li {
+      margin: 0;
+      padding: 10px;
+    }
+    .main {
+      margin-left: 0;
       padding: 15px;
     }
     .top-info div, .candidate-info div {
@@ -216,21 +262,25 @@
 
 <div class="container">
   <!-- Sidebar -->
-  <div class="sidebar">
-    <h2>Mentor</h2>
-    <div class="profile">
-      <img src="https://via.placeholder.com/100" alt="Mentor">
-      <p><strong>Dr. Singh</strong></p>
-      <p>Mathematics Dept.</p>
-    </div>
-    <a href="#">Dashboard</a>
-    <a href="#">Examination Form</a>
-    <a href="#">Attendance</a>
-    <a href="#">Logout</a>
+  <div class="sidebar" id="sidebar">
+    <h2>Menu</h2>
+    <ul>
+      <li><a href="#">🏠 Dashboard</a></li>
+      <li><a href="#">📘 Examination Form</a></li>
+      <li><a href="#">📊 Performance</a></li>
+      <li><a href="#">📝 Exams</a></li>
+      <li><a href="#">🔒 Logout</a></li>
+    </ul>
   </div>
 
-  <!-- Main content -->
-  <div class="main-content">
+  <!-- Main Content -->
+  <div class="main">
+    <div class="topbar">
+      <h1>Welcome, Student 👋</h1>
+      <button class="logout-btn">Logout</button>
+    </div>
+
+    <!-- Form -->
     <div class="form-container">
       <h2>Akal University - Examination Form</h2>
 
