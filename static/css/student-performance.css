@@ -1,0 +1,88 @@
+/* Global */
+* {margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif;}
+body {background:#f5f5f5; color:#333;}
+
+/* Layout */
+body {
+  display: flex;       
+  min-height: 100vh;    
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: #4facfe;
+  color: white;
+  padding: 20px;
+  flex-shrink: 0;       
+}
+.sidebar h2 { margin-bottom: 20px; }
+.sidebar ul { list-style:none; padding:0; }
+.sidebar ul li { padding: 12px 10px; margin:6px 0; cursor:pointer; }
+.sidebar ul li:hover { background: rgba(255,255,255,0.2); border-radius:6px; }
+
+/* Main Content */
+.performance-container {
+  flex-grow: 1;        
+  padding: 25px;
+  background: white;
+  overflow-y: auto;
+}
+
+/* Title */
+.performance-container h1 {
+  text-align:center;
+  font-size:28px;
+  color:#4facfe;
+  margin-bottom:25px;
+}
+
+/* Student Summary */
+.summary {
+  display:flex; justify-content:space-between; align-items:center;
+  background:#f0f8ff; padding:20px; border-radius:10px; margin-bottom:25px;
+}
+.summary div {text-align:center;}
+.summary h3 {color:#555; font-size:18px; margin-bottom:8px;}
+.summary p {font-size:22px; font-weight:bold; color:#4facfe;}
+
+/* Table */
+table {
+  width:100%; border-collapse:collapse; margin-bottom:25px;
+  background:white; border-radius:8px; overflow:hidden;
+  box-shadow:0 2px 8px rgba(0,0,0,0.03);
+}
+th,td {padding:12px; text-align:center;}
+th {background:#4facfe; color:white; font-weight:500;}
+tr:nth-child(even){background:#f0f8ff;}
+tr:hover{background:#e6f2ff;}
+
+/* Chart Area */
+.chart-container {
+  margin:20px 0;
+  background:#fff; border-radius:12px;
+  padding:20px; box-shadow:0 4px 12px rgba(0,0,0,0.05);
+  max-width:700px; 
+  margin-left:auto;
+  margin-right:auto;
+}
+#marksChart { height:300px; }
+
+/* Activities */
+.activities {
+  margin-top:20px;
+  padding:20px;
+  background:#f9f9f9;
+  border-radius:12px;
+}
+.activities h2 {color:#4facfe; margin-bottom:15px;}
+.activities ul {list-style:none; padding-left:0;}
+.activities ul li {
+  padding:10px;
+  margin:6px 0;
+  border-left:5px solid #4facfe;
+  background:white;
+  border-radius:6px;
+  transition:0.3s;
+}
+.activities ul li:hover {background:#e6f2ff;}
