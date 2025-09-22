@@ -5,259 +5,97 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Examination Form - Akal University</title>
 <style>
-  /* Global Styles */
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #f2f5f9;
-  }
+/* Global */
+* {margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif;}
+body {display:flex; min-height:100vh; background:#f2f5f9; color:#333; transition:all 0.3s;}
+a {text-decoration:none; color:inherit;}
 
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
+/* Sidebar */
+.sidebar {
+  width:220px;
+  background:#4facfe;
+  color:white;
+  padding:25px 20px;
+  position:fixed;
+  height:100%;
+  border-radius:0 15px 15px 0;
+  transition:all 0.3s;
+  overflow:auto;
+  z-index:1000;
+}
+.sidebar h2 {text-align:center; margin-bottom:35px; font-size:22px; font-weight:bold;}
+.sidebar ul {list-style:none; padding-left:0;}
+.sidebar ul li {
+  display:flex; align-items:center; gap:10px;
+  font-size:16px; font-weight:600; padding:12px 15px;
+  margin:10px 0; border-radius:10px; cursor:pointer; transition:0.3s;
+}
+.sidebar ul li:hover {background:rgba(255,255,255,0.2);}
+.sidebar ul li a {color:white;}
 
-  /* Layout */
-  .container {
-    display: flex;
-    min-height: 100vh;
-  }
+/* Main Content */
+.main {flex:1; margin-left:220px; padding:25px 30px; transition:all 0.3s;}
 
-  /* Sidebar */
-  .sidebar {
-    width: 220px;
-    background: #4facfe;
-    color: white;
-    padding: 25px 20px;
-    position: fixed;
-    height: 100%;
-    border-radius: 0 15px 15px 0;
-    overflow-y: auto;
-  }
+/* Topbar */
+.topbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+.topbar h1 {font-size:26px; color:#222;}
+.logout-btn {
+  background:#4facfe; color:white;
+  border:none; padding:8px 16px;
+  border-radius:8px; font-weight:bold; cursor:pointer;
+  transition:0.3s;
+}
+.logout-btn:hover {opacity:0.85;}
 
-  .sidebar h2 {
-    text-align: center;
-    margin-bottom: 35px;
-    font-size: 22px;
-    font-weight: bold;
-  }
+/* Toggle Button */
+.menu-toggle {display:none; font-size:28px; cursor:pointer; background:#4facfe; color:white; padding:8px 12px; border-radius:8px; border:none;}
 
-  .sidebar ul {
-    list-style: none;
-    padding-left: 0;
-  }
+/* Form Container */
+.form-container {
+    
+  background:#fff; padding:25px 30px; border-radius:12px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.1); border-top:6px solid #3498db;
+  max-width:900px; width:100%; margin:auto;
+}
+h2,h3{text-align:center; color:#2c3e50; margin-bottom:20px;}
 
-  .sidebar ul li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 12px 15px;
-    margin: 10px 0;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
+/* Info Sections */
+.top-info, .candidate-info {display:flex; flex-wrap:wrap; gap:15px; margin-bottom:20px;}
+.top-info div, .candidate-info div {flex:1 1 200px; min-width:150px;}
+label{font-weight:bold; color:#34495e; display:block; margin-bottom:5px;}
+input, select, textarea{width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; box-sizing:border-box;}
 
-  .sidebar ul li:hover {
-    background: rgba(255,255,255,0.2);
-  }
+/* Tables */
+table {width:100%; border-collapse:collapse; margin-top:20px; table-layout:auto;}
+th,td{border:1px solid #ccc; padding:8px; text-align:center; vertical-align:top;}
+th{background:#3498db; color:#fff;}
+.last-result th{background:#2980b9;}
+table textarea{width:100%; min-height:30px; padding:6px; box-sizing:border-box; resize:vertical;}
+.btn {display:block; margin:25px auto 0; padding:12px 25px; border:none; background:#3498db; color:#fff; font-size:16px; border-radius:8px; cursor:pointer; transition:0.3s;}
+.btn:hover{background:#2980b9;}
 
-  /* Main Content */
-  .main {
-    margin-left: 220px;
-    padding: 30px 20px;
-    flex: 1;
-  }
+/* Responsive for Form */
+@media(max-width:992px){.top-info div,.candidate-info div{flex:1 1 45%;}.sidebar{width:180px;}.main{margin-left:180px;}}
+@media(max-width:768px){
+  .sidebar{left:-100%; position:fixed; top:0; height:100%; z-index:100;}
+  .sidebar.show{left:0;}
+  .main{margin-left:0; padding:15px;}
+  .menu-toggle{display:inline-block;}
+  .top-info div,.candidate-info div{flex:1 1 100%;}
+  .table-responsive table{display:none;}
+  .table-stack{display:block;margin-top:20px;}
+  .table-row{border:1px solid #ccc; border-radius:8px; padding:12px; margin-bottom:15px; background:#f9f9f9;}
+  .table-row div{margin-bottom:10px;}
+  .table-row textarea{width:100%; min-height:35px; padding:6px; border-radius:5px; border:1px solid #ccc; resize:vertical;}
+}
+@media(min-width:769px){.table-stack{display:none;}}
 
-  /* Topbar */
-  .topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-  }
-
-  .topbar h1 {
-    font-size: 26px;
-    color: #222;
-  }
-
-  .logout-btn {
-    background: #4facfe;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-
-  .logout-btn:hover {
-    opacity: 0.85;
-  }
-
-  /* Form container */
-  .form-container {
-    background: #fff;
-    padding: 25px 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    border-top: 6px solid #3498db;
-    max-width: 900px;
-    margin: auto;
-  }
-
-  h2, h3 {
-    text-align: center;
-    color: #2c3e50;
-    margin-bottom: 20px;
-  }
-
-  .top-info, .candidate-info {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-bottom: 20px;
-  }
-
-  .top-info div, .candidate-info div {
-    flex: 1 1 200px;
-  }
-
-  label {
-    font-weight: bold;
-    color: #34495e;
-    display: block;
-    margin-bottom: 5px;
-  }
-
-  input, select, textarea {
-    width: 100%;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-  }
-
-  /* Tables */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    table-layout: auto;
-  }
-
-  table th, table td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: center;
-    vertical-align: top;
-  }
-
-  table th {
-    background: #3498db;
-    color: #fff;
-  }
-
-  .last-result th {
-    background: #2ecc71;
-    color: #fff;
-  }
-
-  table textarea {
-    width: 100%;
-    min-height: 30px;
-    box-sizing: border-box;
-    padding: 6px;
-    resize: vertical;
-    overflow: auto;
-  }
-
-  .last-result textarea {
-    min-height: 40px;
-    white-space: nowrap;
-    overflow-x: auto;
-    resize: horizontal;
-  }
-
-  /* Increase width for Pass and Roll No */
-  .last-result textarea[name="roll"],
-  .last-result textarea[name="pass"],
-  .last-result textarea[name="reappear"],
-  .last-result textarea[name="board"] {
-    min-width: 80px;
-  }
-
-  .btn {
-    display: block;
-    margin: 25px auto 0;
-    padding: 12px 25px;
-    border: none;
-    background: #3498db;
-    color: #fff;
-    font-size: 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-
-  .btn:hover {
-    background: #2980b9;
-  }
-
-  /* Responsive */
-  @media (max-width: 992px) {
-    .top-info div, .candidate-info div {
-      flex: 1 1 45%;
-    }
-    .sidebar {
-      width: 180px;
-    }
-    .main {
-      margin-left: 180px;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .container {
-      flex-direction: column;
-    }
-    .sidebar {
-      width: 100%;
-      height: auto;
-      position: relative;
-      flex-direction: row;
-      overflow-x: auto;
-      border-radius: 0;
-      padding: 10px;
-    }
-    .sidebar h2 {
-      display: none;
-    }
-    .sidebar ul {
-      display: flex;
-      gap: 10px;
-      flex-wrap: nowrap;
-    }
-    .sidebar ul li {
-      margin: 0;
-      padding: 10px;
-    }
-    .main {
-      margin-left: 0;
-      padding: 15px;
-    }
-    .top-info div, .candidate-info div {
-      flex: 1 1 100%;
-    }
-  }
-
-</style>
-</head>
+</style></head>
 <body>
 
 <div class="container">
@@ -265,84 +103,47 @@
   <div class="sidebar" id="sidebar">
     <h2>Menu</h2>
     <ul>
-      <li><a href="#">🏠 Dashboard</a></li>
-      <li><a href="#">📘 Examination Form</a></li>
-      <li><a href="#">📊 Performance</a></li>
-      <li><a href="#">📝 Exams</a></li>
-      <li><a href="#">🔒 Logout</a></li>
+       <li><a href="student-dashboard.html">🏠 Home</a> </li>
+    <li><a href="student-form.html">📘 Examination Form</a></li>
+    <li><a href="student-performance.html">📊 Performance</a></li>
+    <li><a href="student-exam.html">📝 Exam</a></li>
     </ul>
   </div>
 
-  <!-- Main Content -->
+  <!-- Main content -->
   <div class="main">
     <div class="topbar">
-      <h1>Welcome, Student 👋</h1>
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <h1>Examination Form</h1>
       <button class="logout-btn">Logout</button>
     </div>
 
-    <!-- Form -->
     <div class="form-container">
-      <h2>Akal University - Examination Form</h2>
+      <h2>Examination Form</h2>
 
       <!-- Top Info -->
       <div class="top-info">
-        <div>
-          <label>Form Number</label>
-          <input type="text" name="formNumber">
-        </div>
-        <div>
-          <label>AUID / Roll No</label>
-          <input type="text" name="auid">
-        </div>
-        <div>
-          <label>Date</label>
-          <input type="date" name="date">
-        </div>
-        <div>
-          <label>Programme</label>
-          <input type="text" name="programme">
-        </div>
-        <div>
-          <label>Class</label>
-          <input type="text" name="class">
-        </div>
-        <div>
-          <label>Semester</label>
-          <input type="text" name="semester">
-        </div>
+        <div><label>Form Number</label><input type="text" name="formNumber"></div>
+        <div><label>AUID / Roll No</label><input type="text" name="auid"></div>
+        <div><label>Date</label><input type="date" name="date"></div>
+        <div><label>Programme</label><input type="text" name="programme"></div>
+        <div><label>Class</label><input type="text" name="class"></div>
+        <div><label>Semester</label><input type="text" name="semester"></div>
       </div>
 
       <!-- Candidate Info -->
       <h3>Candidate Details</h3>
       <div class="candidate-info">
-        <div>
-          <label>Candidate's Name</label>
-          <input type="text" name="candidateName">
-        </div>
-        <div>
-          <label>Father's Name</label>
-          <input type="text" name="fatherName">
-        </div>
-        <div>
-          <label>Mother's Name</label>
-          <input type="text" name="motherName">
-        </div>
+        <div><label>Candidate's Name</label><input type="text" name="candidateName"></div>
+        <div><label>Father's Name</label><input type="text" name="fatherName"></div>
+        <div><label>Mother's Name</label><input type="text" name="motherName"></div>
       </div>
       <div class="candidate-info">
-        <div style="flex:1 1 100%;">
-          <label>Present Address</label>
-          <textarea name="address" rows="2"></textarea>
-        </div>
+        <div style="flex:1 1 100%;"><label>Present Address</label><textarea name="address" rows="2"></textarea></div>
       </div>
       <div class="candidate-info">
-        <div>
-          <label>Mobile Number</label>
-          <input type="text" name="mobile">
-        </div>
-        <div>
-          <label>Email</label>
-          <input type="email" name="email">
-        </div>
+        <div><label>Mobile Number</label><input type="text" name="mobile"></div>
+        <div><label>Email</label><input type="email" name="email"></div>
       </div>
 
       <!-- Courses Table -->
@@ -370,26 +171,24 @@
               <td><textarea name="course2_type" rows="1"></textarea></td>
               <td><textarea name="course2_code" rows="1"></textarea></td>
             </tr>
-            <tr>
-              <td>3</td>
-              <td><textarea name="course3_title" rows="1"></textarea></td>
-              <td><textarea name="course3_type" rows="1"></textarea></td>
-              <td><textarea name="course3_code" rows="1"></textarea></td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td><textarea name="course4_title" rows="1"></textarea></td>
-              <td><textarea name="course4_type" rows="1"></textarea></td>
-              <td><textarea name="course4_code" rows="1"></textarea></td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td><textarea name="course5_title" rows="1"></textarea></td>
-              <td><textarea name="course5_type" rows="1"></textarea></td>
-              <td><textarea name="course5_code" rows="1"></textarea></td>
-            </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- Courses Table - Mobile Stack -->
+      <div class="table-stack">
+        <div class="table-row">
+          <div><strong>S.No:</strong> 1</div>
+          <div><strong>Course Title:</strong> <textarea name="course1_title"></textarea></div>
+          <div><strong>Course Type:</strong> <textarea name="course1_type"></textarea></div>
+          <div><strong>Course Code:</strong> <textarea name="course1_code"></textarea></div>
+        </div>
+        <div class="table-row">
+          <div><strong>S.No:</strong> 2</div>
+          <div><strong>Course Title:</strong> <textarea name="course2_title"></textarea></div>
+          <div><strong>Course Type:</strong> <textarea name="course2_type"></textarea></div>
+          <div><strong>Course Code:</strong> <textarea name="course2_code"></textarea></div>
+        </div>
       </div>
 
       <!-- Last Year Result -->
@@ -398,13 +197,8 @@
         <table class="last-result">
           <thead>
             <tr>
-              <th>Examination</th>
-              <th>Board / University</th>
-              <th>Session / Year</th>
-              <th>AUID / Roll No</th>
-              <th>Pass</th>
-              <th>Re-appear</th>
-              <th>Grade / Percentage</th>
+              <th>Examination</th><th>Board / University</th><th>Session / Year</th>
+              <th>AUID / Roll No</th><th>Pass</th><th>Re-appear</th><th>Grade / Percentage</th>
             </tr>
           </thead>
           <tbody>
@@ -421,10 +215,30 @@
         </table>
       </div>
 
+      <!-- Last Year Result - Mobile Stack -->
+      <div class="table-stack">
+        <div class="table-row">
+          <div><strong>Examination:</strong> <textarea name="exam"></textarea></div>
+          <div><strong>Board / University:</strong> <textarea name="board"></textarea></div>
+          <div><strong>Session / Year:</strong> <textarea name="session"></textarea></div>
+          <div><strong>AUID / Roll No:</strong> <textarea name="roll"></textarea></div>
+          <div><strong>Pass:</strong> <textarea name="pass"></textarea></div>
+          <div><strong>Re-appear:</strong> <textarea name="reappear"></textarea></div>
+          <div><strong>Grade / Percentage:</strong> <textarea name="grade"></textarea></div>
+        </div>
+      </div>
+
       <button type="submit" class="btn">Submit Form</button>
     </div>
   </div>
 </div>
 
+<script>
+  const menuToggle = document.getElementById('menuToggle');
+  const sidebar = document.getElementById('sidebar');
+  menuToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('show');
+  });
+</script>
 </body>
 </html>
