@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSD Exam</title>
+<link rel="stylesheet" href="/static/css/msd-exam.css">
+<script source="/static/js/msd-exam.js"> </script>
+
+
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <h2>Dashboard</h2>
+  <ul>
+    <li>🏠 Home</li>
+    <li>📘 Notes</li>
+    <li>💳 Fees</li>
+    <li>📊 Performance</li>
+    <li style="background:rgba(255,255,255,0.2);">📝 Exam</li>
+  </ul>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <h1>MSD Exam</h1>
+    <button class="logout-btn">Logout</button>
+  </div>
+
+  <div class="exam-container">
+    <div class="timer" id="timer">Time Left: 05:00</div>
+    <div class="question" id="questionText">Question will appear here</div>
+    <div class="options" id="optionsContainer"></div>
+    <div class="exam-btns">
+      <button class="exam-btn" onclick="prevQuestion()">Previous</button>
+      <button class="exam-btn" onclick="nextQuestion()">Next</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

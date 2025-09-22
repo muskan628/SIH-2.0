@@ -3,22 +3,112 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Akal University Examination Form</title>
+<title>Examination Form - Akal University</title>
 <style>
+  /* Global Styles */
   body {
     font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
     background: #f2f5f9;
-    padding: 20px;
   }
 
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* Layout */
+  .container {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 220px;
+    background: #4facfe;
+    color: white;
+    padding: 25px 20px;
+    position: fixed;
+    height: 100%;
+    border-radius: 0 15px 15px 0;
+    overflow-y: auto;
+  }
+
+  .sidebar h2 {
+    text-align: center;
+    margin-bottom: 35px;
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  .sidebar ul {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .sidebar ul li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .sidebar ul li:hover {
+    background: rgba(255,255,255,0.2);
+  }
+
+  /* Main Content */
+  .main {
+    margin-left: 220px;
+    padding: 30px 20px;
+    flex: 1;
+  }
+
+  /* Topbar */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+  }
+
+  .topbar h1 {
+    font-size: 26px;
+    color: #222;
+  }
+
+  .logout-btn {
+    background: #4facfe;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .logout-btn:hover {
+    opacity: 0.85;
+  }
+
+  /* Form container */
   .form-container {
-    max-width: 1000px;
-    margin: auto;
     background: #fff;
     padding: 25px 30px;
     border-radius: 12px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.1);
     border-top: 6px solid #3498db;
+    max-width: 900px;
+    margin: auto;
   }
 
   h2, h3 {
@@ -53,11 +143,12 @@
     box-sizing: border-box;
   }
 
-  /* Table styles */
+  /* Tables */
   table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    table-layout: auto;
   }
 
   table th, table td {
@@ -77,37 +168,28 @@
     color: #fff;
   }
 
-  /* Courses table textarea wrap text */
-  table.courses-table textarea {
+  table textarea {
     width: 100%;
     min-height: 30px;
     box-sizing: border-box;
     padding: 6px;
     resize: vertical;
-    white-space: normal;
     overflow: auto;
   }
 
-  /* Last year result table textarea bigger for single line */
   .last-result textarea {
     min-height: 40px;
-    box-sizing: border-box;
-    padding: 6px;
-    white-space: nowrap; /* keep text in one line */
+    white-space: nowrap;
     overflow-x: auto;
     resize: horizontal;
   }
 
-  /* Increase width only for Pass and AUID / Roll No */
+  /* Increase width for Pass and Roll No */
   .last-result textarea[name="roll"],
   .last-result textarea[name="pass"],
-   .last-result textarea[name="reappear"],
-   .last-result textarea[name="board"]{
-    min-width: 80px;  /* wider box */
-    /* height remains default */
-    white-space: nowrap;
-    overflow-x: auto;
-    resize: horizontal;
+  .last-result textarea[name="reappear"],
+  .last-result textarea[name="board"] {
+    min-width: 80px;
   }
 
   .btn {
@@ -127,189 +209,221 @@
     background: #2980b9;
   }
 
-  /* Responsive Styles */
+  /* Responsive */
   @media (max-width: 992px) {
     .top-info div, .candidate-info div {
       flex: 1 1 45%;
     }
+    .sidebar {
+      width: 180px;
+    }
+    .main {
+      margin-left: 180px;
+    }
   }
 
   @media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+    }
+    .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+      flex-direction: row;
+      overflow-x: auto;
+      border-radius: 0;
+      padding: 10px;
+    }
+    .sidebar h2 {
+      display: none;
+    }
+    .sidebar ul {
+      display: flex;
+      gap: 10px;
+      flex-wrap: nowrap;
+    }
+    .sidebar ul li {
+      margin: 0;
+      padding: 10px;
+    }
+    .main {
+      margin-left: 0;
+      padding: 15px;
+    }
     .top-info div, .candidate-info div {
       flex: 1 1 100%;
     }
-
-    table th, table td {
-      font-size: 14px;
-      padding: 6px;
-    }
-
-    .form-container {
-      padding: 20px;
-    }
   }
 
-  @media (max-width: 480px) {
-    .btn {
-      width: 100%;
-      padding: 12px;
-      font-size: 15px;
-    }
-
-    h2, h3 {
-      font-size: 18px;
-    }
-  }
-
-  /* Make tables horizontally scrollable on small screens */
-  .table-responsive {
-    overflow-x: auto;
-  }
 </style>
 </head>
 <body>
 
-<div class="form-container">
-  <h2>Akal University - Examination Form</h2>
-
-  <!-- Top Info -->
-  <div class="top-info">
-    <div>
-      <label>Form Number</label>
-      <input type="text" name="formNumber">
-    </div>
-    <div>
-      <label>AUID / Roll No</label>
-      <input type="text" name="auid">
-    </div>
-    <div>
-      <label>Date</label>
-      <input type="date" name="date">
-    </div>
-    <div>
-      <label>Programme</label>
-      <input type="text" name="programme">
-    </div>
-    <div>
-      <label>Class</label>
-      <input type="text" name="class">
-    </div>
-    <div>
-      <label>Semester</label>
-      <input type="text" name="semester">
-    </div>
+<div class="container">
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <h2>Menu</h2>
+    <ul>
+      <li><a href="#">🏠 Dashboard</a></li>
+      <li><a href="#">📘 Examination Form</a></li>
+      <li><a href="#">📊 Performance</a></li>
+      <li><a href="#">📝 Exams</a></li>
+      <li><a href="#">🔒 Logout</a></li>
+    </ul>
   </div>
 
-  <!-- Candidate Info -->
-  <h3>Candidate Details</h3>
-  <div class="candidate-info">
-    <div>
-      <label>Candidate's Name</label>
-      <input type="text" name="candidateName">
+  <!-- Main Content -->
+  <div class="main">
+    <div class="topbar">
+      <h1>Welcome, Student 👋</h1>
+      <button class="logout-btn">Logout</button>
     </div>
-    <div>
-      <label>Father's Name</label>
-      <input type="text" name="fatherName">
-    </div>
-    <div>
-      <label>Mother's Name</label>
-      <input type="text" name="motherName">
-    </div>
-  </div>
-  <div class="candidate-info">
-    <div style="flex:1 1 100%;">
-      <label>Present Address</label>
-      <textarea name="address" rows="2"></textarea>
-    </div>
-  </div>
-  <div class="candidate-info">
-    <div>
-      <label>Mobile Number</label>
-      <input type="text" name="mobile">
-    </div>
-    <div>
-      <label>Email</label>
-      <input type="email" name="email">
-    </div>
-  </div>
 
-  <!-- Courses Table -->
-  <h3>Courses to be Examined</h3>
-  <div class="table-responsive">
-    <table class="courses-table">
-      <thead>
-        <tr>
-          <th>S.No</th>
-          <th>Course Title</th>
-          <th>Course Type</th>
-          <th>Course Code</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td><textarea name="course1_title" rows="1"></textarea></td>
-          <td><textarea name="course1_type" rows="1"></textarea></td>
-          <td><textarea name="course1_code" rows="1"></textarea></td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td><textarea name="course2_title" rows="1"></textarea></td>
-          <td><textarea name="course2_type" rows="1"></textarea></td>
-          <td><textarea name="course2_code" rows="1"></textarea></td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td><textarea name="course3_title" rows="1"></textarea></td>
-          <td><textarea name="course3_type" rows="1"></textarea></td>
-          <td><textarea name="course3_code" rows="1"></textarea></td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td><textarea name="course4_title" rows="1"></textarea></td>
-          <td><textarea name="course4_type" rows="1"></textarea></td>
-          <td><textarea name="course4_code" rows="1"></textarea></td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td><textarea name="course5_title" rows="1"></textarea></td>
-          <td><textarea name="course5_type" rows="1"></textarea></td>
-          <td><textarea name="course5_code" rows="1"></textarea></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <!-- Form -->
+    <div class="form-container">
+      <h2>Akal University - Examination Form</h2>
 
-  <!-- Last Year Result -->
-  <h3>Result Status of Last Year Examination</h3>
-  <div class="table-responsive">
-    <table class="last-result">
-      <thead>
-        <tr>
-          <th>Examination</th>
-          <th>Board / University</th>
-          <th>Session / Year</th>
-          <th>AUID / Roll No</th>
-          <th>Pass</th>
-          <th>Re-appear</th>
-          <th>Grade / Percentage</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><textarea name="exam" rows="1"></textarea></td>
-          <td><textarea name="board" rows="1"></textarea></td>
-          <td><textarea name="session" rows="1"></textarea></td>
-          <td><textarea name="roll" rows="1"></textarea></td>
-          <td><textarea name="pass" rows="1"></textarea></td>
-          <td><textarea name="reappear" rows="1"></textarea></td>
-          <td><textarea name="grade" rows="1"></textarea></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+      <!-- Top Info -->
+      <div class="top-info">
+        <div>
+          <label>Form Number</label>
+          <input type="text" name="formNumber">
+        </div>
+        <div>
+          <label>AUID / Roll No</label>
+          <input type="text" name="auid">
+        </div>
+        <div>
+          <label>Date</label>
+          <input type="date" name="date">
+        </div>
+        <div>
+          <label>Programme</label>
+          <input type="text" name="programme">
+        </div>
+        <div>
+          <label>Class</label>
+          <input type="text" name="class">
+        </div>
+        <div>
+          <label>Semester</label>
+          <input type="text" name="semester">
+        </div>
+      </div>
 
-  <button type="submit" class="btn">Submit Form</button>
+      <!-- Candidate Info -->
+      <h3>Candidate Details</h3>
+      <div class="candidate-info">
+        <div>
+          <label>Candidate's Name</label>
+          <input type="text" name="candidateName">
+        </div>
+        <div>
+          <label>Father's Name</label>
+          <input type="text" name="fatherName">
+        </div>
+        <div>
+          <label>Mother's Name</label>
+          <input type="text" name="motherName">
+        </div>
+      </div>
+      <div class="candidate-info">
+        <div style="flex:1 1 100%;">
+          <label>Present Address</label>
+          <textarea name="address" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="candidate-info">
+        <div>
+          <label>Mobile Number</label>
+          <input type="text" name="mobile">
+        </div>
+        <div>
+          <label>Email</label>
+          <input type="email" name="email">
+        </div>
+      </div>
+
+      <!-- Courses Table -->
+      <h3>Courses to be Examined</h3>
+      <div class="table-responsive">
+        <table class="courses-table">
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Course Title</th>
+              <th>Course Type</th>
+              <th>Course Code</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><textarea name="course1_title" rows="1"></textarea></td>
+              <td><textarea name="course1_type" rows="1"></textarea></td>
+              <td><textarea name="course1_code" rows="1"></textarea></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><textarea name="course2_title" rows="1"></textarea></td>
+              <td><textarea name="course2_type" rows="1"></textarea></td>
+              <td><textarea name="course2_code" rows="1"></textarea></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><textarea name="course3_title" rows="1"></textarea></td>
+              <td><textarea name="course3_type" rows="1"></textarea></td>
+              <td><textarea name="course3_code" rows="1"></textarea></td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><textarea name="course4_title" rows="1"></textarea></td>
+              <td><textarea name="course4_type" rows="1"></textarea></td>
+              <td><textarea name="course4_code" rows="1"></textarea></td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td><textarea name="course5_title" rows="1"></textarea></td>
+              <td><textarea name="course5_type" rows="1"></textarea></td>
+              <td><textarea name="course5_code" rows="1"></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Last Year Result -->
+      <h3>Result Status of Last Year Examination</h3>
+      <div class="table-responsive">
+        <table class="last-result">
+          <thead>
+            <tr>
+              <th>Examination</th>
+              <th>Board / University</th>
+              <th>Session / Year</th>
+              <th>AUID / Roll No</th>
+              <th>Pass</th>
+              <th>Re-appear</th>
+              <th>Grade / Percentage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><textarea name="exam" rows="1"></textarea></td>
+              <td><textarea name="board" rows="1"></textarea></td>
+              <td><textarea name="session" rows="1"></textarea></td>
+              <td><textarea name="roll" rows="1"></textarea></td>
+              <td><textarea name="pass" rows="1"></textarea></td>
+              <td><textarea name="reappear" rows="1"></textarea></td>
+              <td><textarea name="grade" rows="1"></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <button type="submit" class="btn">Submit Form</button>
+    </div>
+  </div>
 </div>
 
 </body>
