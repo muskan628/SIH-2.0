@@ -72,3 +72,7 @@ new Chart(ctx, {
     scales:{y:{beginAtZero:true, max:100}}
   }
 });
+
+document.getElementById("menuToggle").addEventListener("click", function() {
+  document.getElementById("sidebar").classList.toggle("hidden");
+});
