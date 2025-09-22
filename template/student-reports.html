@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reports</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="/static/css/student-reports.css">
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h2>Dashboard</h2>
+  <ul>
+    <li>🏠 Home</li>
+    <li>📘 Notes</li>
+    <li>💳 Fees</li>
+    <li>📊 Performance</li>
+    <li>📝 Exam</li>
+  </ul>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <div class="topbar">
+    <h1>Reports 📑</h1>
+    <button class="logout-btn">Logout</button>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="cards">
+    <div class="card"><h3>Total Students</h3><p>250</p></div>
+    <div class="card"><h3>Average Attendance</h3><p>82%</p></div>
+    <div class="card"><h3>Pending Fees</h3><p>₹2,50,000</p></div>
+    <div class="card"><h3>Top Performers</h3><p>15</p></div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <select id="reportType">
+      <option value="performance">Performance Report</option>
+      <option value="attendance">Attendance Report</option>
+      <option value="fees">Fees Report</option>
+    </select>
+    <button onclick="window.print()">🖨️ Print</button>
+    <button onclick="exportPDF()">📤 Export PDF</button>
+  </div>
+
+  <!-- Chart Section -->
+  <div class="chart-container">
+    <canvas id="reportChart"></canvas>
+  </div>
+</div>
+<script src="/static/js/student-report.js"></script>
+</body>
+</html>
