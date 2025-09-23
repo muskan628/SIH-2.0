@@ -1,48 +1,17 @@
-// Dynamic teacher profiles (future backend)
-const teacherProfiles = {
-  "anjali": {
-    name:"Dr. Anjali Sharma",
-    email:"anjali.sharma@university.edu",
-    phone:"+91 9876543210",
-    mentor:"BCA 2nd Year",
-    qualification:"PhD in Computer Science"
-  },
-  "rajesh": {
-    name:"Prof. Rajesh Kumar",
-    email:"rajesh.kumar@university.edu",
-    phone:"+91 9123456780",
-    mentor:"B.Com 1st Year",
-    qualification:"M.Com, NET Qualified"
-  }
-};
+ function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(sec => {
+                sec.classList.add('section-hidden');
+            });
+            document.getElementById(sectionId).classList.remove('section-hidden');
+        }
 
-// Load teacher dynamically
-function setTeacher(profile){
-  const t = teacherProfiles[profile];
-  if(t){
-    document.getElementById("teacherDetails").innerHTML=`
-      <h2>Teacher Details</h2>
-      <div class="teacher-info">
-        <div><strong>Name:</strong> ${t.name}</div>
-        <div><strong>Email:</strong> ${t.email}</div>
-        <div><strong>Phone:</strong> ${t.phone}</div>
-        <div><strong>Mentor of:</strong> ${t.mentor}</div>
-        <div><strong>Qualification:</strong> ${t.qualification}</div>
-      </div>
-    `;
-  }
-}
-
-// Default teacher
-setTeacher("anjali");
-
-// Make entire card clickable
-document.querySelectorAll('.dashboard-cards .card').forEach(card => {
-  card.style.cursor = 'pointer'; // show pointer on hover
-  card.addEventListener('click', () => {
-    const link = card.getAttribute('data-link');
-    if (link) {
-      window.location.href = link;
-    }
-  });
-});
+        function showStudents() {
+            const select = document.getElementById('class-select');
+            const selectedClass = select.value;
+            document.querySelectorAll('.students-list').forEach(list => {
+                list.classList.add('d-none');
+            });
+            if (selectedClass) {
+                document.getElementById(selectedClass).classList.remove('d-none');
+            }
+        }

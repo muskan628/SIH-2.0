@@ -1,53 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard</title>
-<link rel="stylesheet" href="/static/css/admin-dashboard.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - Educational System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/admin-dashboard.css">
 </head>
 <body>
-<h1>Admin Dashboard</h1>
+    <div class="d-flex">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <h4 class="mb-4">Teacher Dashboard</h4>
+            <a href="#teacher-details" onclick="showSection('teacher-details')"><i class="bi bi-person"></i> My Details</a>
+            <a href="#add-exam" onclick="showSection('add-exam')"><i class="bi bi-book"></i> Add Exam</a>
+            <a href="#collect-examination" onclick="showSection('collect-examination')"><i class="bi bi-file-earmark-text"></i> Collect Examination</a>
+            <a href="#mentor-form" onclick="showSection('mentor-form')"><i class="bi bi-person-plus"></i> Mentor Form</a>
+            <a href="#attendance" onclick="showSection('attendance')"><i class="bi bi-check-square"></i> Attendance</a>
+            <a href="#student-report" onclick="showSection('student-report')"><i class="bi bi-file-earmark-person"></i> Student Record/Report</a>
+        </div>
 
-  
+        <!-- Main Content -->
+        <div class="content">
+            <nav class="navbar navbar-light mb-4">
+                <div class="container-fluid">
+                    <span class="navbar-brand mb-0 h1">Welcome, Ms. Jane Smith</span>
+                </div>
+            </nav>
 
-<!-- Teacher Details -->
-<div class="teacher-details" id="teacherDetails">
-  <h2>Teacher Details</h2>
-  <div class="teacher-info">
-    <div><strong>Name:</strong> Dr. Anjali Sharma</div>
-    <div><strong>Email:</strong> anjali.sharma@university.edu</div>
-    <div><strong>Phone:</strong> +91 9876543210</div>
-    <div><strong>Mentor of:</strong> BCA 2nd Year</div>
-    <div><strong>Qualification:</strong> PhD in Computer Science</div>
-  </div>
-</div>
+            <!-- Teacher Details Section -->
+            <div id="teacher-details" class="section">
+                <div class="card p-4">
+                    <h3>My Details</h3>
+                    <p>View and manage your personal information.</p>
+                    <div class="teacher-info mb-4">
+                        <img src="https://via.placeholder.com/100" class="teacher-photo" alt="Teacher Photo">
+                        <div>
+                            <h5>Jane Smith</h5>
+                            <p><strong>Qualification:</strong> Ph.D. Physics</p>
+                            <p><strong>Mentoring Classes:</strong> Class 11A</p>
+                            <p><strong>Email:</strong> jane@example.com</p>
+                            <p><strong>Address:</strong> 456 Oak Ave, City</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editTeacherModal">Edit Details</button>
+                </div>
 
-<!-- Dashboard Cards -->
-<div class="dashboard-cards">
-  <div class="card">
-    <h3>Examination Forms</h3>
-    <p>Manage student exam forms</p>
-  </div>
-  <div class="card" data-link="admin-attendance.html">
-    <h3>Attendance</h3>
-    <p>Track student attendance</p>
-  </div>
-  <div class="card" data-link="upload-exams.html">
-    <h3>Upload Exams</h3>
-    <p>Create & manage exams</p>
-  </div>
-  <div class="card">
-    <h3>Student Records</h3>
-    <p>View & update student details</p>
-  </div>
-  <div class="card">
-    <h3>Reports</h3>
-    <p>Generate academic reports</p>
-  </div>
-</div>
+                <!-- Edit Teacher Modal -->
+                <div class="modal fade" id="editTeacherModal" tabindex="-1" aria-labelledby="editTeacherModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editTeacherModalLabel">Edit Details: Jane Smith</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="mb-3">
+                                        <label class="form-label">Name</label>
+                                        <input type="text" class="form-control" value="Jane Smith">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Qualification</label>
+                                        <input type="text" class="form-control" value="Ph.D. Physics">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Mentoring Classes</label>
+                                        <input type="text" class="form-control" value="Class 11A">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" value="jane@example.com">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Address</label>
+                                        <textarea class="form-control">456 Oak Ave, City</textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Photo</label>
+                                        <input type="file" class="form-control">
+                                        <img src="https://via.placeholder.com/200" class="mt-2" alt="Current Photo">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-<script src="/static/js/admin-dashboard.js"></script>
+            <!-- Add Exam Section -->
+            <div id="add-exam" class="section section-hidden">
+                <div class="card p-4">
+                    <h3>Add Exam</h3>
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Exam Name</label>
+                            <input type="text" class="form-control" placeholder="e.g., Midterm Physics">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Class</label>
+                            <select class="form-select">
+                                <option>Class 11A</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Exam</button>
+                    </form>
+                </div>
+            </div>
 
+            <!-- Collect Examination Section -->
+            <div id="collect-examination" class="section section-hidden">
+                <div class="card p-4">
+                    <h3>Collect Examination Results</h3>
+                    <p>Upload or enter exam results for students.</p>
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Select Exam</label>
+                            <select class="form-select">
+                                <option>Midterm Physics</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Upload Results File</label>
+                            <input type="file" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Results</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Mentor Form Section -->
+            <div id="mentor-form" class="section section-hidden">
+                <div class="card p-4">
+                    <h3>Mentor Form</h3>
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Mentor Name</label>
+                            <input type="text" class="form-control" value="Jane Smith" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Assigned Students</label>
+                            <textarea class="form-control" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Form</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Attendance Section -->
+            <div id="attendance" class="section section-hidden">
+                <div class="card p-4">
+                    <h3>Attendance</h3>
+                    <p>Select a class to take attendance.</p>
+                    <select class="form-select mb-3" id="class-select" onchange="showStudents()">
+                        <option value="">Select Class</option>
+                        <option value="class11a">Class 11A</option>
+                    </select>
+
+                    <div id="class11a" class="students-list d-none">
+                        <h5>Class 11A Students</h5>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Present</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Alice Smith</td>
+                                    <td><input type="checkbox" checked></td>
+                                </tr>
+                                <tr>
+                                    <td>Bob Johnson</td>
+                                    <td><input type="checkbox"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button class="btn btn-primary">Save Attendance</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Record/Report Section -->
+            <div id="student-report" class="section section-hidden">
+                <div class="card p-4">
+                    <h3>Student Record/Report</h3>
+                    <p>View student reports and records.</p>
+                    <input type="text" class="form-control mb-3" placeholder="Search Student by Name or ID">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Grades</th>
+                                <th>Attendance</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>101</td>
+                                <td>Alice Smith</td>
+                                <td>A+</td>
+                                <td>95%</td>
+                                <td><button class="btn btn-sm btn-info">View Report</button></td>
+                            </tr>
+                            <tr>
+                                <td>102</td>
+                                <td>Bob Johnson</td>
+                                <td>B</td>
+                                <td>88%</td>
+                                <td><button class="btn btn-sm btn-info">View Report</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/admin-dashboard.js">
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
 </body>
 </html>
