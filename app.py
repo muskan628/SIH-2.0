@@ -10,7 +10,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "a_hard_to_guess_default_secret_ke
 
 # --- Database Configuration ---
 # Format: postgresql://user:password@host:port/dbname
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2004@localhost:5432/testdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost:5432/testdb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
