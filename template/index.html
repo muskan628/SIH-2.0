@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login - Dashboard</title>
-<link rel="stylesheet" href="/static/css/index.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 </head>
 <body>
 
@@ -19,19 +18,21 @@
   <!-- Right Panel -->
   <div class="right-panel">
     <h2>Login</h2>
-    <form class="login-form" id="loginForm">
+
+    <!-- Flask will handle this POST -->
+    <form class="login-form" id="loginForm" method="POST" action="{{ url_for('login') }}">
       <label for="role">Select Role</label>
-      <select id="role" required>
+      <select id="role" name="role" required>
         <option value="">--Select--</option>
         <option value="student">Student</option>
         <option value="admin">Admin</option>
       </select>
       
       <label for="username">Username</label>
-      <input type="text" id="username" placeholder="Enter username" required>
+      <input type="text" id="username" name="username" placeholder="Enter username" required>
       
       <label for="password">Password</label>
-      <input type="password" id="password" placeholder="Enter password" required>
+      <input type="password" id="password" name="password" placeholder="Enter password" required>
       
       <button type="submit">Login</button>
     </form>
@@ -39,25 +40,19 @@
     <div class="register-link">
       <p>Don't have an account? <a href="register.html">Register Here</a></p>
     </div>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flash-messages">
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
   </div>
 </div>
-
-<script>
-// Example: Handle login submit
-document.getElementById('loginForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  const role = document.getElementById('role').value;
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
-
-  if(role && username && password){
-    alert(`Login as ${role} successful!\nUsername: ${username}`);
-    // Future: redirect to dashboard page with role check
-  } else {
-    alert("Please fill all fields");
-  }
-});
-</script>
 
 </body>
 </html>
