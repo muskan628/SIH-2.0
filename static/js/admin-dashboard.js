@@ -35,3 +35,14 @@ function setTeacher(profile){
 
 // Default teacher
 setTeacher("anjali");
+
+// Make entire card clickable
+document.querySelectorAll('.dashboard-cards .card').forEach(card => {
+  card.style.cursor = 'pointer'; // show pointer on hover
+  card.addEventListener('click', () => {
+    const link = card.getAttribute('data-link');
+    if (link) {
+      window.location.href = link;
+    }
+  });
+});
