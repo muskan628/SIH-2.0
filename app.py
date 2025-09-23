@@ -93,7 +93,7 @@ def student_dashboard():
     if "user_id" not in session or session.get("role") != "student":
         flash("You must be logged in as a student to view this page.", "warning")
         return redirect(url_for("login"))
-    return render_template("student_dashboard.html")
+    return render_template("student-dashboard.html")
 
 
 @app.route("/admin/dashboard")
@@ -102,7 +102,7 @@ def admin_dashboard():
     if "user_id" not in session or session.get("role") != "admin":
         flash("You must be logged in as an admin to view this page.", "warning")
         return redirect(url_for("login"))
-    return render_template("admin_dashboard.html")
+    return render_template("admin-dashboard.html")
 
 
 @app.route("/logout")
