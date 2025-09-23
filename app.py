@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # --- App Configuration ---
-app = Flask(__name__, template_folder=r"C:\xampp\htdocs\SIH-2.0\template")
+app = Flask(__name__, template_folder=r"D:\xampp\htdocs\SIH-2.0\template")
 
 
 # Use an environment variable for the secret key in production
@@ -93,7 +93,7 @@ def student_dashboard():
     if "user_id" not in session or session.get("role") != "student":
         flash("You must be logged in as a student to view this page.", "warning")
         return redirect(url_for("login"))
-    return render_template("student_dashboard.html")
+    return render_template("student-dashboard.html")
 
 
 @app.route("/admin/dashboard")
@@ -102,7 +102,7 @@ def admin_dashboard():
     if "user_id" not in session or session.get("role") != "admin":
         flash("You must be logged in as an admin to view this page.", "warning")
         return redirect(url_for("login"))
-    return render_template("admin_dashboard.html")
+    return render_template("admin-dashboard.html")
 
 
 @app.route("/logout")
