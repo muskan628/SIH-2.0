@@ -1,23 +1,119 @@
-from flask import Flask
+import os
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 
+# --- App Configuration ---
 app = Flask(__name__)
+# Use an environment variable for the secret key in production
+app.secret_key = os.environ.get("SECRET_KEY", "a_hard_to_guess_default_secret_key")
 
-# Database URI format: postgresql://username:password@host:port/database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://your_username:your_password@localhost:5432/your_db_name'
+# --- Database Configuration ---
+# Format: postgresql://user:password@host:port/dbname
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2004@localhost:5432/testdb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 db = SQLAlchemy(app)
 
-# Example Model
+
+# --- Database Model ---
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
+    role = db.Column(db.String(20), nullable=False) # 'student' or 'admin'
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    # Increased length for the hashed password
+    password = db.Column(db.String(255), nullable=False)
 
-@app.route("/")
-def index():
-    users = User.query.all()
-    return f"Users: {[u.name for u in users]}"
+    def __repr__(self):
+        return f'<User {self.username}>'
 
+
+# --- One-Time Setup Function ---
+def initial_setup():
+    """Creates database tables and a default admin and student user."""
+    db.create_all()
+    # Check if the default admin user exists
+    if not User.query.filter_by(username="admin").first():
+        print("Creating default admin user...")
+        # Hash the password before storing it
+        hashed_password_admin = generate_password_hash("adminpass")
+        admin = User(role="admin", username="admin", password=hashed_password_admin)
+        db.session.add(admin)
+
+    # Check if the default student user exists
+    if not User.query.filter_by(username="nitin").first():
+        print("Creating default student user...")
+        hashed_password_student = generate_password_hash("1234")
+        student = User(role="student", username="nitin", password=hashed_password_student)
+        db.session.add(student)
+    
+    db.session.commit()
+    print("Initial setup complete.")
+
+
+# --- Routes ---
+@app.route("/", methods=["GET", "POST"])
+def login():
+    """Handles user login."""
+    # If user is already logged in, redirect them to their dashboard
+    if "user_id" in session:
+        if session.get("role") == "admin":
+            return redirect(url_for("admin_dashboard"))
+        return redirect(url_for("student_dashboard"))
+
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        role = request.form.get("role")
+
+        user = User.query.filter_by(username=username, role=role).first()
+
+        # Use check_password_hash to compare passwords
+        if user and check_password_hash(user.password, password):
+            session["user_id"] = user.id
+            session["username"] = user.username
+            session["role"] = user.role
+            flash(f"Welcome back, {user.username}!", "success")
+
+            if user.role == "admin":
+                return redirect(url_for("admin_dashboard"))
+            else:
+                return redirect(url_for("student_dashboard"))
+        else:
+            flash("Invalid username, password, or role. Please try again.", "danger")
+            return redirect(url_for("login"))
+
+    return render_template("index.html")
+
+
+@app.route("/student/dashboard")
+def student_dashboard():
+    """Displays the student dashboard."""
+    if "user_id" not in session or session.get("role") != "student":
+        flash("You must be logged in as a student to view this page.", "warning")
+        return redirect(url_for("login"))
+    return render_template("student_dashboard.html")
+
+
+@app.route("/admin/dashboard")
+def admin_dashboard():
+    """Displays the admin dashboard."""
+    if "user_id" not in session or session.get("role") != "admin":
+        flash("You must be logged in as an admin to view this page.", "warning")
+        return redirect(url_for("login"))
+    return render_template("admin_dashboard.html")
+
+
+@app.route("/logout")
+def logout():
+    """Logs the user out."""
+    session.clear() # Clears all data from the session
+    flash("You have been successfully logged out.", "info")
+    return redirect(url_for("login"))
+
+
+# --- Main Execution ---
 if __name__ == "__main__":
+    # Create an app context to run the initial setup
+    with app.app_context():
+        initial_setup()
     app.run(debug=True)
