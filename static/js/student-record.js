@@ -51,3 +51,5 @@ students.forEach(s=>{
   row.insertCell(5).innerText = "₹" + s.fees;
   row.insertCell(6).innerText = s.performance;
 });
+
+ 
