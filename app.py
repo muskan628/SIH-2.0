@@ -12,7 +12,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "a_hard_to_guess_default_secret_ke
 
 # --- Database Configuration ---
 # Format: postgresql://user:password@host:port/dbname
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost:5432/testdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2004@localhost:5432/testdb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -111,6 +111,41 @@ def logout():
     session.clear() # Clears all data from the session
     flash("You have been successfully logged out.", "info")
     return redirect(url_for("login"))
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        role = request.form.get("role")
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirmPassword")
+
+        # Check password match
+        if password != confirm_password:
+            flash("Passwords do not match!", "danger")
+            return redirect(url_for("register"))
+
+        # Check if username/email already exists
+        existing_user = User.query.filter((User.username == username) | (User.email == email)).first()
+        if existing_user:
+            flash("Username or Email already exists!", "danger")
+            return redirect(url_for("register"))
+
+        # Hash the password before storing
+        hashed_password = generate_password_hash(password)
+
+        # Save new user
+        new_user = User(role=role, username=username, email=email, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash("Registration successful! Please log in.", "success")
+        return redirect(url_for("login"))
+
+    return render_template("register.html")
+
 
 
 # --- Main Execution ---
