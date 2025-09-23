@@ -4,7 +4,10 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # --- App Configuration ---
-app = Flask(__name__, template_folder=r"D:\SIH-2.0\template")
+
+
+app = Flask(__name__, template_folder=r"D:\xampp\htdocs\SIH-2.0\template")
+
 
 
 # Use an environment variable for the secret key in production
@@ -93,7 +96,7 @@ def student_dashboard():
     if "user_id" not in session or session.get("role") != "student":
         flash("You must be logged in as a student to view this page.", "warning")
         return redirect(url_for("login"))
-    return render_template("student_dashboard.html")
+    return render_template("student-dashboard.html")
 
 
 @app.route("/admin/dashboard")
@@ -102,7 +105,7 @@ def admin_dashboard():
     if "user_id" not in session or session.get("role") != "admin":
         flash("You must be logged in as an admin to view this page.", "warning")
         return redirect(url_for("login"))
-    return render_template("admin_dashboard.html")
+    return render_template("admin-dashboard.html")
 
 
 @app.route("/logout")
@@ -111,6 +114,41 @@ def logout():
     session.clear() # Clears all data from the session
     flash("You have been successfully logged out.", "info")
     return redirect(url_for("login"))
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        role = request.form.get("role")
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirmPassword")
+
+        # Check password match
+        if password != confirm_password:
+            flash("Passwords do not match!", "danger")
+            return redirect(url_for("register"))
+
+        # Check if username/email already exists
+        existing_user = User.query.filter((User.username == username) | (User.email == email)).first()
+        if existing_user:
+            flash("Username or Email already exists!", "danger")
+            return redirect(url_for("register"))
+
+        # Hash the password before storing
+        hashed_password = generate_password_hash(password)
+
+        # Save new user
+        new_user = User(role=role, username=username, email=email, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash("Registration successful! Please log in.", "success")
+        return redirect(url_for("login"))
+
+    return render_template("register.html")
+
 
 
 # --- Main Execution ---
