@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # --- App Configuration ---
-app = Flask(__name__, template_folder=r"C:\xampp\htdocs\SIH-2.0\template")
+app = Flask(__name__, template_folder=r"D:\SIH-2.0\template")
 
 
 # Use an environment variable for the secret key in production
@@ -12,7 +12,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "a_hard_to_guess_default_secret_ke
 
 # --- Database Configuration ---
 # Format: postgresql://user:password@host:port/dbname
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2004@localhost:5432/testdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost:5432/testdb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -37,7 +37,7 @@ def initial_setup():
     if not User.query.filter_by(username="admin").first():
         print("Creating default admin user...")
         # Hash the password before storing it
-        hashed_password_admin = generate_password_hash("adminpass")
+        hashed_password_admin = generate_password_hash("1234")
         admin = User(role="admin", username="admin", password=hashed_password_admin)
         db.session.add(admin)
 
