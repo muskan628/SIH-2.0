@@ -4,7 +4,9 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # --- App Configuration ---
-app = Flask(__name__)
+app = Flask(__name__, template_folder=r"C:\xampp\htdocs\SIH-2.0\template")
+
+
 # Use an environment variable for the secret key in production
 app.secret_key = os.environ.get("SECRET_KEY", "a_hard_to_guess_default_secret_key")
 
