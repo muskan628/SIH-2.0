@@ -1,29 +1,4 @@
-// SEARCH FUNCTION
-document.getElementById("searchInput").addEventListener("keyup", function(){
-  let value = this.value.toLowerCase();
-  let rows = document.querySelectorAll("#recordsTable tr:not(:first-child)");
-  rows.forEach(row=>{
-    let text = row.innerText.toLowerCase();
-    row.style.display = text.includes(value) ? "" : "none";
-  });
-});
-
-// FILTER FUNCTION
-document.getElementById("filterPerformance").addEventListener("change", function(){
-  let filter = this.value;
-  let rows = document.querySelectorAll("#recordsTable tr:not(:first-child)");
-  rows.forEach(row=>{
-    let performance = row.cells[6].innerText;
-    row.style.display = (filter==="" || performance===filter) ? "" : "none";
-  });
-});
-// Sidebar toggle for mobile
-const sidebar = document.getElementById('sidebar');
-document.getElementById('menuToggle').addEventListener('click', ()=> {
-  sidebar.classList.toggle('active');
-});
-
-// Example student records
+// Example student data
 const students = [
   {roll: "101", name:"Rahul Sharma", stream:"BCA 2nd Year", contact:"9876543210", attendance:85, fees:12000, performance:"Good"},
   {roll: "102", name:"Priya Verma", stream:"B.Sc IT", contact:"9876509876", attendance:92, fees:0, performance:"Excellent"},
@@ -33,23 +8,39 @@ const students = [
 ];
 
 // Populate table dynamically
-const table = document.getElementById("recordsTable");
-students.forEach(s=>{
-  const row = table.insertRow();
-  row.insertCell(0).innerText = s.roll;
-  row.insertCell(1).innerText = s.name;
-  row.insertCell(2).innerText = s.stream;
-  row.insertCell(3).innerText = s.contact;
+const tableBody = document.querySelector("#recordsTable tbody");
+students.forEach(s => {
+  const row = document.createElement("tr");
 
-  // Attendance with progress bar
-  const attendanceCell = row.insertCell(4);
-  attendanceCell.innerHTML = `
-    <div class="progress"><div class="progress-bar" style="width:${s.attendance}%"></div></div>
-    <small>${s.attendance}%</small>
+  row.innerHTML = `
+    <td data-label="Roll No">${s.roll}</td>
+    <td data-label="Name">${s.name}</td>
+    <td data-label="Stream">${s.stream}</td>
+    <td data-label="Contact">${s.contact}</td>
+    <td data-label="Attendance">
+      <div class="progress"><div class="progress-bar" style="width:${s.attendance}%"></div></div>
+      <small>${s.attendance}%</small>
+    </td>
+    <td data-label="Fees Pending">₹${s.fees}</td>
+    <td data-label="Performance">${s.performance}</td>
   `;
-
-  row.insertCell(5).innerText = "₹" + s.fees;
-  row.insertCell(6).innerText = s.performance;
+  tableBody.appendChild(row);
 });
 
- 
+// Search Function
+document.getElementById("searchInput").addEventListener("keyup", function() {
+  const value = this.value.toLowerCase();
+  document.querySelectorAll("#recordsTable tbody tr").forEach(row => {
+    const text = row.innerText.toLowerCase();
+    row.style.display = text.includes(value) ? "" : "none";
+  });
+});
+
+// Filter Function
+document.getElementById("filterPerformance").addEventListener("change", function() {
+  const filter = this.value;
+  document.querySelectorAll("#recordsTable tbody tr").forEach(row => {
+    const performance = row.cells[6].innerText;
+    row.style.display = (filter === "" || performance === filter) ? "" : "none";
+  });
+});
