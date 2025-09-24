@@ -8,57 +8,55 @@
 </head>
 <body>
 
+<!-- Hamburger -->
+<div class="hamburger" onclick="toggleSidebar()">☰</div>
+
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
-
-
     <h2>Menu</h2>
     <ul>
-      <li><a href="student-dashboard.html">🏠 Home</a> </li>
-    <li><a href="examination-form.html">📘 Examination Form</a></li>
-    <li><a href="student-performance.html">📊 Performance</a></li>
-    <li><a href="student-exam">📝 Exam</a></li>
+      <li><a href="student-dashboard.html">🏠 Home</a></li>
+      <li><a href="student-notes.html">📘 Notes</a></li>
+      <li><a href="student-performance.html">📊 Performance</a></li>
+      <li><a href="student-updates">📝 Updates</a></li>
     </ul>
-  </div>
-
+</div>
 
 <!-- Main Content -->
 <div class="main">
   <div class="topbar">
-    <button class="menu-toggle" id="menuToggle">☰</button>
-    <h1 id="welcomeMsg">Welcome, Student 👋</h1>
+    <h1 id="welcomeMsg">Welcome, Muskan 👋</h1>
     <button class="logout-btn">Logout</button>
   </div>
 
   <!-- Cards -->
   <div class="cards">
-    <div class="card"><h3>Attendance</h3><p id="attendanceCard">0%</p></div>
-    <div class="card"><h3>Pending Fees</h3><p id="feesCard">₹0</p></div>
-    <div class="card"><h3>Exams Today</h3><p id="examsTodayCard">0</p></div>
-    <div class="card"><h3>Performance</h3><p id="performanceCard">N/A</p></div>
+    <div class="card"><h3>Attendance</h3><p id="attendanceCard">92%</p></div>
+    <div class="card"><h3>Pending Fees</h3><p id="feesCard">₹5000</p></div>
+    <div class="card"><h3>Exams Today</h3><p id="examsTodayCard">2</p></div>
+    <div class="card"><h3>Performance</h3><p id="performanceCard">A+</p></div>
   </div>
 
   <!-- Student Info -->
   <div class="student-card">
     <div class="student-info">
-      <img id="studentImg" src="https://randomuser.me/api/portraits/men/45.jpg" alt="Student">
+      <img id="studentImg" src="https://randomuser.me/api/portraits/women/45.jpg" alt="Student">
       <div>
-        <h2 id="studentName">Student Name</h2>
-        <p id="studentStream">Stream</p>
-        <p id="studentRoll">Roll No: 0000</p>
+        <h2 id="studentName">Muskan Bhagria</h2>
+        <p id="studentStream">Science Stream</p>
+        <p id="studentRoll">Roll No: 1234</p>
       </div>
     </div>
 
     <table>
       <tr><th>Details</th><th>Info</th></tr>
-      <tr><td>Contact</td><td id="studentContact">0000000000</td></tr>
-      <tr><td>Father's Name</td><td id="fatherName">N/A</td></tr>
-      <tr><td>Father's Contact</td><td id="fatherContact">0000000000</td></tr>
+      <tr><td>Contact</td><td id="studentContact">9876543210</td></tr>
+      <tr><td>Father's Name</td><td id="fatherName">Mr. Bhagria</td></tr>
+      <tr><td>Father's Contact</td><td id="fatherContact">9123456780</td></tr>
       <tr>
         <td>Attendance</td>
         <td>
-          <div class="progress"><div class="progress-bar" id="attendanceBar"></div></div>
-          <p class="percentage" id="attendancePercent">0%</p>
+          <div class="progress"><div class="progress-bar" id="attendanceBar" style="width:92%;">92%</div></div>
         </td>
       </tr>
     </table>
@@ -66,11 +64,17 @@
     <h3>Exam Schedule</h3>
     <table id="examTable">
       <tr><th>Exam</th><th>Date</th><th>Time</th></tr>
+      <tr><td>Math Midterm</td><td>2025-10-10</td><td>10:00 AM</td></tr>
+      <tr><td>Physics Midterm</td><td>2025-10-11</td><td>2:00 PM</td></tr>
     </table>
   </div>
 </div>
 
-<script src="/static/js/student-dashboard.js"></script>
+<script>
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("active");
+}
+</script>
 
 </body>
 </html>
