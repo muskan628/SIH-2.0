@@ -1,53 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard</title>
-<link rel="stylesheet" href="/static/css/admin-dashboard.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard</title>
+  <link rel="stylesheet" href="/static/css/admin-dashboard.css">
 </head>
 <body>
-<h1>Admin Dashboard</h1>
 
-  
-
-<!-- Teacher Details -->
-<div class="teacher-details" id="teacherDetails">
-  <h2>Teacher Details</h2>
-  <div class="teacher-info">
-    <div><strong>Name:</strong> Dr. Anjali Sharma</div>
-    <div><strong>Email:</strong> anjali.sharma@university.edu</div>
-    <div><strong>Phone:</strong> +91 9876543210</div>
-    <div><strong>Mentor of:</strong> BCA 2nd Year</div>
-    <div><strong>Qualification:</strong> PhD in Computer Science</div>
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <h2>Menu</h2>
+  <div class="menu">
+    <a href="/template/mst-exam.html">Upload Exam</a>
+    <a href="/template/quiz-exam.html">Quiz</a>
+    <a href="/template/student-record.html">Student Records</a>
+    <a href="/template/admin-attendance.html">Attendance</a>
   </div>
 </div>
 
-<!-- Dashboard Cards -->
-<div class="dashboard-cards">
-  <div class="card">
-    <h3>Examination Forms</h3>
-    <p>Manage student exam forms</p>
+<!-- Main -->
+<div class="main">
+  <button class="logout-btn" onclick="logout()">Logout</button>
+  <div class="welcome">👋 Welcome, Teacher</div>
+
+  <!-- Teacher Profile -->
+  <div class="section">
+    <h2>👨‍🏫 Teacher Profile</h2>
+    <div class="profile-card">
+      <img src="https://via.placeholder.com/90?text=👤" alt="Teacher">
+      <div class="profile-info">
+        <h3>Mr. John Doe</h3>
+        <p>Email: johndoe@school.edu</p>
+        <p>Department: Mathematics</p>
+        <p>Experience: 8 years</p>
+      </div>
+    </div>
   </div>
-  <div class="card" data-link="admin-attendance.html">
-    <h3>Attendance</h3>
-    <p>Track student attendance</p>
+
+<!-- Assignments -->
+<div class="section" id="assignments">
+  <h2>📂 Upload Assignments</h2>
+  <div class="upload-box">
+    <input type="file" id="fileInput">
+    <button onclick="uploadAssignment()">Upload</button>
   </div>
-  <div class="card" data-link="upload-exams.html">
-    <h3>Upload Exams</h3>
-    <p>Create & manage exams</p>
+<table id="assignmentTable">
+  <tr>
+    <th>File Name</th>
+    <th>Date Uploaded</th>
+    <th>Action</th>
+  </tr>
+   <tr>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+   <tr>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+   <tr>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+</table>
+  <!-- Interactive Links -->
+  <div class="form-links">
+    <a href="examination-form.html" class="form-card">📝 Examination Form</a>
+    <a href="mentor-form.html" class="form-card">👨‍🏫 Mentor Form</a>
   </div>
-  <div class="card">
-    <h3>Student Records</h3>
-    <p>View & update student details</p>
+</div>
+
+
+  <!-- Timetable -->
+  <div class="section" id="timetable">
+    <h2>🗓 Weekly Timetable</h2>
+    <table>
+      <tr><th>Day</th><th>Time</th><th>Class</th><th>Subject</th></tr>
+      <tr><td>Monday</td><td>9:00 - 10:00</td><td>10A</td><td>Math</td></tr>
+      <tr><td>Monday</td><td>11:00 - 12:00</td><td>10B</td><td>Physics</td></tr>
+      <tr><td>Tuesday</td><td>10:00 - 11:00</td><td>10C</td><td>Math</td></tr>
+      <tr><td>Wednesday</td><td>12:00 - 1:00</td><td>9A</td><td>Computer Science</td></tr>
+    </table>
   </div>
-  <div class="card">
-    <h3>Reports</h3>
-    <p>Generate academic reports</p>
+
+  <!-- My Subjects -->
+  <div class="section" id="schedule">
+    <h2>📘 My Subjects & Classes</h2>
+    <table>
+      <tr><th>Subject</th><th>Class</th><th>No. of Students</th></tr>
+      <tr><td>Mathematics</td><td>10A</td><td>32</td></tr>
+      <tr><td>Mathematics</td><td>10C</td><td>28</td></tr>
+      <tr><td>Physics</td><td>10B</td><td>30</td></tr>
+      <tr><td>Computer Science</td><td>9A</td><td>25</td></tr>
+    </table>
   </div>
+
+  <footer style="text-align:center; margin-top:20px; color:#7b8794; font-size:13px;">
+    Teacher Dashboard &copy; 2025
+  </footer>
 </div>
 
 <script src="/static/js/admin-dashboard.js"></script>
-
 </body>
 </html>

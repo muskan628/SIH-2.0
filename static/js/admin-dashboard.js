@@ -1,48 +1,36 @@
-// Dynamic teacher profiles (future backend)
-const teacherProfiles = {
-  "anjali": {
-    name:"Dr. Anjali Sharma",
-    email:"anjali.sharma@university.edu",
-    phone:"+91 9876543210",
-    mentor:"BCA 2nd Year",
-    qualification:"PhD in Computer Science"
-  },
-  "rajesh": {
-    name:"Prof. Rajesh Kumar",
-    email:"rajesh.kumar@university.edu",
-    phone:"+91 9123456780",
-    mentor:"B.Com 1st Year",
-    qualification:"M.Com, NET Qualified"
-  }
-};
-
-// Load teacher dynamically
-function setTeacher(profile){
-  const t = teacherProfiles[profile];
-  if(t){
-    document.getElementById("teacherDetails").innerHTML=`
-      <h2>Teacher Details</h2>
-      <div class="teacher-info">
-        <div><strong>Name:</strong> ${t.name}</div>
-        <div><strong>Email:</strong> ${t.email}</div>
-        <div><strong>Phone:</strong> ${t.phone}</div>
-        <div><strong>Mentor of:</strong> ${t.mentor}</div>
-        <div><strong>Qualification:</strong> ${t.qualification}</div>
-      </div>
-    `;
+function uploadAssignment() {
+  const fileInput = document.getElementById('fileInput');
+  const table = document.getElementById('assignmentTable');
+  if (fileInput.files.length > 0) {
+    const file = fileInput.files[0];
+    const row = table.insertRow();
+    row.insertCell(0).innerText = file.name;
+    row.insertCell(1).innerText = new Date().toLocaleDateString();
+    fileInput.value = ""; // clear input
+  } else {
+    alert("Please select a file first.");
   }
 }
 
-// Default teacher
-setTeacher("anjali");
+function logout() {
+  alert("You have been logged out.");
+  window.location.href = "/"; // redirect to login page
+}
+function uploadAssignment() {
+  const fileInput = document.getElementById('fileInput');
+  const table = document.getElementById('assignmentTable');
+  
+  if (fileInput.files.length > 0) {
+    const file = fileInput.files[0];
+    const row = table.insertRow();
+    
+    row.insertCell(0).innerText = file.name;
+    row.insertCell(1).innerText = new Date().toLocaleDateString();
+    row.insertCell(2).innerHTML = `<button class="download-btn">Download</button>`;
+    
+    fileInput.value = "";
+  } else {
+    alert("Please select a file first.");
+  }
+}
 
-// Make entire card clickable
-document.querySelectorAll('.dashboard-cards .card').forEach(card => {
-  card.style.cursor = 'pointer'; // show pointer on hover
-  card.addEventListener('click', () => {
-    const link = card.getAttribute('data-link');
-    if (link) {
-      window.location.href = link;
-    }
-  });
-});
