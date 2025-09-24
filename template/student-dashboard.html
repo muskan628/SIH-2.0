@@ -15,18 +15,22 @@
 <div class="sidebar" id="sidebar">
     <h2>Menu</h2>
     <ul>
-      <li><a href="student-dashboard.html">🏠 Home</a></li>
-      <li><a href="student-notes.html">📘 Notes</a></li>
-      <li><a href="student-performance.html">📊 Performance</a></li>
-      <li><a href="student-updates">📝 Updates</a></li>
-    </ul>
+  <li><a href="{{ url_for('student_dashboard') }}">🏠 Home</a></li>
+  <li><a href="{{ url_for('student_notes') }}">📘 Notes</a></li>
+  <li><a href="{{ url_for('student_performance') }}">📊 Performance</a></li>
+  <li><a href="{{ url_for('student_updates') }}">📝 Updates</a></li>
+</ul>
+
 </div>
 
 <!-- Main Content -->
 <div class="main">
   <div class="topbar">
     <h1 id="welcomeMsg">Welcome, Muskan 👋</h1>
-    <button class="logout-btn">Logout</button>
+    <button onclick="window.location.href='{{ url_for('logout') }}'" class="logout-btn">
+  Logout
+</button>
+
   </div>
 
   <!-- Cards -->

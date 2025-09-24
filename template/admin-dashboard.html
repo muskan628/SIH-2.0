@@ -12,16 +12,19 @@
 <div class="sidebar" id="sidebar">
   <h2>Menu</h2>
   <div class="menu">
-    <a href="/template/mst-exam.html">Upload Exam</a>
-    <a href="/template/quiz-exam.html">Quiz</a>
-    <a href="/template/student-record.html">Student Records</a>
-    <a href="/template/admin-attendance.html">Attendance</a>
+    <a href="{{ url_for('mst_exam') }}">Upload Exam</a>
+<a href="{{ url_for('quiz_exam') }}">Quiz</a>
+<a href="{{ url_for('student_record') }}">Student Records</a>
+<a href="{{ url_for('admin_attendance') }}">Attendance</a>
+
   </div>
 </div>
 
 <!-- Main -->
 <div class="main">
-  <button class="logout-btn" onclick="logout()">Logout</button>
+  <button class="logout-btn" onclick="window.location.href='{{ url_for('logout') }}'">
+  Logout
+</button>
   <div class="welcome">👋 Welcome, Teacher</div>
 
   <!-- Teacher Profile -->

@@ -4,14 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # --- App Configuration ---
-<<<<<<< HEAD
-app = Flask(__name__, template_folder=r"D:\Users\Madaan INFOTECH\OneDrive\Documents\GitHub\SIH-2.0\template")
-=======
+app = Flask(__name__, template_folder=r"C:\xampp\htdocs\SIH-2.0\template")
 
-
-app = Flask(__name__, template_folder=r"D:\xampp\htdocs\SIH-2.0\template")
-
->>>>>>> 1d2d42ba890cb719b01a4cfe3b284410af9f7385
 
 
 # Use an environment variable for the secret key in production
@@ -19,7 +13,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "a_hard_to_guess_default_secret_ke
 
 # --- Database Configuration ---
 # Format: postgresql://user:password@host:port/dbname
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:shabadchahal@localhost:5432/testdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2004@localhost:5432/testdb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -152,6 +146,62 @@ def register():
         return redirect(url_for("login"))
 
     return render_template("register.html")
+
+@app.route("/student/notes")
+def student_notes():
+    if "user_id" not in session or session.get("role") != "student":
+        flash("You must be logged in as a student to view this page.", "warning")
+        return redirect(url_for("login"))
+    return render_template("student-notes.html")
+
+
+@app.route("/student/performance")
+def student_performance():
+    if "user_id" not in session or session.get("role") != "student":
+        flash("You must be logged in as a student to view this page.", "warning")
+        return redirect(url_for("login"))
+    return render_template("student-performance.html")
+
+
+@app.route("/student/updates")
+def student_updates():
+    if "user_id" not in session or session.get("role") != "student":
+        flash("You must be logged in as a student to view this page.", "warning")
+        return redirect(url_for("login"))
+    return render_template("student-exam.html")
+
+
+@app.route("/admin/mst-exam")
+def mst_exam():
+    if "user_id" not in session or session.get("role") != "admin":
+        flash("You must be logged in as an admin to view this page.", "warning")
+        return redirect(url_for("login"))
+    return render_template("mst-exam.html")
+
+
+@app.route("/admin/quiz-exam")
+def quiz_exam():
+    if "user_id" not in session or session.get("role") != "admin":
+        flash("You must be logged in as an admin to view this page.", "warning")
+        return redirect(url_for("login"))
+    return render_template("quiz-exam.html")
+
+
+@app.route("/admin/student-record")
+def student_record():
+    if "user_id" not in session or session.get("role") != "admin":
+        flash("You must be logged in as an admin to view this page.", "warning")
+        return redirect(url_for("login"))
+    return render_template("student-record.html")
+
+
+@app.route("/admin/attendance")
+def admin_attendance():
+    if "user_id" not in session or session.get("role") != "admin":
+        flash("You must be logged in as an admin to view this page.", "warning")
+        return redirect(url_for("login"))
+    return render_template("admin-attendance.html")
+
 
 
 
