@@ -4,10 +4,14 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # --- App Configuration ---
+<<<<<<< HEAD
+app = Flask(__name__, template_folder=r"D:\Users\Madaan INFOTECH\OneDrive\Documents\GitHub\SIH-2.0\template")
+=======
 
 
 app = Flask(__name__, template_folder=r"D:\xampp\htdocs\SIH-2.0\template")
 
+>>>>>>> 1d2d42ba890cb719b01a4cfe3b284410af9f7385
 
 
 # Use an environment variable for the secret key in production
@@ -15,7 +19,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "a_hard_to_guess_default_secret_ke
 
 # --- Database Configuration ---
 # Format: postgresql://user:password@host:port/dbname
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost:5432/testdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:shabadchahal@localhost:5432/testdb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
