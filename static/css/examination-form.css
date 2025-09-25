@@ -222,15 +222,13 @@ table textarea {
     display: none;
   }
 }
-/* Main Content */
 .main {
   flex: 1;
-  margin-left: 220px;      
-  padding: 25px 30px;
   display: flex;
-  justify-content: center;   
-  align-items: center;       
-  min-height: calc(100vh - 60px); 
+  justify-content: center;
+  align-items: center;
+  padding: 40px 40px;
+  margin-top: 80px;  /* push below navbar */
 }
 
 .form-container {
@@ -243,27 +241,32 @@ table textarea {
   width: 100%;
 }
 
-/* Topbar Layout */
-.topbar {
-  display: flex;
-  justify-content: space-between; /* Push text left, button right */
-  align-items: center;
+/* Header / Navbar */
+.navbar {
+  position: fixed;         /* stays on top */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
   background: #f5f7ff;
-  padding: 15px 25px;
-  border-radius: 0 0 12px 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 25px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  z-index: 1000;
 }
 
-/* Center title */
-.topbar h1 {
-  flex: 1;              /* Take available space */
-  text-align: center;   /* Center text */
+.navbar h1 {
+  margin: 0;
   font-size: 22px;
   font-weight: bold;
   color: #1a237e;
-  margin: 0;
+  flex: 1;
+  text-align: center;
 }
+
+
 
 /* Logout Button */
 .logout-btn {

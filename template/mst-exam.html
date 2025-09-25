@@ -10,16 +10,13 @@
 
 </head>
 <body>
-
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
+<div class="sidebar">
   <h2>Menu</h2>
-  <ul>
-    <a href="{{ url_for('mst_exam') }}">Upload Exam</a>
-<a href="{{ url_for('quiz_exam') }}">Quiz</a>
-<a href="{{ url_for('student_record') }}">Student Records</a>
-<a href="{{ url_for('admin_attendance') }}">Attendance</a>
-
+  <ul class="menu">
+    <li><a href="/template/mst-exam.html" class="active">Upload Exam</a></li>
+    <li><a href="/template/quiz-exam.html">Quiz</a></li>
+    <li><a href="/template/student-record.html">Student Records</a></li>
+    <li><a href="/template/attendance.html">Attendance</a></li>
   </ul>
 </div>
 
