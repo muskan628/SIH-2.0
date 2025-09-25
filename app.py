@@ -106,7 +106,6 @@ def initial_setup():
     if not User.query.filter_by(username="admin").first():
         print("Creating default admin user...")
         # Hash the password before storing it
-<<<<<<< HEAD
         hashed_password_admin = generate_password_hash("1234")
         admin = User(
             role="admin",
@@ -114,10 +113,6 @@ def initial_setup():
             email="admin@example.com",
             password=hashed_password_admin,
         )
-=======
-        hashed_password_admin = generate_password_hash("shabadchahal")
-        admin = User(role="admin", username="admin", password=hashed_password_admin)
->>>>>>> 49b466daba32619f1a8f9d75b07e392392d2a76c
         db.session.add(admin)
 
     # Check if the default student user exists
