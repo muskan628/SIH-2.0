@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # --- App Configuration ---
-app = Flask(__name__, template_folder=r"C:\xampp\htdocs\SIH-2.0\template")
+app = Flask(__name__, template_folder=r"D:\Users\Madaan INFOTECH\OneDrive\Documents\GitHub\SIH-2.0\template")
 
 
 
@@ -38,7 +38,7 @@ def initial_setup():
     if not User.query.filter_by(username="admin").first():
         print("Creating default admin user...")
         # Hash the password before storing it
-        hashed_password_admin = generate_password_hash("1234")
+        hashed_password_admin = generate_password_hash("shabadchahal")
         admin = User(role="admin", username="admin", password=hashed_password_admin)
         db.session.add(admin)
 
