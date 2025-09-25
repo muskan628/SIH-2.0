@@ -11,10 +11,11 @@
   <!-- Main content -->
   <div class="navbar">
     <h1>Examination Form</h1>
-    <button class="logout-btn">Logout</button>
+    <button class="logout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
   </div>
 <div class="main">
   <div class="form-container">
+    <form id="examinationForm">
      <!-- Top Info -->
       <div class="top-info">
         <div><label>Form Number</label><input type="text" name="formNumber"></div>
@@ -123,6 +124,7 @@
       </div>
 
       <button type="submit" class="btn">Submit Form</button>
+    </form>
     </div>
   </div>
   </div>
@@ -132,6 +134,31 @@
   const sidebar = document.getElementById('sidebar');
   menuToggle.addEventListener('click', () => {
     sidebar.classList.toggle('show');
+  });
+
+  document.getElementById('examinationForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const payload = {};
+    form.querySelectorAll('input, textarea, select').forEach((el, idx) => {
+      const key = el.name && el.name.trim() ? el.name : `field_${idx}`;
+      payload[key] = el.value;
+    });
+    try {
+      const res = await fetch('/api/examination-form', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.ok) {
+        alert('Examination form saved (ID: ' + data.id + ')');
+      } else {
+        alert('Save failed: ' + (data.error || 'Unknown error'));
+      }
+    } catch (err) {
+      alert('Network error: ' + err.message);
+    }
   });
 </script>
 </body>

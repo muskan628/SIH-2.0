@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>quiz-exam</title>
 <link rel="stylesheet" href="/static/css/quiz-exam.css">
-<script source="/static/js/quiz-exam.js"> </script>
+<script src="/static/js/quiz-exam.js"></script>
 
 </head>
 <body>
@@ -13,17 +13,17 @@
 <div class="sidebar">
   <h2>Menu</h2>
   <ul>
-       <li><a href="/template/mst-exam.html">Upload Exam</a> </li>  
-    <li><a href="/template/quiz-exam.html">Quiz</a></li>
-    <li><a href="/template/student-record.html">Student Record</a></li>
-    <li><a href="/template/admin-attendace.html">Attendance</a></li>
+    <li><a href="{{ url_for('mst_exam') }}">Upload Exam</a></li>
+    <li><a href="{{ url_for('quiz_exam') }}" class="active">Quiz</a></li>
+    <li><a href="{{ url_for('student_record') }}">Student Record</a></li>
+    <li><a href="{{ url_for('admin_attendance') }}">Attendance</a></li>
   </ul>
 </div>
 
 <div class="main">
   <div class="topbar">
     <h1>Quick Quiz</h1>
-    <button class="logout-btn">Logout</button>
+    <button class="logout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
   </div>
 
   <div class="quiz-container">
