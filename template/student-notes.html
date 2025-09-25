@@ -4,125 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Notes Dashboard</title>
-<style>
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  display: flex;
-  background: #f0f4f8;
-  color: #333;
-  transition: all 0.3s;
-}
-
-/* Sidebar */
-.sidebar {
-  width: 250px;
-  background: #1e3a8a;
-  color: white;
-  height: 100vh;
-  padding: 20px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  transition: transform 0.3s ease-in-out;
-}
-.sidebar h2 { text-align: center; margin-bottom: 20px; font-weight: 600; }
-.sidebar ul { list-style: none; padding: 0; }
-.sidebar ul li { margin: 15px 0; }
-.sidebar ul li a {
-  color: white;
-  text-decoration: none;
-  display: block;
-  padding: 8px;
-  border-radius: 5px;
-  transition: 0.3s;
-}
-.sidebar ul li a:hover { background: #2563eb; }
-
-/* Main content */
-.main {
-  flex: 1;
-  margin-left: 250px;
-  padding: 20px;
-  transition: margin-left 0.3s ease-in-out;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* Hamburger */
-.hamburger {
-  display: none;
-  font-size: 28px;
-  cursor: pointer;
-  color: #1e3a8a;
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  z-index: 1000;
-}
-
-/* Topbar */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  max-width: 800px;
-  margin-bottom: 20px;
-}
-.topbar h1 { margin: 0; font-size: 24px; color: #1e3a8a; }
-.logout-btn {
-  font-size: 16px;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  background: #2563eb;
-  color: white;
-  transition: background 0.3s;
-}
-.logout-btn:hover { background: #1d4ed8; }
-
-/* Notes section */
-.notes-container {
-  width: 100%;
-  max-width: 800px;
-}
-.course {
-  background: #ffffff;
-  border-radius: 10px;
-  margin-bottom: 15px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-.course-header {
-  padding: 15px 20px;
-  cursor: pointer;
-  font-weight: 600;
-  color: #1e3a8a;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.course-header:hover { background: #2563eb; color: white; }
-.course-content {
-  display: none;
-  padding: 0 20px 15px 20px;
-}
-.course-content ul { list-style: none; padding: 0; margin: 10px 0 0 0; }
-.course-content ul li {
-  padding: 8px 0;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .hamburger { display: block; }
-  .sidebar { transform: translateX(-100%); position: fixed; z-index: 100; }
-  .sidebar.active { transform: translateX(0); }
-  .main { margin-left: 0; }
-}
-</style>
+<link rel="stylesheet" href="/static/css/student-notes.css">
 </head>
 <body>
 
@@ -196,29 +78,7 @@ body {
   </div>
 </div>
 
-<script>
-// Sidebar toggle
-const sidebar = document.getElementById("sidebar");
-const hamburger = document.getElementById("hamburger");
-hamburger.addEventListener("click", () => sidebar.classList.toggle("active"));
-
-// Close sidebar when clicking outside
-document.addEventListener("click", (e) => {
-  if (window.innerWidth <= 768 && sidebar.classList.contains("active")) {
-    if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
-      sidebar.classList.remove("active");
-    }
-  }
-});
-
-// Course expand/collapse
-document.querySelectorAll('.course-header').forEach(header => {
-  header.addEventListener('click', () => {
-    const content = header.nextElementSibling;
-    content.style.display = (content.style.display === 'block') ? 'none' : 'block';
-    header.querySelector('span').textContent = (content.style.display === 'block') ? '−' : '+';
-  });
-});
+<script src="/static/js/student-notes.js">
 </script>
 
 </body>
