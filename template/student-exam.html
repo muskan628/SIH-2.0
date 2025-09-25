@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Student Exams</title>
 <link rel="stylesheet" href="/static/css/student-exam.css">
-<script source="/static/js/student-exam.js"> </script>
+<script src="/static/js/student-exam.js"></script>
 
 </head>
 <body>
@@ -17,7 +17,7 @@
   <li><a href="{{ url_for('student_dashboard') }}">🏠 Home</a></li>
   <li><a href="{{ url_for('student_notes') }}">📘 Notes</a></li>
   <li><a href="{{ url_for('student_performance') }}">📊 Performance</a></li>
-  <li><a href="{{ url_for('student_updates') }}">📝 Updates</a></li>
+  <li><a href="{{ url_for('student_updates') }}">📝 Exams</a></li>
 </ul>
 
 </div>
@@ -37,7 +37,7 @@
 
       <h2>MSD (MCQ Exam)</h2>
       <p>Attempt multiple choice questions to test your knowledge.</p>
-      <button class="exam-btn" onclick="window.location.href='mst-exam.html'">Start MST Exam</button>
+      <button class="exam-btn" onclick="window.location.href='{{ url_for('mst_exam') }}'">Start MST Exam</button>
               
 
     </div>
@@ -45,7 +45,7 @@
         
       <h2>Quiz</h2>
       <p>Take short quizzes and improve your performance score.</p>
-      <button class="exam-btn" onclick="window.location.href='quiz-exam.html'">Start Quiz</button>
+      <button class="exam-btn" onclick="window.location.href='{{ url_for('quiz_exam') }}'">Start Quiz</button>
       
     </div>
   </div>
