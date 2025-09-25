@@ -45,7 +45,7 @@ body {
 
 /* Hamburger */
 .hamburger {
-  display: none;
+   display: none;
   font-size: 28px;
   cursor: pointer;
   color: #1e3a8a;
@@ -53,6 +53,7 @@ body {
   top: 15px;
   left: 15px;
   z-index: 1000;
+  background: #f0f4f8;
 }
 
 /* Topbar */

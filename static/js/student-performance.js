@@ -1,8 +1,8 @@
 // Sidebar toggle
-const sidebar = document.getElementById('sidebar');
-const menuToggle = document.getElementById('menuToggle');
-menuToggle.addEventListener('click', () => {
-  sidebar.classList.toggle('active');
+const sidebar = document.getElementById("sidebar");
+const menuToggle = document.getElementById("menuToggle");
+menuToggle.addEventListener("click", () => {
+  sidebar.classList.toggle("active");
 });
 
 // Example performance data
@@ -33,7 +33,7 @@ document.getElementById('quizMarks').innerText = studentPerformance.quizzes + "%
 
 // Populate marks table
 const marksTable = document.getElementById('marksTable');
-studentPerformance.marks.forEach(item=>{
+studentPerformance.marks.forEach(item => {
   const row = marksTable.insertRow();
   row.insertCell(0).innerText = item.subject;
   row.insertCell(1).innerText = item.obtained;
@@ -44,7 +44,7 @@ studentPerformance.marks.forEach(item=>{
 
 // Populate activities
 const activityList = document.getElementById('activityList');
-studentPerformance.activities.forEach(act=>{
+studentPerformance.activities.forEach(act => {
   const li = document.createElement('li');
   li.innerHTML = `<span>${act.activity}</span><strong>${act.status}</strong>`;
   activityList.appendChild(li);
@@ -56,23 +56,14 @@ new Chart(ctx, {
   type:'bar',
   data:{
     labels: studentPerformance.marks.map(m=>m.subject),
-    datasets:[{
-      label:'Marks Obtained',
-      data: studentPerformance.marks.map(m=>m.obtained),
-      backgroundColor:'#4facfe'
-    },{
-      label:'Total Marks',
-      data: studentPerformance.marks.map(m=>m.total),
-      backgroundColor:'#a0c4ff'
-    }]
+    datasets:[
+      {label:'Marks Obtained', data: studentPerformance.marks.map(m=>m.obtained), backgroundColor:'#4facfe'},
+      {label:'Total Marks', data: studentPerformance.marks.map(m=>m.total), backgroundColor:'#a0c4ff'}
+    ]
   },
   options:{
     responsive:true,
     plugins:{legend:{position:'top'}},
     scales:{y:{beginAtZero:true, max:100}}
   }
-});
-
-document.getElementById("menuToggle").addEventListener("click", function() {
-  document.getElementById("sidebar").classList.toggle("hidden");
 });
