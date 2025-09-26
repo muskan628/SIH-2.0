@@ -110,19 +110,19 @@ body {
 }
 
 /* Hamburger */
-.hamburger {
-  display: none;
+  .hamburger {
+  display: block;
   position: fixed;
   top: 15px;
   left: 15px;
-  font-size: 24px;
+  font-size: 22px;
   background: #2563eb;
   color: white;
   border: none;
   padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
-  z-index: 1100;
+  z-index: 2000; 
 }
 .hamburger:hover {
   background: #1d4ed8;
@@ -248,3 +248,25 @@ table td {
     font-size: 13px;
   }
 }
+
+/* Small screens */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px; /* hide initially */
+    width: 220px;
+    height: 100%;
+    transition: left 0.3s ease;
+    z-index: 1500;
+  }
+
+  .sidebar.active {
+    left: 0; /* show sidebar */
+  }
+
+  .main {
+    margin-left: 0;
+  }
+}
+
