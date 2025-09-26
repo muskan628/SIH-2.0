@@ -59,3 +59,23 @@ tr:hover { background: #e8eaf6; transition: 0.3s; }
   .topbar { flex-direction: column; align-items: flex-start; gap: 15px; }
   .form-wrapper { max-width: 100%; }
 }
+/* Hamburger */
+.hamburger {
+  display: none; /* hide on desktop */
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  font-size: 24px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1001;
+  transition: background 0.3s;
+}
+
+.hamburger:hover {
+  background: #1d4ed8;
+}
