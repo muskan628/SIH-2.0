@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Student Exams</title>
 <link rel="stylesheet" href="/static/css/student-exam.css">
-<script source="/static/js/student-exam.js"> </script>
-
 </head>
 <body>
 
@@ -14,45 +12,38 @@
 <div class="sidebar" id="sidebar">
   <h2>Menu</h2>
   <ul>
-  <li><a href="{{ url_for('student_dashboard') }}">🏠 Home</a></li>
-  <li><a href="{{ url_for('student_notes') }}">📘 Notes</a></li>
-  <li><a href="{{ url_for('student_performance') }}">📊 Performance</a></li>
-  <li><a href="{{ url_for('student_updates') }}">📝 Updates</a></li>
-</ul>
-
+    <li><a href="{{ url_for('student_dashboard') }}">🏠 Home</a></li>
+    <li><a href="{{ url_for('student_notes') }}">📘 Notes</a></li>
+    <li><a href="{{ url_for('student_performance') }}">📊 Performance</a></li>
+    <li><a href="{{ url_for('student_updates') }}">📝 Exams</a></li>
+  </ul>
 </div>
 
 <!-- Main Content -->
 <div class="main">
   <div class="topbar">
-    <button class="menu-toggle" id="menuToggle">☰</button>
+    <button class="hamburger" id="hamburger">☰</button>
     <h1>Exams & Quizzes 📚</h1>
     <button class="logout-btn">Logout</button>
   </div>
 
-  <h2>Select Your Exam Type</h2>
-  <div class="exam-options">
-  
-    <div class="exam-card">
-
-      <h2>MSD (MCQ Exam)</h2>
+  <!-- Exam Cards -->
+  <div class="cards">
+    <div class="card">
+      <h3>MST (MCQ Exam)</h3>
       <p>Attempt multiple choice questions to test your knowledge.</p>
-      <button class="exam-btn" onclick="window.location.href='mst-exam.html'">Start MST Exam</button>
-              
-
+      <button class="logout-btn" onclick="window.location.href='{{ url_for('mst_exam') }}'">Start</button>
     </div>
-    <div class="exam-card">
-        
-      <h2>Quiz</h2>
+    <div class="card">
+      <h3>Quiz</h3>
       <p>Take short quizzes and improve your performance score.</p>
-      <button class="exam-btn" onclick="window.location.href='quiz-exam.html'">Start Quiz</button>
-      
+      <button class="logout-btn" onclick="window.location.href='{{ url_for('quiz_exam') }}'">Start</button>
     </div>
   </div>
 </div>
 
-
-
+<script src="/static/js/student-exam.js">
+</script>
 
 </body>
 </html>

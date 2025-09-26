@@ -1,62 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Performance</title>
-  <link rel="stylesheet" href="/static/css/student-dashboard.css">
-  <link rel="stylesheet" href="/static/css/student-performance.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Performance Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="/static/css/student-performance.css">
 </head>
 <body>
 
-    <!-- Sidebar -->
-  <div class="sidebar" id="sidebar">
-    <h2>Menu</h2>
-    <ul>
-  <li><a href="{{ url_for('student_dashboard') }}">🏠 Home</a></li>
-  <li><a href="{{ url_for('student_notes') }}">📘 Notes</a></li>
-  <li><a href="{{ url_for('student_performance') }}">📊 Performance</a></li>
-  <li><a href="{{ url_for('student_updates') }}">📝 Updates</a></li>
-</ul>
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <h2>Menu</h2>
+  <ul>
+    <li><a href="{{ url_for('student_dashboard') }}">🏠 Home</a></li>
+    <li><a href="{{ url_for('student_notes') }}">📘 Notes</a></li>
+    <li><a href="{{ url_for('student_performance') }}">📊 Performance</a></li>
+    <li><a href="{{ url_for('student_updates') }}">📝 Exams</a></li>
+  </ul>
+</div>
 
+<!-- Main Content -->
+<div class="main">
+  <div class="topbar">
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <h1 id="welcomeMsg">Student Performance 👋</h1>
+    <button class="logout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
   </div>
 
-  <!-- Main Content -->
-  <div class="main">
-    <div class="topbar">
-      <button class="menu-toggle" id="menuToggle">☰</button>
-      <h1 id="welcomeMsg">Student Performance 👋</h1>
-      <button class="logout-btn">Logout</button>
-    </div>
-
-    <!-- Performance Cards -->
-    <div class="cards">
-      <div class="card"><h3>Overall Marks</h3><p id="overallMarks">0%</p></div>
-      <div class="card"><h3>Assignments</h3><p id="assignmentMarks">0%</p></div>
-      <div class="card"><h3>Quizzes</h3><p id="quizMarks">0%</p></div>
-      <div class="card"><h3>Attendance</h3><p id="attendanceCard">0%</p></div>
-    </div>
-
-    <!-- Marks Table -->
-    <h3>Subject-wise Marks</h3>
-    <table id="marksTable">
-      <tr><th>Subject</th><th>Marks Obtained</th><th>Total Marks</th><th>Grade</th><th>Date</th></tr>
-    </table>
-
-    <!-- Chart -->
-    <div class="chart-container">
-      <canvas id="performanceChart"></canvas>
-    </div>
-
-    <!-- Activities -->
-    <div class="activities">
-      <h3>Other Activities</h3>
-      <ul id="activityList"></ul>
-    </div>
+  <!-- Performance Cards -->
+  <div class="cards">
+    <div class="card"><h3>Overall Marks</h3><p id="overallMarks">0%</p></div>
+    <div class="card"><h3>Assignments</h3><p id="assignmentMarks">0%</p></div>
+    <div class="card"><h3>Quizzes</h3><p id="quizMarks">0%</p></div>
+    <div class="card"><h3>Attendance</h3><p id="attendanceCard">0%</p></div>
   </div>
 
-  <!-- JS File -->
-  <script src="/static/js/student-performance.js"></script>
+  <!-- Marks Table -->
+  <h3>Subject-wise Marks</h3>
+  <table id="marksTable">
+    <tr><th>Subject</th><th>Marks Obtained</th><th>Total Marks</th><th>Grade</th><th>Date</th></tr>
+  </table>
+
+  <!-- Chart -->
+  <div class="chart-container">
+    <canvas id="performanceChart"></canvas>
+  </div>
+
+  <!-- Activities -->
+  <div class="activities">
+    <h3>Other Activities</h3>
+    <ul id="activityList"></ul>
+  </div>
+</div>
+
+<script src="/static/js/student-performance.js">
+</script>
 </body>
 </html>
