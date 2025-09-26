@@ -21,7 +21,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "a_hard_to_guess_default_secret_ke
 
 # --- Database Configuration ---
 # Format: postgresql://user:password@host:port/dbname
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost:5432/testdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2004@localhost:5432/testdb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 def generate_temp_id() -> str:
@@ -45,20 +45,20 @@ class User(db.Model):
     permanent_id = db.Column(db.String(32), unique=True, nullable=True)
 
 class StudentRegistration(db.Model):
-    __tablename__ = "registration_students"
+    _tablename_ = "registration_students"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)    
 
-    def __repr__(self):
+    def _repr_(self):
         return f'<User {self.username}>'
 
 
 # --- Domain Models ---
 class MSTExam(db.Model):
-    __tablename__ = "mst_exams"
+    _tablename_ = "mst_exams"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=True)
     config = db.Column(JSON, nullable=True)  # questions, timing etc.
@@ -67,7 +67,7 @@ class MSTExam(db.Model):
 
 
 class QuizExam(db.Model):
-    __tablename__ = "quiz_exams"
+    _tablename_ = "quiz_exams"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=True)
     config = db.Column(JSON, nullable=True)
@@ -76,7 +76,7 @@ class QuizExam(db.Model):
 
 
 class MentorForm(db.Model):
-    __tablename__ = "mentor_forms"
+    _tablename_ = "mentor_forms"
     id = db.Column(db.Integer, primary_key=True)
     teacher_name = db.Column(db.String(120), nullable=True)
     department = db.Column(db.String(120), nullable=True)
@@ -86,7 +86,7 @@ class MentorForm(db.Model):
 
 
 class ExaminationForm(db.Model):
-    __tablename__ = "examination_forms"
+    _tablename_ = "examination_forms"
     id = db.Column(db.Integer, primary_key=True)
     form_number = db.Column(db.String(50), nullable=True)
     auid = db.Column(db.String(50), nullable=True)
@@ -95,6 +95,29 @@ class ExaminationForm(db.Model):
     email = db.Column(db.String(120), nullable=True)
     data = db.Column(JSON, nullable=True)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
+
+
+# Attendance for linking to performance
+class Attendance(db.Model):
+    __tablename__ = "attendance"
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    student_name = db.Column(db.String(120), nullable=True)
+    uid = db.Column(db.String(64), nullable=True)
+    date = db.Column(db.Date, nullable=False)
+    status = db.Column(db.String(10), nullable=False)  # Present/Absent
+    subject = db.Column(db.String(120), nullable=True)
+    class_name = db.Column(db.String(120), nullable=True)
+    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+
+# Simple feature flags to unlock forms for students
+class FeatureFlag(db.Model):
+    __tablename__ = "feature_flags"
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(64), unique=True, nullable=False)  # e.g., mentor_form, examination_form
+    is_unlocked = db.Column(db.Boolean, nullable=False, default=False)
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
 
@@ -300,6 +323,30 @@ def student_performance():
     return render_template("student-performance.html")
 
 
+@app.route("/api/performance", methods=["GET"])
+def api_performance():
+    if "user_id" not in session or session.get("role") != "student":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    user = User.query.get(session["user_id"])
+    # Attendance percentage from attendance table
+    uid_candidates = [user.permanent_id, user.temp_id, user.username]
+    q = Attendance.query.filter(Attendance.uid.in_(uid_candidates))
+    total = q.count()
+    present = q.filter_by(status="Present").count()
+    attendance_pct = int((present / total) * 100) if total else 0
+    # Placeholder aggregates for assignments/quizzes until detailed schemas exist
+    data = {
+        "ok": True,
+        "overall": attendance_pct,  # simplistic overall until marks integrated
+        "attendance": attendance_pct,
+        "assignments": 0,
+        "quizzes": 0,
+        "marks": [],
+        "activities": []
+    }
+    return jsonify(data)
+
+
 @app.route("/student/updates")
 def student_updates():
     if "user_id" not in session or session.get("role") != "student":
@@ -340,6 +387,114 @@ def admin_attendance():
     return render_template("admin-attendance.html")
 
 
+# --- Feature Flags & Unlocks ---
+@app.route("/api/feature-flags", methods=["GET"])
+def api_feature_flags():
+    flags = FeatureFlag.query.all()
+    return jsonify({f.key: f.is_unlocked for f in flags})
+
+
+@app.route("/api/feature-flags/<key>", methods=["POST"])
+def api_set_feature_flag(key):
+    if "user_id" not in session or session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    payload = request.get_json(silent=True) or {}
+    is_unlocked = bool(payload.get("is_unlocked", False))
+    flag = FeatureFlag.query.filter_by(key=key).first()
+    if not flag:
+        flag = FeatureFlag(key=key, is_unlocked=is_unlocked)
+        db.session.add(flag)
+    else:
+        flag.is_unlocked = is_unlocked
+    db.session.commit()
+    return jsonify({"ok": True, "key": key, "is_unlocked": flag.is_unlocked})
+
+
+# --- Attendance APIs ---
+@app.route("/api/attendance", methods=["POST"])
+def api_save_attendance():
+    if "user_id" not in session or session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    payload = request.get_json(silent=True) or {}
+    class_name = payload.get("class_name")
+    date_str = payload.get("date")
+    subject = payload.get("subject")
+    students = payload.get("students", [])
+    try:
+        from datetime import datetime
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
+    except Exception:
+        return jsonify({"ok": False, "error": "Invalid date"}), 400
+    created = []
+    for s in students:
+        rec = Attendance(
+            student_id=None,
+            student_name=s.get("name"),
+            uid=s.get("uid"),
+            date=date_obj,
+            status=s.get("status", "Absent"),
+            subject=subject,
+            class_name=class_name,
+        )
+        db.session.add(rec)
+        created.append(s.get("uid"))
+    db.session.commit()
+    return jsonify({"ok": True, "saved": len(created)})
+
+
+@app.route("/api/attendance/me", methods=["GET"])
+def api_my_attendance():
+    if "user_id" not in session or session.get("role") != "student":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    user = User.query.get(session["user_id"])
+    # Match by permanent_id or temp_id in uid if used; fallback by email/username if needed
+    uid_candidates = [user.permanent_id, user.temp_id, user.username]
+    items = Attendance.query.filter(Attendance.uid.in_(uid_candidates)).all()
+    return jsonify({
+        "ok": True,
+        "items": [
+            {
+                "date": str(it.date),
+                "status": it.status,
+                "subject": it.subject,
+                "class_name": it.class_name
+            } for it in items
+        ]
+    })
+
+
+# --- Exams visibility and listing ---
+@app.route("/api/exams", methods=["GET"])
+def api_exams():
+    # Students see exams when unlocked; admins see always
+    role = session.get("role")
+    mst = MSTExam.query.order_by(MSTExam.created_at.desc()).all()
+    quiz = QuizExam.query.order_by(QuizExam.created_at.desc()).all()
+    flags = {f.key: f.is_unlocked for f in FeatureFlag.query.all()}
+    mst_unlocked = flags.get("mst_exam", True if role == "admin" else False)
+    quiz_unlocked = flags.get("quiz_exam", True if role == "admin" else False)
+    def exam_to_dict(x):
+        return {"id": x.id, "title": x.title, "created_at": str(x.created_at)}
+    return jsonify({
+        "ok": True,
+        "mst_unlocked": mst_unlocked,
+        "quiz_unlocked": quiz_unlocked,
+        "mst": [exam_to_dict(x) for x in mst],
+        "quiz": [exam_to_dict(x) for x in quiz],
+    })
+
+
+# --- Mentor/Examination forms visibility for students ---
+@app.route("/api/forms/visibility", methods=["GET"])
+def api_forms_visibility():
+    flags = {f.key: f.is_unlocked for f in FeatureFlag.query.all()}
+    return jsonify({
+        "ok": True,
+        "mentor_form": flags.get("mentor_form", False),
+        "examination_form": flags.get("examination_form", False)
+    })
+
+
 @app.route("/admin/examination-form")
 def examination_form():
     if "user_id" not in session or session.get("role") != "admin":
@@ -356,15 +511,47 @@ def mentor_form():
     return render_template("mentor-form.html")
 
 
+# Student-accessible forms if unlocked
+@app.route("/student/examination-form")
+def student_examination_form():
+    if "user_id" not in session or session.get("role") != "student":
+        flash("You must be logged in as a student to view this page.", "warning")
+        return redirect(url_for("login"))
+    flag = FeatureFlag.query.filter_by(key="examination_form").first()
+    if not (flag and flag.is_unlocked):
+        flash("Examination form is currently locked.", "warning")
+        return redirect(url_for("student_updates"))
+    return render_template("examination-form.html")
+
+
+@app.route("/student/mentor-form")
+def student_mentor_form():
+    if "user_id" not in session or session.get("role") != "student":
+        flash("You must be logged in as a student to view this page.", "warning")
+        return redirect(url_for("login"))
+    flag = FeatureFlag.query.filter_by(key="mentor_form").first()
+    if not (flag and flag.is_unlocked):
+        flash("Mentor form is currently locked.", "warning")
+        return redirect(url_for("student_updates"))
+    return render_template("mentor-form.html")
+
+
 # --- Form Submission APIs ---
 @app.route("/api/mentor-form", methods=["POST"])
 def api_mentor_form():
-    if "user_id" not in session or session.get("role") != "admin":
+    if "user_id" not in session:
         return jsonify({"ok": False, "error": "Unauthorized"}), 401
+
+    role = session.get("role")
+    # Allow admin always; allow student only if unlocked
+    if role == "student":
+        flag = FeatureFlag.query.filter_by(key="mentor_form").first()
+        if not (flag and flag.is_unlocked):
+            return jsonify({"ok": False, "error": "Mentor form locked"}), 403
 
     payload = request.get_json(silent=True) or {}
     record = MentorForm(
-        teacher_name=session.get("username"),
+        teacher_name=session.get("username") if role == "admin" else None,
         department=payload.get("department"),
         data=payload,
     )
@@ -375,8 +562,15 @@ def api_mentor_form():
 
 @app.route("/api/examination-form", methods=["POST"])
 def api_examination_form():
-    if "user_id" not in session or session.get("role") != "admin":
+    if "user_id" not in session:
         return jsonify({"ok": False, "error": "Unauthorized"}), 401
+
+    role = session.get("role")
+    # Allow admin always; allow student only if unlocked
+    if role == "student":
+        flag = FeatureFlag.query.filter_by(key="examination_form").first()
+        if not (flag and flag.is_unlocked):
+            return jsonify({"ok": False, "error": "Examination form locked"}), 403
 
     payload = request.get_json(silent=True) or {}
     record = ExaminationForm(
