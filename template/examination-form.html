@@ -18,8 +18,8 @@
     <form id="examinationForm">
      <!-- Top Info -->
       <div class="top-info">
-        <div><label>Form Number</label><input type="text" name="formNumber" required></div>
-        <div><label>AUID / Roll No</label><input type="text" name="auid" required></div>
+        <div><label>Form Number</label><input type="number" name="formNumber" required></div>
+        <div><label>AUID / Roll No</label><input type="number" name="auid" required></div>
         <div><label>Date</label><input type="date" name="date" required></div>
         <div><label>Programme</label><input type="text" name="programme" required></div>
         <div><label>Class</label><input type="text" name="class" required></div>
@@ -29,16 +29,16 @@
       <!-- Candidate Info -->
       <h3>Candidate Details</h3>
       <div class="candidate-info">
-        <div><label>Candidate's Name</label><input type="text" name="candidateName"></div>
-        <div><label>Father's Name</label><input type="text" name="fatherName"></div>
-        <div><label>Mother's Name</label><input type="text" name="motherName"></div>
+        <div><label>Candidate's Name</label><input type="text" name="candidateName" required></div>
+        <div><label>Father's Name</label><input type="text" name="fatherName" required></div>
+        <div><label>Mother's Name</label><input type="text" name="motherName" required></div>
       </div>
       <div class="candidate-info">
-        <div style="flex:1 1 100%;"><label>Present Address</label><textarea name="address" rows="2"></textarea></div>
+        <div style="flex:1 1 100%;"><label>Present Address</label><textarea name="address" rows="2" required></textarea></div>
       </div>
       <div class="candidate-info">
-        <div><label>Mobile Number</label><input type="text" name="mobile"></div>
-        <div><label>Email</label><input type="email" name="email"></div>
+        <div><label>Mobile Number</label><input type="number" name="mobile" required></div>
+        <div><label>Email</label><input type="email" name="email" required></div>
       </div>
 
       <!-- Courses Table -->
