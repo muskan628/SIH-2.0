@@ -45,20 +45,20 @@ class User(db.Model):
     permanent_id = db.Column(db.String(32), unique=True, nullable=True)
 
 class StudentRegistration(db.Model):
-    __tablename__ = "registration_students"
+    _tablename_ = "registration_students"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)    
 
-    def __repr__(self):
+    def _repr_(self):
         return f'<User {self.username}>'
 
 
 # --- Domain Models ---
 class MSTExam(db.Model):
-    __tablename__ = "mst_exams"
+    _tablename_ = "mst_exams"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=True)
     config = db.Column(JSON, nullable=True)  # questions, timing etc.
@@ -67,7 +67,7 @@ class MSTExam(db.Model):
 
 
 class QuizExam(db.Model):
-    __tablename__ = "quiz_exams"
+    _tablename_ = "quiz_exams"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=True)
     config = db.Column(JSON, nullable=True)
@@ -76,7 +76,7 @@ class QuizExam(db.Model):
 
 
 class MentorForm(db.Model):
-    __tablename__ = "mentor_forms"
+    _tablename_ = "mentor_forms"
     id = db.Column(db.Integer, primary_key=True)
     teacher_name = db.Column(db.String(120), nullable=True)
     department = db.Column(db.String(120), nullable=True)
@@ -86,7 +86,7 @@ class MentorForm(db.Model):
 
 
 class ExaminationForm(db.Model):
-    __tablename__ = "examination_forms"
+    _tablename_ = "examination_forms"
     id = db.Column(db.Integer, primary_key=True)
     form_number = db.Column(db.String(50), nullable=True)
     auid = db.Column(db.String(50), nullable=True)
