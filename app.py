@@ -10,9 +10,8 @@ import uuid
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(
     __name__,
-    template_folder=os.path.join(basedir, "template"),
-    static_folder=os.path.join(basedir, "static"),
-)
+    template_folder=r"D:\Users\Madaan INFOTECH\OneDrive\Documents\GitHub\SIH-2.0\template")
+
 
 
 
@@ -22,6 +21,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "a_hard_to_guess_default_secret_ke
 # --- Database Configuration ---
 # Format: postgresql://user:password@host:port/dbname
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost:5432/testdb'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 def generate_temp_id() -> str:
@@ -129,7 +129,7 @@ def initial_setup():
     if not User.query.filter_by(username="admin").first():
         print("Creating default admin user...")
         # Hash the password before storing it
-        hashed_password_admin = generate_password_hash("1234")
+        hashed_password_admin = generate_password_hash("shabadchahal")
         admin = User(
             role="admin",
             username="admin",
@@ -141,7 +141,7 @@ def initial_setup():
     # Check if the default student user exists
     if not User.query.filter_by(username="nitin").first():
         print("Creating default student user...")
-        hashed_password_student = generate_password_hash("1234")
+        hashed_password_student = generate_password_hash("shabadchahal")
         # Assign temp/permanent IDs for default student
         student = User(
             role="student",
