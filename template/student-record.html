@@ -8,6 +8,23 @@
 </head>
 <body>
 
+<body>
+
+<!-- Hamburger -->
+<button class="hamburger" onclick="toggleSidebar()">☰</button>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <h2>Menu</h2>
+  <ul>
+   <li><a href="{{ url_for('admin_home') }}">🏠 Home</a></li>
+    <li><a href="{{ url_for('mst_exam') }}">📤 Upload Exam</a></li>
+    <li><a href="{{ url_for('quiz_exam') }}">📤 Upload Notes</a></li>
+    <li><a href="{{ url_for('student_record') }}">🎓 Student Records</a></li>
+    <li><a href="{{ url_for('admin_attendance') }}">📋 Attendance</a></li>
+  </ul>
+</div>
+
 <!-- Main Content -->
 <div class="main">
   <div class="topbar">
@@ -15,15 +32,6 @@
     <button class="logout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
   </div>
 
-  <!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-    <h2>Menu</h2>
-    <ul>
-  <li><a href="{{ url_for('student_dashboard') }}">🏠 Home</a></li>
-  <li><a href="{{ url_for('student_notes') }}">📘 Notes</a></li>
-  <li><a href="{{ url_for('student_performance') }}">📊 Performance</a></li>
-  <li><a href="{{ url_for('student_updates') }}">📝 Updates</a></li>
-</ul>
   <!-- Controls -->
   <div class="controls">
     <input type="text" id="searchInput" placeholder="🔎 Search by Name or Roll No">
@@ -52,6 +60,12 @@
     <tbody></tbody>
   </table>
 </div>
+
+<script>
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("active");
+}
+</script>
 
 <script src="/static/js/student-record.js"></script>
 </body>
