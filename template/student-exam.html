@@ -39,6 +39,16 @@
       <p>Take short quizzes and improve your performance score.</p>
       <button class="logout-btn" onclick="window.location.href='{{ url_for('quiz_exam') }}'">Start</button>
     </div>
+    <div class="card">
+      <h3>Mentor Form</h3>
+      <p>Fill your mentor interaction form when enabled by admin.</p>
+      <button class="logout-btn" onclick="window.location.href='{{ url_for('student_mentor_form') }}'">Open</button>
+    </div>
+    <div class="card">
+      <h3>Examination Form</h3>
+      <p>Submit exam application when enabled by admin.</p>
+      <button class="logout-btn" onclick="window.location.href='{{ url_for('student_examination_form') }}'">Open</button>
+    </div>
   </div>
 </div>
 
