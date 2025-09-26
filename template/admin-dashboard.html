@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="/static/css/admin-dashboard.css">
 </head>
 <body>
+  <button id="goStudent" class="exam-btn">Go to Student Dashboard</button>
+
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
   <h2>Menu</h2>
@@ -18,9 +20,6 @@
     <li><a href="{{ url_for('admin_attendance') }}"><i class="fas fa-calendar-check"></i> Attendance</a></li>
   </ul>
 </div>
-
-<!-- Font Awesome CDN -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 
 <!-- Main -->
@@ -43,6 +42,9 @@
   </div>
 
 <!-- Assignments -->
+ <input type="text" id="attendanceInput" placeholder="Enter attendance">
+<button onclick="uploadAttendance()">Upload</button>
+
 <div class="section" id="assignments">
   <h2>📂 Upload Assignments</h2>
   <div class="upload-box">
@@ -108,7 +110,7 @@
     Teacher Dashboard &copy; 2025
   </footer>
 </div>
-
 <script src="/static/js/admin-dashboard.js"></script>
+<script src="/static/js/dashboard.js"></script>
 </body>
 </html>

@@ -46,3 +46,4 @@ async function loadStudentData() {
 
 // Page load par data fetch karo
 document.addEventListener("DOMContentLoaded", loadStudentData);
+
