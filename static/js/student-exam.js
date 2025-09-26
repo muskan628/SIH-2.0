@@ -4,17 +4,17 @@ function toggleSidebar() {
 }
 
 
-// Example: Button actions
-function startExam(type){
-  if(type === 'msd'){
-    alert("Redirecting to MSD Exam...");
-    // Here you can add your link or page redirect
-    // window.location.href = "msd_exam.html";
-  }
-  else if(type === 'quiz'){
-    alert("Redirecting to Quiz...");
-    // window.location.href = "quiz_exam.html";
-  }
-}
-
-
+fetch('/api/exams')
+  .then(r=>r.json())
+  .then(data => {
+    if (!data.ok) return;
+    const cards = document.querySelectorAll('.cards .card');
+    // card[0] MST, card[1] Quiz by current template
+    if (cards[0]) {
+      cards[0].querySelector('button').disabled = !data.mst_unlocked;
+    }
+    if (cards[1]) {
+      cards[1].querySelector('button').disabled = !data.quiz_unlocked;
+    }
+  })
+  .catch(()=>{});

@@ -79,30 +79,42 @@
     const rows = document.querySelectorAll("#students tr");
     if (rows.length === 0) return;
 
-    let summaryHTML = `
-      <h3>Attendance Summary</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>UID</th><th>Name</th><th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-    `;
-
+    const students = [];
     rows.forEach(row => {
       const uid = row.cells[0].innerText;
       const name = row.cells[1].innerText;
-      const status = row.querySelector(".status").innerText || "Not Marked";
-      summaryHTML += `
-        <tr>
-          <td>${uid}</td><td>${name}</td><td>${status}</td>
-        </tr>
-      `;
+      const statusText = row.querySelector(".status").innerText || "Not Marked";
+      const status = statusText.includes("Present") ? "Present" : (statusText.includes("Absent") ? "Absent" : "Absent");
+      students.push({ uid, name, status });
     });
 
-    summaryHTML +='</tbody></table>';
-    document.getElementById("summary").innerHTML = summaryHTML;
+    const payload = {
+      class_name: document.getElementById("classTitle").innerText.replace("Class: ", ""),
+      subject: "",
+      date: new Date().toISOString().slice(0,10),
+      students
+    };
+
+    fetch('/api/attendance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(r=>r.json())
+    .then(data => {
+      if (data.ok) {
+        let summaryHTML = `
+          <h3>Attendance Saved</h3>
+          <p>Records saved: ${data.saved}</p>
+        `;
+        document.getElementById("summary").innerHTML = summaryHTML;
+      } else {
+        document.getElementById("summary").innerHTML = `<p style="color:red;">Error: ${data.error || 'Unknown error'}</p>`;
+      }
+    })
+    .catch(err => {
+      document.getElementById("summary").innerHTML = `<p style="color:red;">Network error: ${err.message}</p>`;
+    });
   }
 
   function goBack() {

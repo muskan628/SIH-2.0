@@ -2,15 +2,16 @@ body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
   display: flex;
-  background: #f0f4f8; /* body background */
+  background: #f0f4f8;
   color: #333;
   transition: all 0.3s;
+  overflow-x: hidden;
 }
 
 /* Sidebar */
 .sidebar {
   width: 200px;
-  background: #1e3a8a; /* sidebar */
+  background: #1e3a8a;
   color: white;
   height: 100vh;
   padding: 20px;
@@ -18,6 +19,7 @@ body {
   top: 0;
   left: 0;
   transition: transform 0.3s ease-in-out;
+  z-index: 1000;
 }
 .sidebar h2 { text-align: center; margin-bottom: 20px; font-weight: 600; }
 .sidebar ul { list-style: none; padding: 0; }
@@ -32,30 +34,29 @@ body {
 }
 .sidebar ul li a:hover { background: #2563eb; }
 
-/* Main content */
+/* Main */
 .main {
   flex: 1;
-  margin-left: 250px;
+  margin-left: 200px;
   padding: 20px;
   transition: margin-left 0.3s ease-in-out;
 }
 
 /* Hamburger */
 .hamburger {
-   display: none;
+  display: none;
   font-size: 28px;
   cursor: pointer;
   color: #1e3a8a;
   position: fixed;
   top: 15px;
   left: 15px;
-  z-index: 1000;
+  z-index: 1100;
   background: #f0f4f8;
   border: none;
   border-radius: 6px;
   padding: 5px 10px;
 }
-
 
 /* Topbar */
 .topbar {
@@ -71,11 +72,11 @@ body {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  background: #2563eb; /* btn color */
+  background: #2563eb;
   color: white;
   transition: background 0.3s;
 }
-.logout-btn:hover { background: #1d4ed8; } /* btn hover */
+.logout-btn:hover { background: #1d4ed8; }
 
 /* Cards */
 .cards {
@@ -133,7 +134,7 @@ body {
 }
 .student-card th { background: #1e3a8a; color: white; }
 
-/* Attendance Progress Bar */
+/* Attendance Progress */
 .progress {
   background: #e5e7eb;
   border-radius: 10px;
@@ -153,7 +154,7 @@ body {
   border-radius: 10px 0 0 10px;
 }
 
-/* Exam Schedule Table */
+/* Exam Table */
 #examTable {
   width: 100%;
   border-collapse: collapse;
@@ -169,7 +170,7 @@ body {
 /* Responsive */
 @media (max-width: 768px) {
   .hamburger { display: block; }
-  .sidebar { transform: translateX(-100%); position: fixed; z-index: 100; }
+  .sidebar { transform: translateX(-100%); }
   .sidebar.active { transform: translateX(0); }
   .main { margin-left: 0; }
   .student-info { flex-direction: column; align-items: flex-start; }

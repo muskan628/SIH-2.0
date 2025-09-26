@@ -4,8 +4,11 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Teacher Dashboard - Attendance</title>
+
+
 <link rel="stylesheet" href="/static/css/admin-attendance.css">
 <script source="/static/js/admin-attendance.js"> </script>
+
 
 
 
@@ -19,11 +22,11 @@
     <div class="brand">Smart Campus</div>
 
     <!-- Simple top-level links (no subfolders) -->
-    <a class="nav-link" href="admin-attendance.html"><span class="emoji"></span> 🏠 Home </a>
-    <a class="nav-link" href="upload_exam.html"><span class="emoji">📤</span> Upload Exam</a>
-    <a class="nav-link" href="quiz.html"><span class="emoji">📝</span> Quiz</a>
-    <a class="nav-link" href="student_records.html"><span class="emoji">🎓</span> Student Records</a>
-    <a class="nav-link" href="attendance.html"><span class="emoji">📋</span> Attendance</a>
+     <li><a href="{{ url_for('mst_exam') }}">🏠 Home</a></li>
+    <li><a href="{{ url_for('mst_exam') }}">📤 Upload Exam</a></li>
+    <li><a href="{{ url_for('quiz_exam') }}">📝 Quiz</a></li>
+    <li><a href="{{ url_for('student_record') }}">🎓 Student Records</a></li>
+    <li><a href="{{ url_for('admin_attendance') }}">📋 Attendance</a></li>
 
     <div class="sidebar-footer">Logged in as Teacher</div>
   </aside>
