@@ -8,11 +8,16 @@
 </head>
 <body>
 
+  <!-- Hamburger Button -->
+  <button class="hamburger" id="hamburger">☰</button>
+  <!-- Overlay (for mobile) -->
+  <div class="overlay" id="overlay"></div>
+
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <h2>Menu</h2>
     <ul class="menu">
-      <li><a href="/template/student-dashboard.html">🏠 Home</a></li>
+      <li><a href="/template/examination-form.html">🏠 Home</a></li>
       <li><a href="/template/student-notes.html">📘 Notes</a></li>
       <li><a href="/template/student-performance.html">📊 Performance</a></li>
       <li><a href="/template/mst-exam.html">📝 Exams</a></li>
@@ -129,6 +134,22 @@
   </div>
 
   <script>
+    // Toggle sidebar
+    const hamburger = document.getElementById("hamburger");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+
+    hamburger.addEventListener("click", () => {
+      sidebar.classList.toggle("show");
+      overlay.classList.toggle("active");
+    });
+
+    overlay.addEventListener("click", () => {
+      sidebar.classList.remove("show");
+      overlay.classList.remove("active");
+    });
+
+    // Mentor form submit
     document.getElementById('mentorForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const form = e.target;

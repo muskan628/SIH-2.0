@@ -7,20 +7,17 @@
   <link rel="stylesheet" href="/static/css/examination-form.css">
 </head>
 <body>
+  <!-- Hamburger -->
+  <button class="hamburger" id="hamburger">☰</button>
 
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="brand">Menu</div>
-
-    <a class="nav-link" href="{{ url_for('student_dashboard') }} ">🏠Home </a>
-    <a class="nav-link" href=="{{ url_for('student_notes') }}">📘 Notes</a>
+    <a class="nav-link" href="{{ url_for('student_dashboard') }}">🏠 Home</a>
+    <a class="nav-link" href="{{ url_for('student_notes') }}">📘 Notes</a>
     <a class="nav-link" href="{{ url_for('student_performance') }}">📊 Performance</a>
     <a class="nav-link" href="{{ url_for('student_updates') }}">📝 Exams</a>
-    
-
   </aside>
-
-
 
   <!-- Main content -->
   <div class="main-content">
@@ -29,7 +26,7 @@
       <button class="logout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
     </div>
 
-    <!-- Your existing form -->
+    <!-- Form -->
     <div class="form-container">
       <form id="examinationForm">
         <!-- Top Info -->
@@ -114,7 +111,6 @@
       </form>
     </div>
   </div>
-
- 
+<script src="/static/js/examination-form.js"></script>
 </body>
 </html>
