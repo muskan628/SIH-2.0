@@ -169,6 +169,30 @@ th {
 .btn-present:hover { background: #15803d; }
 .btn-absent:hover { background: #b91c1c; }
 
+/* Attendance Buttons */
+.present-btn, .absent-btn {
+  padding: 6px 12px;
+  margin: 2px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 12px;
+  transition: 0.3s;
+}
+.present-btn {
+  background: #16a34a;
+}
+.absent-btn {
+  background: #dc2626;
+}
+.present-btn:hover {
+  background: #15803d;
+}
+.absent-btn:hover {
+  background: #b91c1c;
+}
+
 .status { font-weight: bold; }
 .present { color: green; }
 .absent { color: red; }

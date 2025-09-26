@@ -27,58 +27,45 @@
 <div class="main">
   <div class="topbar">
     <h1>Notes</h1>
-    <button class="logout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
+    <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
   </div>
 
   <div class="notes-container">
-    <!-- Example courses -->
-    <div class="course">
-      <div class="course-header">BCA <span>+</span></div>
-      <div class="course-content">
-        <ul>
-          <li>Computer Networks</li>
-          <li>Database Management</li>
-          <li>Web Development</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="course">
-      <div class="course-header">BTech <span>+</span></div>
-      <div class="course-content">
-        <ul>
-          <li>Engineering Mathematics</li>
-          <li>Data Structures</li>
-          <li>Operating Systems</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="course">
-      <div class="course-header">MCA <span>+</span></div>
-      <div class="course-content">
-        <ul>
-          <li>Advanced Programming</li>
-          <li>Software Engineering</li>
-          <li>Machine Learning</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="course">
-      <div class="course-header">MTech <span>+</span></div>
-      <div class="course-content">
-        <ul>
-          <li>Research Methodology</li>
-          <li>Advanced AI</li>
-          <li>Big Data</li>
-        </ul>
-      </div>
-    </div>
+    <div id="notesList" class="course"></div>
   </div>
 </div>
 
-<script src="/static/js/student-notes.js">
+<script>
+document.getElementById("hamburger").addEventListener("click", function() {
+  document.getElementById("sidebar").classList.toggle("active");
+});
+
+async function loadNotes(){
+  try{
+    const res = await fetch('/api/notes');
+    const data = await res.json();
+    const list = document.getElementById('notesList');
+    list.innerHTML = '';
+    if(data && data.items){
+      data.items.forEach(n => {
+        const wrap = document.createElement('div');
+        wrap.className = 'course';
+        wrap.innerHTML = `
+          <div class="course-header">${n.title || 'Note'} <span>+</span></div>
+          <div class="course-content">
+            <ul>
+              <li>Subject: ${n.subject || ''}</li>
+              <li>${n.description || ''}</li>
+              ${n.file_url ? `<li><a href="${n.file_url}">Open</a></li>` : ''}
+            </ul>
+          </div>
+        `;
+        list.appendChild(wrap);
+      });
+    }
+  }catch(e){ console.error('Failed to load notes', e); }
+}
+document.addEventListener('DOMContentLoaded', loadNotes);
 </script>
 
 </body>

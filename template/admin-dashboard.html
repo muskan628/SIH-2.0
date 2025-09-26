@@ -28,7 +28,7 @@
 <div class="main">
   <div class="topbar">
     <h1>👋 Welcome, Teacher</h1>
-    <button class="logout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
+    <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
   </div>
 
   <!-- Teacher Profile -->
@@ -74,6 +74,72 @@
     <button onclick="saveUnlocks()">Save</button>
   </div>
 
+  <!-- Create Exams (MST / Quiz) -->
+  <div class="section">
+    <h2>📝 Create MST Exam</h2>
+    <div class="upload-box">
+      <input type="text" id="mstTitle" placeholder="MST Title" style="width:100%;margin:5px 0;">
+      <input type="number" id="mstDuration" placeholder="Duration (minutes)" value="30" style="width:100%;margin:5px 0;">
+      <div id="mstQuestions">
+        <h4>Questions:</h4>
+        <div class="question-item">
+          <input type="text" placeholder="Question 1" class="question-text" style="width:100%;margin:5px 0;">
+          <input type="text" placeholder="Option A" class="option" style="width:48%;margin:2px 1%;">
+          <input type="text" placeholder="Option B" class="option" style="width:48%;margin:2px 1%;">
+          <input type="text" placeholder="Option C" class="option" style="width:48%;margin:2px 1%;">
+          <input type="text" placeholder="Option D" class="option" style="width:48%;margin:2px 1%;">
+          <select class="correct-answer" style="width:100%;margin:5px 0;">
+            <option value="A">Correct Answer: A</option>
+            <option value="B">Correct Answer: B</option>
+            <option value="C">Correct Answer: C</option>
+            <option value="D">Correct Answer: D</option>
+          </select>
+        </div>
+      </div>
+      <button onclick="addMstQuestion()" style="margin:5px;">+ Add Question</button>
+      <button onclick="createMst()" style="margin:5px;">Create MST</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📝 Create Quiz</h2>
+    <div class="upload-box">
+      <input type="text" id="quizTitle" placeholder="Quiz Title" style="width:100%;margin:5px 0;">
+      <input type="number" id="quizDuration" placeholder="Duration (minutes)" value="10" style="width:100%;margin:5px 0;">
+      <div id="quizQuestions">
+        <h4>Questions:</h4>
+        <div class="question-item">
+          <input type="text" placeholder="Question 1" class="question-text" style="width:100%;margin:5px 0;">
+          <input type="text" placeholder="Option A" class="option" style="width:48%;margin:2px 1%;">
+          <input type="text" placeholder="Option B" class="option" style="width:48%;margin:2px 1%;">
+          <input type="text" placeholder="Option C" class="option" style="width:48%;margin:2px 1%;">
+          <input type="text" placeholder="Option D" class="option" style="width:48%;margin:2px 1%;">
+          <select class="correct-answer" style="width:100%;margin:5px 0;">
+            <option value="A">Correct Answer: A</option>
+            <option value="B">Correct Answer: B</option>
+            <option value="C">Correct Answer: C</option>
+            <option value="D">Correct Answer: D</option>
+          </select>
+        </div>
+      </div>
+      <button onclick="addQuizQuestion()" style="margin:5px;">+ Add Question</button>
+      <button onclick="createQuiz()" style="margin:5px;">Create Quiz</button>
+    </div>
+  </div>
+
+  <!-- Existing Exams -->
+  <div class="section">
+    <h2>📚 Existing Exams</h2>
+    <h3>MST</h3>
+    <table id="mstList">
+      <tr><th>ID</th><th>Title</th><th>Created</th></tr>
+    </table>
+    <h3>Quiz</h3>
+    <table id="quizList">
+      <tr><th>ID</th><th>Title</th><th>Created</th></tr>
+    </table>
+  </div>
+
   <!-- Timetable -->
   <div class="section">
     <h2>🗓 Weekly Timetable</h2>
@@ -109,6 +175,164 @@ hamburger.addEventListener('click', () => {
 });
 
 
+async function loadFlags(){
+  try{
+    const res = await fetch('/api/feature-flags');
+    const flags = await res.json();
+    document.getElementById('unlockMentor').checked = !!flags.mentor_form;
+    document.getElementById('unlockExamForm').checked = !!flags.examination_form;
+    document.getElementById('unlockMst').checked = !!flags.mst_exam;
+    document.getElementById('unlockQuiz').checked = !!flags.quiz_exam;
+  }catch(e){ console.error('Failed to load flags', e); }
+}
+
+async function setFlag(key, value){
+  await fetch(`/api/feature-flags/${key}`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({is_unlocked: !!value})
+  });
+}
+
+async function saveUnlocks(){
+  try{
+    await Promise.all([
+      setFlag('mentor_form', document.getElementById('unlockMentor').checked),
+      setFlag('examination_form', document.getElementById('unlockExamForm').checked),
+      setFlag('mst_exam', document.getElementById('unlockMst').checked),
+      setFlag('quiz_exam', document.getElementById('unlockQuiz').checked)
+    ]);
+    alert('Saved');
+  }catch(e){ alert('Save failed'); }
+}
+
+async function uploadAssignment(){
+  const input = document.getElementById('fileInput');
+  if(!input.files || !input.files[0]){ alert('Choose a file'); return; }
+  const file = input.files[0];
+  const payload = {
+    title: file.name,
+    description: 'Uploaded via dashboard',
+    file_url: `/uploads/${file.name}`
+  };
+  // Note: replace with real upload later; we just record metadata for now
+  const res = await fetch('/api/assignments',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if(data && data.ok){
+    const table = document.getElementById('assignmentTable');
+    const row = table.insertRow(-1);
+    row.insertCell(0).innerText = file.name;
+    row.insertCell(1).innerText = new Date().toISOString().slice(0,10);
+    row.insertCell(2).innerHTML = `<a href="${payload.file_url}">View</a>`;
+  } else {
+    alert('Upload failed');
+  }
+}
+
+async function loadExams(){
+  try{
+    const res = await fetch('/api/exams');
+    const data = await res.json();
+    const mstT = document.getElementById('mstList');
+    const quizT = document.getElementById('quizList');
+    // clear existing rows except header
+    mstT.querySelectorAll('tr:not(:first-child)').forEach(r=>r.remove());
+    quizT.querySelectorAll('tr:not(:first-child)').forEach(r=>r.remove());
+    (data.mst||[]).forEach(it=>{
+      const row = mstT.insertRow(-1);
+      row.insertCell(0).innerText = it.id;
+      row.insertCell(1).innerText = it.title || '';
+      row.insertCell(2).innerText = it.created_at || '';
+    });
+    (data.quiz||[]).forEach(it=>{
+      const row = quizT.insertRow(-1);
+      row.insertCell(0).innerText = it.id;
+      row.insertCell(1).innerText = it.title || '';
+      row.insertCell(2).innerText = it.created_at || '';
+    });
+  }catch(e){ console.error('Failed to load exams', e); }
+}
+
+async function createMst(){
+  try{
+    const t = document.getElementById('mstTitle').value.trim();
+    const duration = parseInt(document.getElementById('mstDuration').value) || 30;
+    const questions = collectQuestions('mstQuestions');
+    if(questions.length === 0){ alert('Add at least one question'); return; }
+    const config = { duration, questions };
+    const res = await fetch('/api/exams/mst', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({title:t, config})});
+    const data = await res.json();
+    if(data && data.ok){ await loadExams(); alert('MST created'); } else { alert('Failed to create MST'); }
+  }catch(e){ alert('Failed to create MST'); }
+}
+
+async function createQuiz(){
+  try{
+    const t = document.getElementById('quizTitle').value.trim();
+    const duration = parseInt(document.getElementById('quizDuration').value) || 10;
+    const questions = collectQuestions('quizQuestions');
+    if(questions.length === 0){ alert('Add at least one question'); return; }
+    const config = { duration, questions };
+    const res = await fetch('/api/exams/quiz', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({title:t, config})});
+    const data = await res.json();
+    if(data && data.ok){ await loadExams(); alert('Quiz created'); } else { alert('Failed to create Quiz'); }
+  }catch(e){ alert('Failed to create Quiz'); }
+}
+
+function collectQuestions(containerId){
+  const container = document.getElementById(containerId);
+  const items = container.querySelectorAll('.question-item');
+  const questions = [];
+  items.forEach((item, index) => {
+    const questionText = item.querySelector('.question-text').value.trim();
+    const options = Array.from(item.querySelectorAll('.option')).map(o => o.value.trim()).filter(o => o);
+    const correct = item.querySelector('.correct-answer').value;
+    if(questionText && options.length >= 2){
+      questions.push({
+        id: index + 1,
+        question: questionText,
+        options: options,
+        correct: correct
+      });
+    }
+  });
+  return questions;
+}
+
+function addMstQuestion(){
+  addQuestion('mstQuestions');
+}
+
+function addQuizQuestion(){
+  addQuestion('quizQuestions');
+}
+
+function addQuestion(containerId){
+  const container = document.getElementById(containerId);
+  const count = container.querySelectorAll('.question-item').length + 1;
+  const div = document.createElement('div');
+  div.className = 'question-item';
+  div.innerHTML = `
+    <input type="text" placeholder="Question ${count}" class="question-text" style="width:100%;margin:5px 0;">
+    <input type="text" placeholder="Option A" class="option" style="width:48%;margin:2px 1%;">
+    <input type="text" placeholder="Option B" class="option" style="width:48%;margin:2px 1%;">
+    <input type="text" placeholder="Option C" class="option" style="width:48%;margin:2px 1%;">
+    <input type="text" placeholder="Option D" class="option" style="width:48%;margin:2px 1%;">
+    <select class="correct-answer" style="width:100%;margin:5px 0;">
+      <option value="A">Correct Answer: A</option>
+      <option value="B">Correct Answer: B</option>
+      <option value="C">Correct Answer: C</option>
+      <option value="D">Correct Answer: D</option>
+    </select>
+  `;
+  container.appendChild(div);
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{ loadFlags(); loadExams(); });
 </script>
 
 </body>

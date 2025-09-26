@@ -29,7 +29,7 @@
 <div class="main">
   <div class="topbar">
     <h1>📋 Attendance</h1>
-    <button class="logout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
+    <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
   </div>
 
   <div class="section class-list" id="classList">
@@ -42,6 +42,32 @@
   <div class="section student-list" id="studentList" style="display:none;">
     <button class="back-btn" onclick="goBack()">← Back to Classes</button>
     <h2 id="classTitle"></h2>
+
+    <!-- Attendance Details -->
+    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+      <h3>Attendance Details</h3>
+      <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+        <div>
+          <label for="attendanceDate">Date:</label>
+          <input type="date" id="attendanceDate" style="padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+        <div>
+          <label for="attendanceSubject">Subject:</label>
+          <select id="attendanceSubject" style="padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
+            <option value="Mathematics">Mathematics</option>
+            <option value="Physics">Physics</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="English">English</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <button onclick="markAllPresent()" style="background: #16a34a; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer;">Mark All Present</button>
+          <button onclick="markAllAbsent()" style="background: #dc2626; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; margin-left: 5px;">Mark All Absent</button>
+        </div>
+      </div>
+    </div>
 
     <table>
       <thead>

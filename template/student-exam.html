@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Exams</title>
+<title>Updates</title>
 <link rel="stylesheet" href="/static/css/student-exam.css">
 </head>
 <body>
@@ -23,36 +23,64 @@
 <div class="main">
   <div class="topbar">
     <button class="hamburger" onclick="toggleSidebar()">☰</button>
-    <h1>Exams & Quizzes 📚</h1>
-    <button class="logout-btn">Logout</button>
+    <h1>Updates</h1>
+    <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
   </div>
 
   <!-- Exam Cards -->
   <div class="cards">
     <div class="card">
-      <h3>MST (MCQ Exam)</h3>
-      <p>Attempt multiple choice questions to test your knowledge.</p>
-      <button class="logout-btn" onclick="window.location.href='{{ url_for('mst_exam') }}'">Start</button>
-    </div>
-    <div class="card">
-      <h3>Quiz</h3>
-      <p>Take short quizzes and improve your performance score.</p>
-      <button class="logout-btn" onclick="window.location.href='{{ url_for('quiz_exam') }}'">Start</button>
-    </div>
-    <div class="card">
       <h3>Mentor Form</h3>
       <p>Fill your mentor interaction form when enabled by admin.</p>
-      <button class="logout-btn" onclick="window.location.href='{{ url_for('student_mentor_form') }}'">Open</button>
+      <button id="mentorBtn" class="logout-btn">Open</button>
+      <p id="mentorLock" style="color:#cc0000; display:none;">Locked by admin</p>
     </div>
     <div class="card">
       <h3>Examination Form</h3>
       <p>Submit exam application when enabled by admin.</p>
-      <button class="logout-btn" onclick="window.location.href='{{ url_for('student_examination_form') }}'">Open</button>
+      <button id="examBtn" class="logout-btn">Open</button>
+      <p id="examLock" style="color:#cc0000; display:none;">Locked by admin</p>
+    </div>
+    <div class="card">
+      <h3>MST (MCQ Exam)</h3>
+      <p>Attempt multiple choice questions to test your knowledge.</p>
+      <button id="mstBtn" class="logout-btn">Start</button>
+      <p id="mstLock" style="color:#cc0000; display:none;">Locked by admin</p>
+    </div>
+    <div class="card">
+      <h3>Quiz</h3>
+      <p>Take short quizzes and improve your performance score.</p>
+      <button id="quizBtn" class="logout-btn">Start</button>
+      <p id="quizLock" style="color:#cc0000; display:none;">Locked by admin</p>
     </div>
   </div>
 </div>
 
-<script src="/static/js/student-exam.js">
+<script>
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('active');
+}
+async function loadVisibility(){
+  try{
+    const res = await fetch('/api/feature-flags');
+    const flags = await res.json();
+    const mentor = !!flags.mentor_form;
+    const exam = !!flags.examination_form;
+    const mst = !!flags.mst_exam;
+    const quiz = !!flags.quiz_exam;
+
+    document.getElementById('mentorBtn').onclick = () => window.location.href='{{ url_for('student_mentor_form') }}';
+    document.getElementById('examBtn').onclick = () => window.location.href='{{ url_for('student_examination_form') }}';
+    document.getElementById('mstBtn').onclick = () => window.location.href='{{ url_for('student_mst_exam') }}';
+    document.getElementById('quizBtn').onclick = () => window.location.href='{{ url_for('student_quiz_exam') }}';
+
+    if(!mentor){ document.getElementById('mentorBtn').disabled = true; document.getElementById('mentorLock').style.display='block'; }
+    if(!exam){ document.getElementById('examBtn').disabled = true; document.getElementById('examLock').style.display='block'; }
+    if(!mst){ document.getElementById('mstBtn').disabled = true; document.getElementById('mstLock').style.display='block'; }
+    if(!quiz){ document.getElementById('quizBtn').disabled = true; document.getElementById('quizLock').style.display='block'; }
+  }catch(e){ console.error('Visibility load failed', e); }
+}
+document.addEventListener('DOMContentLoaded', loadVisibility);
 </script>
 
 </body>

@@ -38,27 +38,27 @@
           <!-- Student Info Section -->
           <table>
             <tr><th colspan="2">Student Information</th></tr>
-            <tr><td>Student Name:</td><td><input type="text" placeholder="Enter full name" required /></td></tr>
-            <tr><td>AUID:</td><td><input type="text" placeholder="Enter AUID" required /></td></tr>
-            <tr><td>Class & Semester:</td><td><input type="text" placeholder="e.g. BCA 3rd Sem" required /></td></tr>
-            <tr><td>Group:</td><td><input type="text" placeholder="Group Name" /></td></tr>
-            <tr><td>Blood Group:</td><td><input type="text" placeholder="e.g. B+" /></td></tr>
-            <tr><td>Category:</td><td><input type="text" placeholder="e.g. General, SC, OBC" /></td></tr>
-            <tr><td>Is Hosteller / Commuter:</td><td><input type="text" placeholder="Hosteller / Commuter" /></td></tr>
-            <tr><td>Contact Address:</td><td><textarea rows="2" style="width:100%;"></textarea></td></tr>
+            <tr><td>Student Name:</td><td><input type="text" name="student_name" placeholder="Enter full name" required /></td></tr>
+            <tr><td>AUID:</td><td><input type="text" name="auid" placeholder="Enter AUID" required /></td></tr>
+            <tr><td>Class & Semester:</td><td><input type="text" name="class_semester" placeholder="e.g. BCA 3rd Sem" required /></td></tr>
+            <tr><td>Group:</td><td><input type="text" name="group_name" placeholder="Group Name" /></td></tr>
+            <tr><td>Blood Group:</td><td><input type="text" name="blood_group" placeholder="e.g. B+" /></td></tr>
+            <tr><td>Category:</td><td><input type="text" name="category" placeholder="e.g. General, SC, OBC" /></td></tr>
+            <tr><td>Is Hosteller / Commuter:</td><td><input type="text" name="hosteller_commuter" placeholder="Hosteller / Commuter" /></td></tr>
+            <tr><td>Contact Address:</td><td><textarea name="contact_address" rows="2" style="width:100%;"></textarea></td></tr>
           </table>
 
           <!-- Parent Info -->
           <table>
             <tr><th colspan="2">Parent Information</th></tr>
-            <tr><td>Father's Name:</td><td><input type="text" /></td></tr>
-            <tr><td>Occupation (Father):</td><td><input type="text" /></td></tr>
-            <tr><td>Father's Mobile:</td><td><input type="text" /></td></tr>
-            <tr><td>Mother's Name:</td><td><input type="text" /></td></tr>
-            <tr><td>Occupation (Mother):</td><td><input type="text" /></td></tr>
-            <tr><td>Mother's Mobile:</td><td><input type="text" /></td></tr>
-            <tr><td>Student Email ID:</td><td><input type="email" /></td></tr>
-            <tr><td>Parent Email ID:</td><td><input type="email" /></td></tr>
+            <tr><td>Father's Name:</td><td><input type="text" name="father_name" /></td></tr>
+            <tr><td>Occupation (Father):</td><td><input type="text" name="father_occupation" /></td></tr>
+            <tr><td>Father's Mobile:</td><td><input type="text" name="father_mobile" /></td></tr>
+            <tr><td>Mother's Name:</td><td><input type="text" name="mother_name" /></td></tr>
+            <tr><td>Occupation (Mother):</td><td><input type="text" name="mother_occupation" /></td></tr>
+            <tr><td>Mother's Mobile:</td><td><input type="text" name="mother_mobile" /></td></tr>
+            <tr><td>Student Email ID:</td><td><input type="email" name="student_email" /></td></tr>
+            <tr><td>Parent Email ID:</td><td><input type="email" name="parent_email" /></td></tr>
           </table>
 
           <p><strong>Signature of Student:</strong> ________________________</p>
@@ -108,9 +108,9 @@
 
           <!-- Activities & Notes -->
           <p><strong>Participation in Other Activities:</strong><br/>
-             <textarea rows="2" style="width:100%;"></textarea></p>
+             <textarea name="other_activities" rows="2" style="width:100%;"></textarea></p>
           <p><strong>Any Other Aspect (Not Covered Above):</strong><br/>
-             <textarea rows="2" style="width:100%;"></textarea></p>
+             <textarea name="other_aspects" rows="2" style="width:100%;"></textarea></p>
 
           <!-- Mentor + HOD Sign -->
           <h3>✍️ Monthly Signatures</h3>

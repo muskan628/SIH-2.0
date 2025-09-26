@@ -10,7 +10,7 @@ import uuid
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(
     __name__,
-    template_folder=r"D:\Users\Madaan INFOTECH\OneDrive\Documents\GitHub\SIH-2.0\template")
+    template_folder="template")
 
 
 
@@ -20,7 +20,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "a_hard_to_guess_default_secret_ke
 
 # --- Database Configuration ---
 # Format: postgresql://user:password@host:port/dbname
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost:5432/testdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2004@localhost:5432/testdb'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -76,26 +76,105 @@ class QuizExam(db.Model):
 
 
 class MentorForm(db.Model):
-    _tablename_ = "mentor_forms"
+    __tablename__ = "mentor_forms"
     id = db.Column(db.Integer, primary_key=True)
     teacher_name = db.Column(db.String(120), nullable=True)
     department = db.Column(db.String(120), nullable=True)
-    data = db.Column(JSON, nullable=True)
+    
+    # Student Information
+    student_name = db.Column(db.String(200), nullable=True)
+    auid = db.Column(db.String(50), nullable=True)
+    class_semester = db.Column(db.String(100), nullable=True)
+    group_name = db.Column(db.String(100), nullable=True)
+    blood_group = db.Column(db.String(10), nullable=True)
+    category = db.Column(db.String(50), nullable=True)
+    hosteller_commuter = db.Column(db.String(50), nullable=True)
+    contact_address = db.Column(db.Text, nullable=True)
+    
+    # Parent Information
+    father_name = db.Column(db.String(200), nullable=True)
+    father_occupation = db.Column(db.String(100), nullable=True)
+    father_mobile = db.Column(db.String(20), nullable=True)
+    mother_name = db.Column(db.String(200), nullable=True)
+    mother_occupation = db.Column(db.String(100), nullable=True)
+    mother_mobile = db.Column(db.String(20), nullable=True)
+    student_email = db.Column(db.String(200), nullable=True)
+    parent_email = db.Column(db.String(200), nullable=True)
+    
+    # Activities and Notes
+    other_activities = db.Column(db.Text, nullable=True)
+    other_aspects = db.Column(db.Text, nullable=True)
+    
+    # Additional data for complex fields
+    attendance_records = db.Column(JSON, nullable=True)  # Monthly attendance data
+    counselling_sessions = db.Column(JSON, nullable=True)  # Counselling records
+    parent_communication = db.Column(JSON, nullable=True)  # Parent communication records
+    monthly_signatures = db.Column(JSON, nullable=True)  # Monthly signatures
+    
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
 
 class ExaminationForm(db.Model):
-    _tablename_ = "examination_forms"
+    __tablename__ = "examination_forms"
     id = db.Column(db.Integer, primary_key=True)
     form_number = db.Column(db.String(50), nullable=True)
     auid = db.Column(db.String(50), nullable=True)
     programme = db.Column(db.String(120), nullable=True)
     semester = db.Column(db.String(50), nullable=True)
     email = db.Column(db.String(120), nullable=True)
-    data = db.Column(JSON, nullable=True)
+    
+    # Form Details
+    date = db.Column(db.Date, nullable=True)
+    class_name = db.Column(db.String(100), nullable=True)
+    
+    # Candidate Details
+    candidate_name = db.Column(db.String(200), nullable=True)
+    father_name = db.Column(db.String(200), nullable=True)
+    mother_name = db.Column(db.String(200), nullable=True)
+    address = db.Column(db.Text, nullable=True)
+    mobile = db.Column(db.String(20), nullable=True)
+    
+    # Course Information
+    courses = db.Column(JSON, nullable=True)  # Array of course objects
+    
+    # Last Year Result
+    last_exam = db.Column(db.String(200), nullable=True)
+    board_university = db.Column(db.String(200), nullable=True)
+    session_year = db.Column(db.String(50), nullable=True)
+    last_roll_no = db.Column(db.String(50), nullable=True)
+    pass_status = db.Column(db.String(50), nullable=True)
+    reappear_status = db.Column(db.String(50), nullable=True)
+    grade_percentage = db.Column(db.String(50), nullable=True)
+    
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
+
+
+# Content shared by admin to students
+class Note(db.Model):
+    __tablename__ = "notes"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    course = db.Column(db.String(120), nullable=True)
+    subject = db.Column(db.String(120), nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    file_url = db.Column(db.String(500), nullable=True)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+
+class Assignment(db.Model):
+    __tablename__ = "assignments"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    course = db.Column(db.String(120), nullable=True)
+    subject = db.Column(db.String(120), nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    file_url = db.Column(db.String(500), nullable=True)
+    due_date = db.Column(db.Date, nullable=True)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
 
 
 # Attendance for linking to performance
@@ -153,6 +232,39 @@ def initial_setup():
         )
         db.session.add(student)
     
+    # Create a sample MST exam if none exist
+    if not MSTExam.query.first():
+        print("Creating sample MST exam...")
+        sample_mst = MSTExam(
+            title="Sample MST Exam",
+            config={
+                "duration": 30,
+                "questions": [
+                    {
+                        "id": 1,
+                        "question": "What is 2 + 2?",
+                        "options": ["3", "4", "5", "6"],
+                        "correct": "B"
+                    },
+                    {
+                        "id": 2,
+                        "question": "What is the capital of India?",
+                        "options": ["Mumbai", "Delhi", "Kolkata", "Chennai"],
+                        "correct": "B"
+                    }
+                ]
+            }
+        )
+        db.session.add(sample_mst)
+    
+    # Unlock MST exams by default for testing
+    mst_flag = FeatureFlag.query.filter_by(key="mst_exam").first()
+    if not mst_flag:
+        mst_flag = FeatureFlag(key="mst_exam", is_unlocked=True)
+        db.session.add(mst_flag)
+    else:
+        mst_flag.is_unlocked = True
+    
     db.session.commit()
     print("Initial setup complete.")
 
@@ -205,6 +317,9 @@ def ensure_schema():
     if students_missing_ids:
         db.session.commit()
 
+    # Ensure new content tables exist
+    db.create_all()
+
 
 # --- Routes ---
 @app.route("/", methods=["GET", "POST"])
@@ -253,6 +368,15 @@ def student_dashboard():
 @app.route("/admin/dashboard")
 def admin_dashboard():
     """Displays the admin dashboard."""
+    if "user_id" not in session or session.get("role") != "admin":
+        flash("You must be logged in as an admin to view this page.", "warning")
+        return redirect(url_for("login"))
+    return render_template("admin-dashboard.html")
+
+
+# Alias to satisfy templates linking to admin_home
+@app.route("/admin/home")
+def admin_home():
     if "user_id" not in session or session.get("role") != "admin":
         flash("You must be logged in as an admin to view this page.", "warning")
         return redirect(url_for("login"))
@@ -315,6 +439,41 @@ def student_notes():
     return render_template("student-notes.html")
 
 
+@app.route("/api/student/me", methods=["GET"])
+def api_student_me():
+    if "user_id" not in session or session.get("role") != "student":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    user = User.query.get(session["user_id"])
+
+    # Attendance percentage
+    uid_candidates = [user.permanent_id, user.temp_id, user.username]
+    q = Attendance.query.filter(Attendance.uid.in_(uid_candidates))
+    total = q.count()
+    present = q.filter_by(status="Present").count()
+    attendance_pct = int((present / total) * 100) if total else 0
+
+    # Try to infer pending fees from latest mentor form if present
+    latest_mentor = MentorForm.query.order_by(MentorForm.created_at.desc()).first()
+    pending_fees = 0
+    if latest_mentor and latest_mentor.data:
+        pending_fees = int(latest_mentor.data.get("pendingFees", latest_mentor.data.get("fees_pending", 0)) or 0)
+
+    data = {
+        "ok": True,
+        "name": user.username,
+        "stream": "",
+        "roll_no": user.permanent_id or user.temp_id or user.username,
+        "contact": "",
+        "father_name": "",
+        "father_contact": "",
+        "attendance": attendance_pct,
+        "pending_fees": pending_fees,
+        "performance": "",
+        "exams": []
+    }
+    return jsonify(data)
+
+
 @app.route("/student/performance")
 def student_performance():
     if "user_id" not in session or session.get("role") != "student":
@@ -355,6 +514,112 @@ def student_updates():
     return render_template("student-exam.html")
 
 
+# --- Notes APIs ---
+@app.route("/api/notes", methods=["GET", "POST"])
+def api_notes():
+    role = session.get("role")
+    if request.method == "POST":
+        if "user_id" not in session or role != "admin":
+            return jsonify({"ok": False, "error": "Unauthorized"}), 401
+        payload = request.get_json(silent=True) or {}
+        rec = Note(
+            title=payload.get("title") or "Untitled",
+            course=payload.get("course"),
+            subject=payload.get("subject"),
+            description=payload.get("description"),
+            file_url=payload.get("file_url"),
+            created_by=session.get("user_id"),
+        )
+        db.session.add(rec)
+        db.session.commit()
+        return jsonify({"ok": True, "id": rec.id})
+    # GET list for any logged in user; students consume
+    items = Note.query.order_by(Note.created_at.desc()).all()
+    return jsonify({
+        "ok": True,
+        "items": [
+            {
+                "id": n.id,
+                "title": n.title,
+                "course": n.course,
+                "subject": n.subject,
+                "description": n.description,
+                "file_url": n.file_url,
+                "created_at": str(n.created_at)
+            } for n in items
+        ]
+    })
+
+
+# --- Assignments APIs ---
+@app.route("/api/assignments", methods=["GET", "POST"])
+def api_assignments():
+    role = session.get("role")
+    if request.method == "POST":
+        if "user_id" not in session or role != "admin":
+            return jsonify({"ok": False, "error": "Unauthorized"}), 401
+        payload = request.get_json(silent=True) or {}
+        from datetime import datetime
+        due = None
+        due_str = payload.get("due_date")
+        if due_str:
+            try:
+                due = datetime.strptime(due_str, "%Y-%m-%d").date()
+            except Exception:
+                due = None
+        rec = Assignment(
+            title=payload.get("title") or "Untitled",
+            course=payload.get("course"),
+            subject=payload.get("subject"),
+            description=payload.get("description"),
+            file_url=payload.get("file_url"),
+            due_date=due,
+            created_by=session.get("user_id"),
+        )
+        db.session.add(rec)
+        db.session.commit()
+        return jsonify({"ok": True, "id": rec.id})
+    items = Assignment.query.order_by(Assignment.created_at.desc()).all()
+    return jsonify({
+        "ok": True,
+        "items": [
+            {
+                "id": a.id,
+                "title": a.title,
+                "course": a.course,
+                "subject": a.subject,
+                "description": a.description,
+                "file_url": a.file_url,
+                "due_date": str(a.due_date) if a.due_date else None,
+                "created_at": str(a.created_at)
+            } for a in items
+        ]
+    })
+
+
+# --- Exam creation APIs (admin) ---
+@app.route("/api/exams/mst", methods=["POST"])
+def api_create_mst_exam():
+    if "user_id" not in session or session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    payload = request.get_json(silent=True) or {}
+    rec = MSTExam(title=payload.get("title"), config=payload.get("config"))
+    db.session.add(rec)
+    db.session.commit()
+    return jsonify({"ok": True, "id": rec.id})
+
+
+@app.route("/api/exams/quiz", methods=["POST"])
+def api_create_quiz_exam():
+    if "user_id" not in session or session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    payload = request.get_json(silent=True) or {}
+    rec = QuizExam(title=payload.get("title"), config=payload.get("config"))
+    db.session.add(rec)
+    db.session.commit()
+    return jsonify({"ok": True, "id": rec.id})
+
+
 @app.route("/admin/mst-exam")
 def mst_exam():
     if "user_id" not in session or session.get("role") != "admin":
@@ -363,11 +628,37 @@ def mst_exam():
     return render_template("mst-exam.html")
 
 
+@app.route("/student/mst-exam")
+def student_mst_exam():
+    if "user_id" not in session or session.get("role") != "student":
+        flash("You must be logged in as a student to view this page.", "warning")
+        return redirect(url_for("login"))
+    # Check if MST exams are unlocked for students
+    flag = FeatureFlag.query.filter_by(key="mst_exam").first()
+    if not (flag and flag.is_unlocked):
+        flash("MST exams are currently locked.", "warning")
+        return redirect(url_for("student_updates"))
+    return render_template("mst-exam.html")
+
+
 @app.route("/admin/quiz-exam")
 def quiz_exam():
     if "user_id" not in session or session.get("role") != "admin":
         flash("You must be logged in as an admin to view this page.", "warning")
         return redirect(url_for("login"))
+    return render_template("quiz-exam.html")
+
+
+@app.route("/student/quiz-exam")
+def student_quiz_exam():
+    if "user_id" not in session or session.get("role") != "student":
+        flash("You must be logged in as a student to view this page.", "warning")
+        return redirect(url_for("login"))
+    # Check if Quiz exams are unlocked for students
+    flag = FeatureFlag.query.filter_by(key="quiz_exam").first()
+    if not (flag and flag.is_unlocked):
+        flash("Quiz exams are currently locked.", "warning")
+        return redirect(url_for("student_updates"))
     return render_template("quiz-exam.html")
 
 
@@ -474,7 +765,12 @@ def api_exams():
     mst_unlocked = flags.get("mst_exam", True if role == "admin" else False)
     quiz_unlocked = flags.get("quiz_exam", True if role == "admin" else False)
     def exam_to_dict(x):
-        return {"id": x.id, "title": x.title, "created_at": str(x.created_at)}
+        return {
+            "id": x.id, 
+            "title": x.title, 
+            "created_at": str(x.created_at),
+            "config": x.config
+        }
     return jsonify({
         "ok": True,
         "mst_unlocked": mst_unlocked,
@@ -550,10 +846,56 @@ def api_mentor_form():
             return jsonify({"ok": False, "error": "Mentor form locked"}), 403
 
     payload = request.get_json(silent=True) or {}
+    
+    # Extract and organize form data
+    student_info = {
+        'student_name': payload.get('student_name') or payload.get('field_0'),
+        'auid': payload.get('auid') or payload.get('field_1'),
+        'class_semester': payload.get('class_semester') or payload.get('field_2'),
+        'group_name': payload.get('group_name') or payload.get('field_3'),
+        'blood_group': payload.get('blood_group') or payload.get('field_4'),
+        'category': payload.get('category') or payload.get('field_5'),
+        'hosteller_commuter': payload.get('hosteller_commuter') or payload.get('field_6'),
+        'contact_address': payload.get('contact_address') or payload.get('field_7'),
+    }
+    
+    parent_info = {
+        'father_name': payload.get('father_name') or payload.get('field_8'),
+        'father_occupation': payload.get('father_occupation') or payload.get('field_9'),
+        'father_mobile': payload.get('father_mobile') or payload.get('field_10'),
+        'mother_name': payload.get('mother_name') or payload.get('field_11'),
+        'mother_occupation': payload.get('mother_occupation') or payload.get('field_12'),
+        'mother_mobile': payload.get('mother_mobile') or payload.get('field_13'),
+        'student_email': payload.get('student_email') or payload.get('field_14'),
+        'parent_email': payload.get('parent_email') or payload.get('field_15'),
+    }
+    
+    # Extract complex data for JSON storage
+    attendance_records = {}
+    counselling_sessions = {}
+    parent_communication = {}
+    monthly_signatures = {}
+    
+    # Process monthly data (simplified - you can expand this)
+    months = ['August', 'September', 'October', 'November', 'December']
+    for i, month in enumerate(months):
+        attendance_records[month] = {
+            'student_signature': payload.get(f'field_{16 + i*3}'),
+            'attendance_issue': payload.get(f'field_{17 + i*3}'),
+            'reason': payload.get(f'field_{18 + i*3}')
+        }
+    
     record = MentorForm(
         teacher_name=session.get("username") if role == "admin" else None,
         department=payload.get("department"),
-        data=payload,
+        **student_info,
+        **parent_info,
+        other_activities=payload.get('other_activities'),
+        other_aspects=payload.get('other_aspects'),
+        attendance_records=attendance_records,
+        counselling_sessions=counselling_sessions,
+        parent_communication=parent_communication,
+        monthly_signatures=monthly_signatures,
     )
     db.session.add(record)
     db.session.commit()
@@ -573,17 +915,96 @@ def api_examination_form():
             return jsonify({"ok": False, "error": "Examination form locked"}), 403
 
     payload = request.get_json(silent=True) or {}
+    
+    # Extract course information
+    courses = []
+    for i in range(1, 3):  # Assuming 2 courses
+        course = {
+            'title': payload.get(f'course{i}_title'),
+            'type': payload.get(f'course{i}_type'),
+            'code': payload.get(f'course{i}_code')
+        }
+        if any(course.values()):  # Only add if at least one field has data
+            courses.append(course)
+    
+    # Parse date if provided
+    date_obj = None
+    if payload.get('date'):
+        try:
+            from datetime import datetime
+            date_obj = datetime.strptime(payload.get('date'), "%Y-%m-%d").date()
+        except:
+            pass
+    
     record = ExaminationForm(
         form_number=payload.get("formNumber"),
         auid=payload.get("auid"),
         programme=payload.get("programme"),
         semester=payload.get("semester"),
         email=payload.get("email"),
-        data=payload,
+        date=date_obj,
+        class_name=payload.get("class"),
+        candidate_name=payload.get("candidateName"),
+        father_name=payload.get("fatherName"),
+        mother_name=payload.get("motherName"),
+        address=payload.get("address"),
+        mobile=payload.get("mobile"),
+        courses=courses,
+        last_exam=payload.get("exam"),
+        board_university=payload.get("board"),
+        session_year=payload.get("session"),
+        last_roll_no=payload.get("roll"),
+        pass_status=payload.get("pass"),
+        reappear_status=payload.get("reappear"),
+        grade_percentage=payload.get("grade"),
     )
     db.session.add(record)
     db.session.commit()
     return jsonify({"ok": True, "id": record.id})
+
+
+# --- View Form Data APIs ---
+@app.route("/api/mentor-forms", methods=["GET"])
+def api_get_mentor_forms():
+    if "user_id" not in session or session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    
+    forms = MentorForm.query.order_by(MentorForm.created_at.desc()).all()
+    return jsonify({
+        "ok": True,
+        "forms": [{
+            "id": form.id,
+            "student_name": form.student_name,
+            "auid": form.auid,
+            "class_semester": form.class_semester,
+            "father_name": form.father_name,
+            "father_mobile": form.father_mobile,
+            "student_email": form.student_email,
+            "created_at": str(form.created_at)
+        } for form in forms]
+    })
+
+
+@app.route("/api/examination-forms", methods=["GET"])
+def api_get_examination_forms():
+    if "user_id" not in session or session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    
+    forms = ExaminationForm.query.order_by(ExaminationForm.created_at.desc()).all()
+    return jsonify({
+        "ok": True,
+        "forms": [{
+            "id": form.id,
+            "form_number": form.form_number,
+            "candidate_name": form.candidate_name,
+            "auid": form.auid,
+            "programme": form.programme,
+            "semester": form.semester,
+            "email": form.email,
+            "mobile": form.mobile,
+            "created_at": str(form.created_at)
+        } for form in forms]
+    })
 
 
 # --- Main Execution ---

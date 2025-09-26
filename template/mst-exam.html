@@ -24,16 +24,17 @@
   <div class="topbar">
     <button class="menu-toggle" id="menuToggle">☰</button>
     <h1>MST Exam</h1>
-    <button class="logout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
+    <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
   </div>
 
   <div class="exam-container">
     <div class="timer" id="timer">Time Left: 05:00</div>
-    <div class="question" id="questionText">Question will appear here</div>
+    <div class="question" id="questionText">Loading exam...</div>
     <div class="options" id="optionsContainer"></div>
     <div class="exam-btns">
       <button class="exam-btn" onclick="prevQuestion()">Previous</button>
       <button class="exam-btn" onclick="nextQuestion()">Next</button>
+      <button class="exam-btn" onclick="submitExam()">Submit</button>
     </div>
   </div>
 </div>
@@ -54,6 +55,140 @@
           }
       }
   });
+
+  // Exam functionality
+  let currentExam = null;
+  let currentQuestionIndex = 0;
+  let answers = {};
+  let timeLeft = 0;
+  let timerInterval = null;
+
+  async function loadExam() {
+    try {
+      const response = await fetch('/api/exams');
+      const data = await response.json();
+      
+      console.log('Exam data received:', data); // Debug log
+      
+      if (data && data.mst && data.mst.length > 0) {
+        // Get the first available MST exam
+        currentExam = data.mst[0];
+        console.log('Current exam:', currentExam); // Debug log
+        
+        if (currentExam.config && currentExam.config.questions && currentExam.config.questions.length > 0) {
+          timeLeft = (currentExam.config.duration || 30) * 60; // Convert minutes to seconds
+          startTimer();
+          showQuestion(0);
+        } else {
+          console.log('No questions in config:', currentExam.config); // Debug log
+          document.getElementById('questionText').innerText = 'No questions available in this exam.';
+        }
+      } else {
+        console.log('No MST exams found'); // Debug log
+        document.getElementById('questionText').innerText = 'No MST exams available.';
+      }
+    } catch (error) {
+      console.error('Error loading exam:', error);
+      document.getElementById('questionText').innerText = 'Error loading exam.';
+    }
+  }
+
+  function startTimer() {
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      updateTimerDisplay();
+      if (timeLeft <= 0) {
+        submitExam();
+      }
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    document.getElementById('timer').innerText = `Time Left: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  function showQuestion(index) {
+    if (!currentExam || !currentExam.config || !currentExam.config.questions) return;
+    
+    const questions = currentExam.config.questions;
+    if (index < 0 || index >= questions.length) return;
+    
+    currentQuestionIndex = index;
+    const question = questions[index];
+    
+    document.getElementById('questionText').innerText = `${index + 1}. ${question.question}`;
+    
+    const optionsContainer = document.getElementById('optionsContainer');
+    optionsContainer.innerHTML = '';
+    
+    question.options.forEach((option, i) => {
+      const optionDiv = document.createElement('div');
+      optionDiv.className = 'option-item';
+      optionDiv.innerHTML = `
+        <input type="radio" name="question_${index}" value="${String.fromCharCode(65 + i)}" id="option_${index}_${i}">
+        <label for="option_${index}_${i}">${String.fromCharCode(65 + i)}. ${option}</label>
+      `;
+      
+      // Check if this option was previously selected
+      if (answers[index] === String.fromCharCode(65 + i)) {
+        optionDiv.querySelector('input').checked = true;
+      }
+      
+      optionsContainer.appendChild(optionDiv);
+    });
+  }
+
+  function prevQuestion() {
+    if (currentQuestionIndex > 0) {
+      saveCurrentAnswer();
+      showQuestion(currentQuestionIndex - 1);
+    }
+  }
+
+  function nextQuestion() {
+    if (currentExam && currentExam.config && currentExam.config.questions) {
+      saveCurrentAnswer();
+      if (currentQuestionIndex < currentExam.config.questions.length - 1) {
+        showQuestion(currentQuestionIndex + 1);
+      }
+    }
+  }
+
+  function saveCurrentAnswer() {
+    const selectedOption = document.querySelector(`input[name="question_${currentQuestionIndex}"]:checked`);
+    if (selectedOption) {
+      answers[currentQuestionIndex] = selectedOption.value;
+    }
+  }
+
+  function submitExam() {
+    saveCurrentAnswer();
+    clearInterval(timerInterval);
+    
+    // Calculate score
+    let correct = 0;
+    if (currentExam && currentExam.config && currentExam.config.questions) {
+      currentExam.config.questions.forEach((question, index) => {
+        if (answers[index] === question.correct) {
+          correct++;
+        }
+      });
+    }
+    
+    const total = currentExam ? currentExam.config.questions.length : 0;
+    const score = total > 0 ? Math.round((correct / total) * 100) : 0;
+    
+    alert(`Exam submitted!\nScore: ${correct}/${total} (${score}%)`);
+    
+    // Redirect back to updates page
+    window.location.href = '{{ url_for("student_updates") }}';
+  }
+
+  // Load exam when page loads
+  document.addEventListener('DOMContentLoaded', loadExam);
 </script>
 
 </body>
