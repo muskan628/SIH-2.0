@@ -25,10 +25,10 @@ body { min-height: 100vh; background: #f0f4f8; color: #1e3a8a; transition: all 0
 .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
 .topbar h1 { font-size: 24px; font-weight: bold; color: #1e3a8a; }
 .logout-btn {
-  background: #ef4444; color: white; border: none; padding: 8px 16px;
+  background: #1e3a8a;color: white; border: none; padding: 8px 16px;
   border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s;
 }
-.logout-btn:hover { background: #dc2626; }
+.logout-btn:hover { background: #1e3a8a; }
 
 /* Cards */
 .student-card {
@@ -47,7 +47,7 @@ tr:hover { background: #e8eaf6; transition: 0.3s; }
 
 /* Buttons */
 .submit-btn {
-  margin-top: 20px; padding: 10px 25px; background: #2563eb;
+  margin-top: 20px; padding: 10px 25px; background: #1e3a8a;
   color: white; border: none; border-radius: 8px; font-size: 16px;
   cursor: pointer; font-weight: 600; transition: background-color 0.3s;
 }
