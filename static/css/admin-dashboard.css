@@ -10,7 +10,7 @@ body {
   display: flex;
   min-height: 100vh;
   background: #f0f4f8;
-  color: #333;
+  color: #1e3a8a;
   transition: all 0.3s;
 }
 
@@ -31,6 +31,7 @@ body {
 .sidebar h2 {
   text-align: center;
   margin-bottom: 20px;
+  color: #fff;
 }
 
 .sidebar ul.menu {
@@ -61,7 +62,7 @@ body {
   transform: translateX(-100%);
 }
 
-/* Hamburger - default hidden */
+/* Hamburger */
 .hamburger {
   display: none; /* hide on desktop */
   position: fixed;
@@ -81,31 +82,28 @@ body {
 .hamburger:hover {
   background: #1d4ed8;
 }
-
-/* Show hamburger only on small screens */
+/* Remove extra top padding for main on small screens */
 @media (max-width: 768px) {
-  .hamburger {
-    display: block;
-  }
-
-  .sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100%;
-    transform: translateX(-100%);
-    z-index: 1000;
-    transition: transform 0.3s;
-  }
-
-  .sidebar.active {
-    transform: translateX(0);
-  }
-
-  /* Optional: push main content down if needed */
   .main {
     margin-left: 0;
-    padding-top: 70px;
+     /* Remove extra top padding for main on small screens */
+@media (max-width: 768px) {
+  .main {
+    margin-left: 0;
+    margin: -40px; /* smaller padding instead of 70px */
+  }
+  
+  /* Optional: reduce top margin of sections */
+  .section {
+    margin-top: 15px;
+  }
+}
+/* smaller padding instead of 70px */
+  }
+  
+  /* Optional: reduce top margin of sections */
+  .section {
+    margin-top: 15px;
   }
 }
 
@@ -128,12 +126,14 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  
 }
 
 .topbar h1 {
-  margin: auto;
   font-size: 24px;
   color: #1e3a8a;
+  margin: auto;
+
 }
 
 .logout-btn {
@@ -158,6 +158,12 @@ body {
   margin-bottom: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  color: #1e3a8a;
+}
+
+.section h2 {
+  margin-bottom: 15px;
+  color: #1e3a8a;
 }
 
 /* Profile Card */
@@ -173,8 +179,15 @@ body {
   height: 90px;
 }
 
-.section .profile-card .profile-info{
-  margin-right: 20px;
+.profile-info h3 {
+  color: #1e3a8a;
+  margin-bottom: 5px;
+}
+
+.profile-info p {
+  color: #333;
+  font-size: 14px;
+  margin-bottom: 3px;
 }
 
 /* Upload Box */
@@ -222,11 +235,16 @@ table th {
   color: white;
 }
 
+table td {
+  color: #1e3a8a;
+}
+
 /* Form Links */
 .form-links {
   display: flex;
   gap: 15px;
   margin-top: 15px;
+  flex-wrap: wrap;
 }
 
 .form-card {
@@ -242,21 +260,20 @@ table th {
   background: #1d4ed8;
 }
 
-/* Footer */
-footer {
-  text-align: center;
-  padding: 10px;
-  margin-top: 20px;
-  color: #555;
-  font-size: 14px;
-  border-top: 1px solid #ddd;
-}
-
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .main {
     margin-left: 0;
-    padding-top: 70px;
+    padding: 15px;
+  }
+  .topbar h1 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
   }
 
   .sidebar {
@@ -267,5 +284,28 @@ footer {
 
   .sidebar.active {
     transform: translateX(0);
+  }
+
+  .main {
+    margin-left: 0;
+    padding-top: 70px;
+  }
+
+  .profile-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .upload-box {
+    flex-direction: column;
+  }
+
+  .form-links {
+    flex-direction: column;
+  }
+
+  table th, table td {
+    font-size: 13px;
+    padding: 6px;
   }
 }
