@@ -1,36 +1,43 @@
-function uploadAssignment() {
-  const fileInput = document.getElementById('fileInput');
-  const table = document.getElementById('assignmentTable');
-  if (fileInput.files.length > 0) {
-    const file = fileInput.files[0];
-    const row = table.insertRow();
-    row.insertCell(0).innerText = file.name;
-    row.insertCell(1).innerText = new Date().toLocaleDateString();
-    fileInput.value = ""; // clear input
-  } else {
-    alert("Please select a file first.");
-  }
-}
+// Wait for DOM to load
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebar = document.getElementById('sidebar');
+  const hamburger = document.querySelector('.hamburger');
 
-function logout() {
-  alert("You have been logged out.");
-  window.location.href = "/"; // redirect to login page
-}
-function uploadAssignment() {
-  const fileInput = document.getElementById('fileInput');
-  const table = document.getElementById('assignmentTable');
-  
-  if (fileInput.files.length > 0) {
-    const file = fileInput.files[0];
-    const row = table.insertRow();
-    
-    row.insertCell(0).innerText = file.name;
-    row.insertCell(1).innerText = new Date().toLocaleDateString();
-    row.insertCell(2).innerHTML = `<button class="download-btn">Download</button>`;
-    
-    fileInput.value = "";
-  } else {
-    alert("Please select a file first.");
-  }
-}
+  // Toggle sidebar when hamburger is clicked
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+  });
 
+  // Close sidebar when clicking outside (only on small screens)
+  document.addEventListener('click', (e) => {
+    if (
+      window.innerWidth <= 768 && // only on mobile/tablet
+      !sidebar.contains(e.target) &&
+      !hamburger.contains(e.target)
+    ) {
+      sidebar.classList.remove('active');
+    }
+  });
+
+  // Optional: handle window resize to reset sidebar
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+      sidebar.classList.remove('active'); // ensure sidebar is visible on desktop
+    }
+  });
+
+  // Optional: remember sidebar state per teacher using localStorage
+  const teacherId = document.body.dataset.teacherId; // set this in your backend template
+  const sidebarKey = `sidebar_state_${teacherId}`;
+
+  // Load previous state
+  if (localStorage.getItem(sidebarKey) === 'active') {
+    sidebar.classList.add('active');
+  }
+
+  // Save state whenever toggled
+  hamburger.addEventListener('click', () => {
+    const isActive = sidebar.classList.contains('active');
+    localStorage.setItem(sidebarKey, isActive ? 'active' : 'inactive');
+  });
+});

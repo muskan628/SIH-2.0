@@ -5,28 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teacher Dashboard</title>
   <link rel="stylesheet" href="/static/css/admin-dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+
+<!-- Hamburger -->
+<button class="hamburger" onclick="toggleSidebar()">☰</button>
+
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
   <h2>Menu</h2>
   <ul class="menu">
-    <li><a href="{{ url_for('mst_exam') }}"><i class="fas fa-home"></i> Home</a></li>
-    <li><a href="{{ url_for('mst_exam') }}"><i class="fas fa-upload"></i> Upload Exam</a></li>
-    <li><a href="{{ url_for('quiz_exam') }}"><i class="fas fa-question-circle"></i> Quiz</a></li>
-    <li><a href="{{ url_for('student_record') }}"><i class="fas fa-user-graduate"></i> Student Records</a></li>
-    <li><a href="{{ url_for('admin_attendance') }}"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+    <li><a href="{{ url_for('mst_exam') }}">🏠 Home</a></li>
+    <li><a href="{{ url_for('mst_exam') }}">📤 Upload Exam</a></li>
+    <li><a href="{{ url_for('quiz_exam') }}">📝 Quiz</a></li>
+    <li><a href="{{ url_for('student_record') }}">🎓 Student Records</a></li>
+    <li><a href="{{ url_for('admin_attendance') }}">📋 Attendance</a></li>
   </ul>
 </div>
 
-<!-- Font Awesome CDN -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-
-<!-- Main -->
+<!-- Main Content -->
 <div class="main">
-     <button class="logout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
-  <div class="welcome">👋 Welcome, Teacher</div>
+  <div class="topbar">
+    <h1>👋 Welcome, Teacher</h1>
+    <button class="logout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
+  </div>
 
   <!-- Teacher Profile -->
   <div class="section">
@@ -42,46 +45,27 @@
     </div>
   </div>
 
-<!-- Assignments -->
-<div class="section" id="assignments">
-  <h2>📂 Upload Assignments</h2>
-  <div class="upload-box">
-    <input type="file" id="fileInput">
-    <button onclick="uploadAssignment()">Upload</button>
-  </div>
-<table id="assignmentTable">
-  <tr>
-    <th>File Name</th>
-    <th>Date Uploaded</th>
-    <th>Action</th>
-  </tr>
-   <tr>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
-   <tr>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
-   <tr>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+  <!-- Upload Assignments -->
+  <div class="section">
+    <h2>📂 Upload Assignments</h2>
+    <div class="upload-box">
+      <input type="file" id="fileInput">
+      <button onclick="uploadAssignment()">Upload</button>
+    </div>
+    <table id="assignmentTable">
+      <tr><th>File Name</th><th>Date Uploaded</th><th>Action</th></tr>
+      <tr><td colspan="3">No files uploaded yet</td></tr>
+    </table>
 
-</table>
-  <!-- Interactive Links -->
-  <div class="form-links">
-    <a href="{{ url_for('examination_form') }}" class="form-card">📝 Examination Form</a>
-    <a href="{{ url_for('mentor_form') }}" class="form-card">👨‍🏫 Mentor Form</a>
+    <!-- Interactive Links -->
+    <div class="form-links">
+      <a href="{{ url_for('examination_form') }}" class="form-card">📝 Examination Form</a>
+      <a href="{{ url_for('mentor_form') }}" class="form-card">👨‍🏫 Mentor Form</a>
+    </div>
   </div>
-</div>
-
 
   <!-- Timetable -->
-  <div class="section" id="timetable">
+  <div class="section">
     <h2>🗓 Weekly Timetable</h2>
     <table>
       <tr><th>Day</th><th>Time</th><th>Class</th><th>Subject</th></tr>
@@ -92,8 +76,8 @@
     </table>
   </div>
 
-  <!-- My Subjects -->
-  <div class="section" id="schedule">
+  <!-- Subjects & Classes -->
+  <div class="section">
     <h2>📘 My Subjects & Classes</h2>
     <table>
       <tr><th>Subject</th><th>Class</th><th>No. of Students</th></tr>
@@ -104,11 +88,10 @@
     </table>
   </div>
 
-  <footer style="text-align:center; margin-top:20px; color:#7b8794; font-size:13px;">
-    Teacher Dashboard &copy; 2025
-  </footer>
 </div>
 
-<script src="/static/js/admin-dashboard.js"></script>
+<script src="/static/js/admin-dashboard.js">
+</script>
+
 </body>
 </html>
