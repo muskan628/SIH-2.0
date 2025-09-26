@@ -12,11 +12,12 @@ body {
   background: #f0f4f8;
   color: #1e3a8a;
   transition: all 0.3s;
+  overflow-x: hidden;
 }
 
 /* Sidebar */
 .sidebar {
-  width: 200px;
+  width: 220px;
   background: #1e3a8a;
   color: white;
   height: 100vh;
@@ -26,12 +27,12 @@ body {
   left: 0;
   transition: all 0.3s;
   overflow-y: auto;
+  z-index: 1000;
 }
 
 .sidebar h2 {
   text-align: center;
   margin-bottom: 20px;
-  color: #fff;
 }
 
 .sidebar ul.menu {
@@ -40,7 +41,7 @@ body {
 }
 
 .sidebar ul.menu li {
-  margin: 15px 0;
+  margin: 12px 0;
 }
 
 .sidebar ul.menu li a {
@@ -49,75 +50,31 @@ body {
   font-size: 16px;
   display: block;
   padding: 8px 12px;
-  border-radius: 5px;
-  transition: background 0.3s;
+  border-radius: 6px;
+  transition: 0.3s;
 }
 
 .sidebar ul.menu li a:hover {
   background: #2563eb;
 }
 
-/* Sidebar Active (Collapsed) */
+/* Sidebar hidden on small screens */
 .sidebar.active {
+  transform: translateX(0);
+}
+.sidebar {
+  transform: translateX(0);
+}
+.sidebar.hide {
   transform: translateX(-100%);
 }
 
-/* Hamburger */
-.hamburger {
-  display: none; /* hide on desktop */
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  font-size: 24px;
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  z-index: 1001;
-  transition: background 0.3s;
-}
-
-.hamburger:hover {
-  background: #1d4ed8;
-}
-/* Remove extra top padding for main on small screens */
-@media (max-width: 768px) {
-  .main {
-    margin-left: 0;
-     /* Remove extra top padding for main on small screens */
-@media (max-width: 768px) {
-  .main {
-    margin-left: 0;
-    margin: -40px; /* smaller padding instead of 70px */
-  }
-  
-  /* Optional: reduce top margin of sections */
-  .section {
-    margin-top: 15px;
-  }
-}
-/* smaller padding instead of 70px */
-  }
-  
-  /* Optional: reduce top margin of sections */
-  .section {
-    margin-top: 15px;
-  }
-}
-
-
-/* Main content */
+/* Main Content */
 .main {
-  margin-left: 250px;
-  padding: 20px;
-  width: 100%;
+  flex: 1;
+  margin-left: 220px;
+  padding: 25px;
   transition: all 0.3s;
-}
-
-.sidebar.active ~ .main {
-  margin-left: 0;
 }
 
 /* Topbar */
@@ -125,15 +82,16 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
   margin-bottom: 20px;
-  
 }
 
 .topbar h1 {
   font-size: 24px;
+  font-weight: bold;
   color: #1e3a8a;
   margin: auto;
-
 }
 
 .logout-btn {
@@ -148,17 +106,35 @@ body {
 }
 
 .logout-btn:hover {
+  background: #2563eb;
+}
+
+/* Hamburger */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  font-size: 24px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 1100;
+}
+.hamburger:hover {
   background: #1d4ed8;
 }
 
 /* Sections */
 .section {
-  background: white;
+  background: #fff;
   padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
-  color: #1e3a8a;
+  margin-bottom: 25px;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
 }
 
 .section h2 {
@@ -166,62 +142,58 @@ body {
   color: #1e3a8a;
 }
 
-/* Profile Card */
-.profile-card {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.profile-card img {
-  border-radius: 50%;
-  width: 90px;
-  height: 90px;
-}
-
-.profile-info h3 {
-  color: #1e3a8a;
-  margin-bottom: 5px;
-}
-
-.profile-info p {
-  color: #333;
-  font-size: 14px;
-  margin-bottom: 3px;
-}
-
 /* Upload Box */
 .upload-box {
   display: flex;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
 }
 
 .upload-box input[type="file"] {
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  flex: 1;
+  padding: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 .upload-box button {
-  padding: 6px 12px;
-  border: none;
   background: #1e3a8a;
   color: white;
-  border-radius: 5px;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.3s;
+  font-weight: 600;
+  transition: 0.3s;
 }
 
 .upload-box button:hover {
   background: #1d4ed8;
 }
 
+/* Save Buttons */
+.section button {
+  background: #1e3a8a;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.section button:hover {
+  background: #2563eb;
+}
+
 /* Tables */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 table th, table td {
@@ -239,47 +211,19 @@ table td {
   color: #1e3a8a;
 }
 
-/* Form Links */
-.form-links {
-  display: flex;
-  gap: 15px;
-  margin-top: 15px;
-  flex-wrap: wrap;
-}
-
-.form-card {
-  padding: 10px 15px;
-  background: #1e3a8a;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  transition: background 0.3s;
-}
-
-.form-card:hover {
-  background: #1d4ed8;
-}
-
 /* Responsive */
-@media (max-width: 1024px) {
-  .main {
-    margin-left: 0;
-    padding: 15px;
-  }
-  .topbar h1 {
-    font-size: 20px;
-  }
-}
-
 @media (max-width: 768px) {
   .hamburger {
     display: block;
   }
 
   .sidebar {
-    transform: translateX(-100%);
     position: fixed;
+    top: 0;
+    left: -100%;
+    height: 100%;
     z-index: 1000;
+    transform: translateX(-100%);
   }
 
   .sidebar.active {
@@ -288,7 +232,7 @@ table td {
 
   .main {
     margin-left: 0;
-    padding-top: 70px;
+    padding: 20px;
   }
 
   .profile-card {
@@ -300,12 +244,7 @@ table td {
     flex-direction: column;
   }
 
-  .form-links {
-    flex-direction: column;
-  }
-
   table th, table td {
     font-size: 13px;
-    padding: 6px;
   }
 }
