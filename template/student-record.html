@@ -15,6 +15,15 @@
     <button class="logout-btn">Logout</button>
   </div>
 
+  <!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <h2>Menu</h2>
+    <ul>
+  <li><a href="{{ url_for('student_dashboard') }}">🏠 Home</a></li>
+  <li><a href="{{ url_for('student_notes') }}">📘 Notes</a></li>
+  <li><a href="{{ url_for('student_performance') }}">📊 Performance</a></li>
+  <li><a href="{{ url_for('student_updates') }}">📝 Updates</a></li>
+</ul>
   <!-- Controls -->
   <div class="controls">
     <input type="text" id="searchInput" placeholder="🔎 Search by Name or Roll No">
