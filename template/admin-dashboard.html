@@ -140,6 +140,15 @@
     </table>
   </div>
 
+  <!-- View Submitted Forms -->
+  <div class="section">
+    <h2>📋 View Submitted Forms</h2>
+    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+      <a href="{{ url_for('view_mentor_forms') }}" class="form-link-btn">📝 View Mentor Forms</a>
+      <a href="{{ url_for('view_examination_forms') }}" class="form-link-btn">📋 View Exam Forms</a>
+    </div>
+  </div>
+
   <!-- Timetable -->
   <div class="section">
     <h2>🗓 Weekly Timetable</h2>
@@ -334,6 +343,24 @@ function addQuestion(containerId){
 
 document.addEventListener('DOMContentLoaded', ()=>{ loadFlags(); loadExams(); });
 </script>
+
+<style>
+.form-link-btn {
+  background: #1e3a8a;
+  color: white;
+  padding: 12px 20px;
+  text-decoration: none;
+  border-radius: 6px;
+  display: inline-block;
+  transition: background 0.3s;
+}
+
+.form-link-btn:hover {
+  background: #1d4ed8;
+  color: white;
+  text-decoration: none;
+}
+</style>
 
 </body>
 </html>

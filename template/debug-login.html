@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Login</title>
+</head>
+<body>
+    <h1>Debug Login Test</h1>
+    
+    <h2>Test Login with Admin</h2>
+    <form method="POST" action="/">
+        <input type="hidden" name="role" value="admin">
+        <input type="hidden" name="username" value="admin">
+        <input type="hidden" name="password" value="shabadchahal">
+        <button type="submit">Test Admin Login</button>
+    </form>
+    
+    <h2>Test Login with Student</h2>
+    <form method="POST" action="/">
+        <input type="hidden" name="role" value="student">
+        <input type="hidden" name="username" value="nitin">
+        <input type="hidden" name="password" value="shabadchahal">
+        <button type="submit">Test Student Login</button>
+    </form>
+    
+    <h2>Manual Form</h2>
+    <form method="POST" action="/">
+        <label>Role: <input type="text" name="role" value="admin"></label><br>
+        <label>Username: <input type="text" name="username" value="admin"></label><br>
+        <label>Password: <input type="password" name="password" value="shabadchahal"></label><br>
+        <button type="submit">Manual Login</button>
+    </form>
+    
+    <h2>Test Links</h2>
+    <a href="/test-users">Check Users in Database</a><br>
+    <a href="/test-password">Test Password Hashing</a><br>
+    <a href="/">Go to Login Page</a>
+</body>
+</html>
