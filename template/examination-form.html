@@ -5,114 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Examination Form - Akal University</title>
   <link rel="stylesheet" href="/static/css/examination-form.css">
-  <style>
-    :root {
-      --primary: #1e3a8a;       /* Dark Blue */
-      --primary-light: #2563eb; /* Hover Blue */
-      --sidebar-width: 250px;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      display: flex;
-      min-height: 100vh;
-      background: #f3f4f6;
-    }
-
-    /* Sidebar */
-    .sidebar {
-     width: 200px;
-  background: #1e3a8a;
-  color: white;
-  height: 100vh;
-  padding: 20px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  transition: all 0.3s;
-  overflow-y: auto;
-    }
-
-    .sidebar .brand {
-      font-size: 22px;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .sidebar .nav-link {
-      display: flex;
-      align-items: center;
-      padding: 12px 15px;
-      margin: 6px 0;
-      text-decoration: none;
-      color: #fff;
-      font-size: 16px;
-      border-radius: 8px;
-      transition: background 0.3s ease;
-    }
-
-    .sidebar .nav-link:hover {
-      background: var(--primary-light);
-    }
-
-    .sidebar .emoji {
-      margin-right: 10px;
-      font-size: 18px;
-    }
-
-    .sidebar-footer {
-      margin-top: auto;
-      text-align: center;
-      font-size: 14px;
-      opacity: 0.8;
-      padding-top: 15px;
-    }
-
-    /* Main Content */
-    .main-content {
-      margin-left: var(--sidebar-width);
-      flex: 1;
-      padding: 20px;
-    }
-
-    .navbar {
-      display: flex;
-      justify-content: right;
-      align-items: center;
-      margin-bottom: 20px;
-      margin-left: 270px;
-      width: 900px;
-    }
-
-    .logout-btn {
-      background: var(--primary-light);
-      color: #fff;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .logout-btn:hover {
-      background: #1d4ed8;
-    }
-  </style>
 </head>
 <body>
 
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
-    <div class="brand">Smart Campus</div>
+    <div class="brand">Menu</div>
 
-    <a class="nav-link" href="admin-attendance.html"><span class="emoji">🏠</span> Home </a>
-    <a class="nav-link" href="upload_exam.html"><span class="emoji">📤</span> Upload Exam</a>
-    <a class="nav-link" href="quiz.html"><span class="emoji">📝</span> Quiz</a>
-    <a class="nav-link" href="student_records.html"><span class="emoji">🎓</span> Student Records</a>
-    <a class="nav-link" href="attendance.html"><span class="emoji">📋</span> Attendance</a>
+    <a class="nav-link" href="{{ url_for('student_dashboard') }} ">🏠Home </a>
+    <a class="nav-link" href=="{{ url_for('student_notes') }}">📘 Notes</a>
+    <a class="nav-link" href="{{ url_for('student_performance') }}">📊 Performance</a>
+    <a class="nav-link" href="{{ url_for('student_updates') }}">📝 Exams</a>
+    
 
   </aside>
+
+
 
   <!-- Main content -->
   <div class="main-content">
@@ -207,31 +115,6 @@
     </div>
   </div>
 
-  <script>
-    document.getElementById('examinationForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const payload = {};
-      form.querySelectorAll('input, textarea, select').forEach((el, idx) => {
-        const key = el.name && el.name.trim() ? el.name : `field_${idx}`;
-        payload[key] = el.value;
-      });
-      try {
-        const res = await fetch('/api/examination-form', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-        if (data.ok) {
-          alert('Examination form saved (ID: ' + data.id + ')');
-        } else {
-          alert('Save failed: ' + (data.error || 'Unknown error'));
-        }
-      } catch (err) {
-        alert('Network error: ' + err.message);
-      }
-    });
-  </script>
+ 
 </body>
 </html>

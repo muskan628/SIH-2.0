@@ -1,100 +1,81 @@
-* { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
-body { min-height:100vh; background:#f0f2f8; color:#333; transition:all 0.3s; }
+/* Reset & Base */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body { min-height: 100vh; background: #f0f4f8; color: #1e3a8a; transition: all 0.3s; }
 
-.container {
-  width: 100%;
-  padding: 30px 20px;
+/* Sidebar */
+.sidebar {
+  width: 200px; background: #1e3a8a; color: white;
+  height: 100vh; padding: 20px; position: fixed; top: 0; left: 0;
+  overflow-y: auto;
 }
+.sidebar h2 { text-align: center; margin-bottom: 20px; }
+.sidebar ul.menu { list-style: none; }
+.sidebar ul.menu li { margin: 15px 0; }
+.sidebar ul.menu li a {
+  text-decoration: none; color: white; display: block;
+  padding: 8px 12px; border-radius: 5px; transition: background 0.3s;
+}
+.sidebar ul.menu li a:hover { background: #2563eb; }
 
-.topbar {
-  display:flex;
-  justify-content: space-between;
-  align-items:center;
-  margin-bottom: 25px;
-}
-.topbar h1 { font-size:26px; color:#1a237e; }
+/* Main */
+.container { margin-left: 220px; padding: 30px 20px; }
+.form-wrapper { max-width: 900px; margin: auto; }
+
+/* Topbar */
+.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+.topbar h1 { font-size: 24px; font-weight: bold; color: #1e3a8a; }
 .logout-btn {
-  background:#e53935; color:white;
-  border:none; padding:8px 16px;
-  border-radius:8px; font-weight:bold; cursor:pointer;
-  transition:0.3s;
+  background: #ef4444; color: white; border: none; padding: 8px 16px;
+  border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s;
 }
-.logout-btn:hover { opacity:0.85; }
+.logout-btn:hover { background: #dc2626; }
 
+/* Cards */
 .student-card {
-  background:white;
-  border-radius:12px;
-  padding:25px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.08);
-  margin-bottom:25px;
+  background: white; border-radius: 12px; padding: 25px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1); margin-bottom: 25px;
 }
-.student-card h2 { margin-bottom:20px; color:#1a237e; }
+.student-card h2 { margin-bottom: 20px; }
 
-form table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
-th, td {
-  padding:12px;
-  text-align:left;
-}
-th {
-  background:#3949ab;
-  color:white;
-  font-weight:500;
-}
-tr:nth-child(even) { background:#f5f7ff; }
-tr:hover { background:#e8eaf6; }
+/* Tables */
+.table-responsive { overflow-x: auto; }
+form table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+th, td { padding: 12px; text-align: left; }
+th { background: #1e3a8a; color: white; }
+tr:nth-child(even) { background: #f5f7ff; }
+tr:hover { background: #e8eaf6; transition: 0.3s; }
 
-.student-info { display:flex; align-items:center; gap:20px; margin-bottom:20px; }
-.student-info img { width:100px; height:100px; border-radius:50%; border:3px solid #3949ab; transition:0.3s; }
-.student-info img:hover { transform:scale(1.05); }
-.student-info h2 { font-size:22px; margin-bottom:4px; color:#222; }
-.student-info p { color:#666; margin-bottom:3px; }
-
-.progress {
-  background:#e0e0e0;
-  border-radius:10px;
-  height:12px;
-  overflow:hidden;
-  margin-top:6px;
-}
-.progress-bar {
-  height:100%;
-  background:#3949ab;
-  width:0%;
-  border-radius:10px;
-  transition:width 0.5s;
-}
-.percentage {
-  font-size:14px;
-  color:#444;
-  margin-top:6px;
-  font-weight:500;
-}
-
-@media(max-width:768px) {
-  .topbar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-}
-
+/* Buttons */
 .submit-btn {
-  margin-top: 20px;
-  padding: 10px 25px;
-  background:#3949ab;  
+  margin-top: 20px; padding: 10px 25px; background: #2563eb;
+  color: white; border: none; border-radius: 8px; font-size: 16px;
+  cursor: pointer; font-weight: 600; transition: background-color 0.3s;
+}
+.submit-btn:hover { background: #1d4ed8; }
+
+/* Responsive */
+@media(max-width: 768px) {
+  .container { margin-left: 0; padding: 20px; }
+  .topbar { flex-direction: column; align-items: flex-start; gap: 15px; }
+  .form-wrapper { max-width: 100%; }
+}
+/* Hamburger */
+.hamburger {
+  display: none; /* hide on desktop */
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  font-size: 24px;
+  background: #2563eb;
   color: white;
   border: none;
-  border-radius: 6px;
-  font-size: 16px;
+  padding: 8px 12px;
+  border-radius: 5px;
   cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
+  z-index: 1001;
+  transition: background 0.3s;
 }
 
-.submit-btn:hover {
-  background:#1a237e;   
+.hamburger:hover {
+  background: #1d4ed8;
 }

@@ -3,108 +3,128 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Student Dashboard</title>
+  <title>Mentor Form</title>
   <link rel="stylesheet" href="/static/css/mentor-form.css">
 </head>
 <body>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <h2>Menu</h2>
+    <ul class="menu">
+      <li><a href="/template/student-dashboard.html">🏠 Home</a></li>
+      <li><a href="/template/student-notes.html">📘 Notes</a></li>
+      <li><a href="/template/student-performance.html">📊 Performance</a></li>
+      <li><a href="/template/mst-exam.html">📝 Exams</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Container -->
   <div class="container">
-    <div class="topbar">
-      <h1 id="welcomeMsg">Welcome, Student 👋</h1>
-      <button class="logout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
-    </div>
+    <div class="form-wrapper">
+      <div class="topbar">
+        <h1 id="welcomeMsg">Welcome, Student 👋</h1>
+        <button class="logout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
+      </div>
 
-    <div class="student-card">
-      <h2>📋 Examination Record Form (Admin Entry)</h2>
-      <form id="mentorForm">
-        <!-- Student Info Section -->
-        <table>
-          <tr><th colspan="2">Student Information</th></tr>
-          <tr><td>Student Name:</td><td><input type="text" placeholder="Enter full name" required /></td></tr>
-          <tr><td>AUID:</td><td><input type="text" placeholder="Enter AUID" required /></td></tr>
-          <tr><td>Class & Semester:</td><td><input type="text" placeholder="e.g. BCA 3rd Sem" required /></td></tr>
-          <tr><td>Group:</td><td><input type="text" placeholder="Group Name" /></td></tr>
-          <tr><td>Blood Group:</td><td><input type="text" placeholder="e.g. B+" /></td></tr>
-          <tr><td>Category:</td><td><input type="text" placeholder="e.g. General, SC, OBC" /></td></tr>
-          <tr><td>Is Hosteller / Commuter:</td><td><input type="text" placeholder="Hosteller / Commuter" /></td></tr>
-          <tr><td>Contact Address:</td><td><textarea rows="2" style="width:100%;"></textarea></td></tr>
-        </table>
+      <div class="student-card">
+        <h2>📋 Examination Record Form (Admin Entry)</h2>
+        <form id="mentorForm">
+          <!-- Student Info Section -->
+          <table>
+            <tr><th colspan="2">Student Information</th></tr>
+            <tr><td>Student Name:</td><td><input type="text" placeholder="Enter full name" required /></td></tr>
+            <tr><td>AUID:</td><td><input type="text" placeholder="Enter AUID" required /></td></tr>
+            <tr><td>Class & Semester:</td><td><input type="text" placeholder="e.g. BCA 3rd Sem" required /></td></tr>
+            <tr><td>Group:</td><td><input type="text" placeholder="Group Name" /></td></tr>
+            <tr><td>Blood Group:</td><td><input type="text" placeholder="e.g. B+" /></td></tr>
+            <tr><td>Category:</td><td><input type="text" placeholder="e.g. General, SC, OBC" /></td></tr>
+            <tr><td>Is Hosteller / Commuter:</td><td><input type="text" placeholder="Hosteller / Commuter" /></td></tr>
+            <tr><td>Contact Address:</td><td><textarea rows="2" style="width:100%;"></textarea></td></tr>
+          </table>
 
-        <!-- Parent Info -->
-        <table>
-          <tr><th colspan="2">Parent Information</th></tr>
-          <tr><td>Father's Name:</td><td><input type="text" /></td></tr>
-          <tr><td>Occupation (Father):</td><td><input type="text" /></td></tr>
-          <tr><td>Father's Mobile:</td><td><input type="text" /></td></tr>
-          <tr><td>Mother's Name:</td><td><input type="text" /></td></tr>
-          <tr><td>Occupation (Mother):</td><td><input type="text" /></td></tr>
-          <tr><td>Mother's Mobile:</td><td><input type="text" /></td></tr>
-          <tr><td>Student Email ID:</td><td><input type="email" /></td></tr>
-          <tr><td>Parent Email ID:</td><td><input type="email" /></td></tr>
-        </table>
+          <!-- Parent Info -->
+          <table>
+            <tr><th colspan="2">Parent Information</th></tr>
+            <tr><td>Father's Name:</td><td><input type="text" /></td></tr>
+            <tr><td>Occupation (Father):</td><td><input type="text" /></td></tr>
+            <tr><td>Father's Mobile:</td><td><input type="text" /></td></tr>
+            <tr><td>Mother's Name:</td><td><input type="text" /></td></tr>
+            <tr><td>Occupation (Mother):</td><td><input type="text" /></td></tr>
+            <tr><td>Mother's Mobile:</td><td><input type="text" /></td></tr>
+            <tr><td>Student Email ID:</td><td><input type="email" /></td></tr>
+            <tr><td>Parent Email ID:</td><td><input type="email" /></td></tr>
+          </table>
 
-        <p><strong>Signature of Student:</strong> ________________________</p>
+          <p><strong>Signature of Student:</strong> ________________________</p>
 
-        <!-- Attendance Record -->
-        <h3>📈 Attendance & Performance Record</h3>
-        <table>
-          <tr>
-            <th>Month</th>
-            <th>Student Signature (with date)</th>
-            <th>Attendance < 75% or Test < 8</th>
-            <th>Reason</th>
-          </tr>
-          <tr><td>August</td><td><input type="text" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
-          <tr><td>September</td><td><input type="text" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
-          <tr><td>October</td><td><input type="text" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
-          <tr><td>November</td><td><input type="text" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
-          <tr><td>December</td><td><input type="text" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
-        </table>
+          <!-- Attendance Record -->
+          <h3>📈 Attendance & Performance Record</h3>
+          <div class="table-responsive">
+            <table>
+              <tr>
+                <th>Month</th>
+                <th>Student Signature (with date)</th>
+                <th>Attendance < 75% or Test < 8</th>
+                <th>Reason</th>
+              </tr>
+              <tr><td>August</td><td><input type="text" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
+              <tr><td>September</td><td><input type="text" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
+              <tr><td>October</td><td><input type="text" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
+              <tr><td>November</td><td><input type="text" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
+              <tr><td>December</td><td><input type="text" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
+            </table>
+          </div>
 
-        <!-- Counselling Sessions -->
-        <h3>💬 Counselling Session Record</h3>
-        <table>
-          <tr><th>Month</th><th>Date</th><th>Details of Counselling</th><th>Student Sign</th></tr>
-          <tr><td>August</td><td><input type="date" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
-          <tr><td>September</td><td><input type="date" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
-          <tr><td>October</td><td><input type="date" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
-          <tr><td>November</td><td><input type="date" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
-        </table>
+          <!-- Counselling Sessions -->
+          <h3>💬 Counselling Session Record</h3>
+          <div class="table-responsive">
+            <table>
+              <tr><th>Month</th><th>Date</th><th>Details of Counselling</th><th>Student Sign</th></tr>
+              <tr><td>August</td><td><input type="date" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
+              <tr><td>September</td><td><input type="date" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
+              <tr><td>October</td><td><input type="date" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
+              <tr><td>November</td><td><input type="date" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
+            </table>
+          </div>
 
-        <!-- Communication with Parents -->
-        <h3>📞 Communication with Parents</h3>
-        <p>Mobile No. used for calling: <input type="text" style="width:300px;" /></p>
-        <table>
-          <tr><th>Month</th><th>Date of Calling</th><th>Details</th><th>Student Sign</th></tr>
-          <tr><td>September</td><td><input type="date" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
-          <tr><td>October</td><td><input type="date" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
-          <tr><td>November</td><td><input type="date" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
-          <tr><td>December</td><td><input type="date" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
-        </table>
+          <!-- Communication with Parents -->
+          <h3>📞 Communication with Parents</h3>
+          <p>Mobile No. used for calling: <input type="text" style="width:300px;" /></p>
+          <div class="table-responsive">
+            <table>
+              <tr><th>Month</th><th>Date of Calling</th><th>Details</th><th>Student Sign</th></tr>
+              <tr><td>September</td><td><input type="date" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
+              <tr><td>October</td><td><input type="date" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
+              <tr><td>November</td><td><input type="date" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
+              <tr><td>December</td><td><input type="date" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
+            </table>
+          </div>
 
-        <!-- Activities & Notes -->
-        <p><strong>Participation in Other Activities:</strong><br/>
-           <textarea rows="2" style="width:100%;"></textarea></p>
-        <p><strong>Any Other Aspect (Not Covered Above):</strong><br/>
-           <textarea rows="2" style="width:100%;"></textarea></p>
+          <!-- Activities & Notes -->
+          <p><strong>Participation in Other Activities:</strong><br/>
+             <textarea rows="2" style="width:100%;"></textarea></p>
+          <p><strong>Any Other Aspect (Not Covered Above):</strong><br/>
+             <textarea rows="2" style="width:100%;"></textarea></p>
 
-        <!-- Mentor + HOD Sign -->
-        <h3>✍️ Monthly Signatures</h3>
-        <table>
-          <tr><th>Month</th><th>Mentor Sign</th><th>HOD/Incharge Sign</th></tr>
-          <tr><td>August</td><td><input type="text" /></td><td><input type="text" /></td></tr>
-          <tr><td>September</td><td><input type="text" /></td><td><input type="text" /></td></tr>
-          <tr><td>October</td><td><input type="text" /></td><td><input type="text" /></td></tr>
-          <tr><td>November</td><td><input type="text" /></td><td><input type="text" /></td></tr>
-          <tr><td>December</td><td><input type="text" /></td><td><input type="text" /></td></tr>
-        </table>
+          <!-- Mentor + HOD Sign -->
+          <h3>✍️ Monthly Signatures</h3>
+          <div class="table-responsive">
+            <table>
+              <tr><th>Month</th><th>Mentor Sign</th><th>HOD/Incharge Sign</th></tr>
+              <tr><td>August</td><td><input type="text" /></td><td><input type="text" /></td></tr>
+              <tr><td>September</td><td><input type="text" /></td><td><input type="text" /></td></tr>
+              <tr><td>October</td><td><input type="text" /></td><td><input type="text" /></td></tr>
+              <tr><td>November</td><td><input type="text" /></td><td><input type="text" /></td></tr>
+              <tr><td>December</td><td><input type="text" /></td><td><input type="text" /></td></tr>
+            </table>
+          </div>
 
-        <p><strong>Signature with date (Dean Academic Affairs):</strong> ____________________</p>
+          <p><strong>Signature with date (Dean Academic Affairs):</strong> ____________________</p>
 
-        <button type="submit"
-                style="margin-top:20px; background:#4facfe; color:white;
-                       padding:10px 25px; border:none; border-radius:8px;
-                       font-weight:bold;">Save Form</button>
-      </form>
+          <button type="submit" class="submit-btn">Save Form</button>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -113,7 +133,6 @@
       e.preventDefault();
       const form = e.target;
       const payload = {};
-      // Collect all inputs as a simple key/value dump
       form.querySelectorAll('input, textarea, select').forEach((el, idx) => {
         const key = el.name && el.name.trim() ? el.name : `field_${idx}`;
         payload[key] = el.value;
@@ -134,27 +153,10 @@
         alert("Network error: " + err.message);
       }
     });
-    // Example: Dynamic student data (future backend)
-    const studentData = {
-      name: "Rahul Sharma",
-      stream: "BCA 2nd Year - Computer Science",
-      roll_no: "10234",
-      contact: "9876543210",
-      father_name: "Mr. Suresh Sharma",
-      father_contact: "9876501234",
-      attendance: 85,
-      pending_fees: 12000,
-      performance: "Good",
-      exams: [
-        {exam:"Maths", date:"25 Sep 2025", time:"10:00 AM"},
-        {exam:"DBMS", date:"27 Sep 2025", time:"2:00 PM"}
-      ]
-    };
 
+    // Example: Dynamic student data
+    const studentData = { name: "Rahul Sharma" };
     document.getElementById('welcomeMsg').innerText = `Welcome, ${studentData.name} 👋`;
-
-    // If you had other elements like studentName, attendance bar, exam table etc.,
-    // you'd need to re-add them and adjust your JS accordingly.
   </script>
 </body>
 </html>
