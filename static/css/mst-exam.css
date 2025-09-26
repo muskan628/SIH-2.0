@@ -5,6 +5,7 @@
   box-sizing: border-box;
   font-family: 'Segoe UI', sans-serif;
 }
+
 body {
   display: flex;
   min-height: 100vh;
@@ -21,9 +22,12 @@ body {
   padding: 25px 20px;
   position: fixed;
   height: 100%;
-  border-radius: 0 15px 15px 0;
+  top: 0;
+  left: 0;
+  /* border-radius: 0 15px 15px 0; */
   transition: all 0.3s;
-  overflow: auto;
+  overflow-y: auto;
+  z-index: 1000;
 }
 .sidebar h2 {
   text-align: center;
@@ -35,64 +39,29 @@ body {
   list-style: none;
   padding-left: 0;
 }
-.sidebar ul li {
-  display: block;
-  font-size: 16px;
-  font-weight: 500;
-  padding: 12px 15px;
-  margin: 8px 0;
-  border-radius: 8px;
-  transition: 0.3s;
-}
 .sidebar ul li a {
-  color: white;
+  color: #e2e8f0;
   text-decoration: none;
   display: block;
-}
-.sidebar ul li:hover {
-  background: #2563eb;
-}
-.menu {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  background: #1e3a8a;
-}
-
-.menu li {
-  margin: 12px 0;
-}
-.menu li a {
-  display: block;
-  text-decoration: none;
-  color: #e2e8f0;   /* light gray text */
-  font-size: 16px;
-  font-weight: 500;
   padding: 12px 15px;
   border-radius: 8px;
   transition: 0.3s;
 }
-
-/* Hover effect */
-.menu li a:hover {
+.sidebar ul li a:hover {
   background: #2563eb;
-  color: #ffffff;
+  color: #fff;
 }
-
-/* Active page */
-.menu li a.active {
-  background: #1d4ed8;
-  color: #ffffff;
+.sidebar ul li a.active {
+  background: #2563eb;
+  color: #fff;
   font-weight: 600;
 }
 
-
-
 /* Main */
 .main {
+  flex: 1;
   margin-left: 220px;
   padding: 30px 20px;
-  flex: 1;
   transition: all 0.3s;
 }
 
@@ -102,34 +71,42 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 .topbar h1 {
   font-size: 24px;
   font-weight: bold;
   color: #1e3a8a;
+  margin: auto;
 }
 .logout-btn {
-  background: #ef4444;
+  background: #1e3a8a;
   color: white;
   border: none;
   padding: 8px 16px;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
+  flex-shrink: 0;
   transition: 0.3s;
 }
 .logout-btn:hover {
-  background: #dc2626;
+  background: #1d4ed8;
 }
 .menu-toggle {
   display: none;
-  font-size: 24px;
-  cursor: pointer;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  font-size: 22px;
   background: #2563eb;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 8px;
+  color: #fff;
   border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 1001; 
 }
 
 /* Exam Container */
@@ -193,10 +170,7 @@ body {
 /* Responsive */
 @media (max-width: 768px) {
   .sidebar {
-    position: fixed;
     left: -100%;
-    z-index: 100;
-    height: 100%;
   }
   .sidebar.active {
     left: 0;
@@ -208,25 +182,4 @@ body {
   .menu-toggle {
     display: inline-block;
   }
-}
-/* Sidebar Wrapper */
-.sidebar {
-  width: 220px;
-  background: #1e3a8a;   /* dark blue */
-  color: white;
-  padding: 25px 20px;
-  position: fixed;
-  height: 100%;
-  top: 0;
-  left: 0;
-  border-radius: 0 15px 15px 0;
-  transition: all 0.3s;
-  overflow-y: auto;   /* scroll if menu is long */
-}
-
-.sidebar h2 {
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 20px;
-  font-weight: bold;
 }

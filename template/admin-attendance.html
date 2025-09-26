@@ -1,80 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Teacher Dashboard - Attendance</title>
-
-
-<link rel="stylesheet" href="/static/css/admin-attendance.css">
-<script source="/static/js/admin-attendance.js"> </script>
-
-
-
-
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Teacher Dashboard - Attendance</title>
+  <link rel="stylesheet" href="/static/css/admin-attendance.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
-<div class="layout">
-  <!-- Sidebar -->
-  <aside class="sidebar" id="sidebar">
-    <div class="brand">Smart Campus</div>
+<!-- Hamburger -->
+<button class="hamburger" onclick="toggleSidebar()">☰</button>
 
-    <!-- Simple top-level links (no subfolders) -->
-     <li><a href="{{ url_for('mst_exam') }}">🏠 Home</a></li>
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <h2>Menu</h2>
+  <ul class="menu">
+   <li><a href="{{ url_for('admin_home') }}">🏠 Home</a></li>
     <li><a href="{{ url_for('mst_exam') }}">📤 Upload Exam</a></li>
-    <li><a href="{{ url_for('quiz_exam') }}">📝 Quiz</a></li>
+    <li><a href="{{ url_for('quiz_exam') }}">📤 Upload Notes</a></li>
     <li><a href="{{ url_for('student_record') }}">🎓 Student Records</a></li>
     <li><a href="{{ url_for('admin_attendance') }}">📋 Attendance</a></li>
+  </ul>
+ 
+</div>
 
-    <div class="sidebar-footer">Logged in as Teacher</div>
-  </aside>
+<!-- Main -->
+<div class="main">
+  <div class="topbar">
+    <h1>📋 Attendance</h1>
+    <button class="logout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
+  </div>
 
-  <!-- Main -->
-  <div class="main">
-    <div class="header">
-      <button class="toggle-btn" id="toggleBtn" aria-label="Toggle menu">☰</button>
-      Teacher Dashboard - Attendance
-    </div>
+  <div class="section class-list" id="classList">
+    <h2>Select a Class</h2>
+    <div class="class-item" onclick="openClass('BCA 1st Year')">BCA 1st Year</div>
+    <div class="class-item" onclick="openClass('BCA 2nd Year')">BCA 2nd Year</div>
+    <div class="class-item" onclick="openClass('B.Tech CSE 1st Year')">B.Tech CSE 1st Year</div>
+  </div>
 
-    <div class="content">
-      <!-- Class List Section -->
-      <div class="class-list" id="classList">
-        <h2>Select a Class</h2>
-        <div class="class-item" onclick="openClass('BCA 1st Year')">BCA 1st Year</div>
-        <div class="class-item" onclick="openClass('BCA 2nd Year')">BCA 2nd Year</div>
-        <div class="class-item" onclick="openClass('B.Tech CSE 1st Year')">B.Tech CSE 1st Year</div>
-      </div>
+  <div class="section student-list" id="studentList" style="display:none;">
+    <button class="back-btn" onclick="goBack()">← Back to Classes</button>
+    <h2 id="classTitle"></h2>
 
-      <!-- Student List Section -->
-      <div class="student-list" id="studentList" style="display:none;">
-        <button class="back-btn" onclick="goBack()">← Back to Classes</button>
-        <h2 id="classTitle"></h2>
+    <table>
+      <thead>
+        <tr>
+          <th>UID (Roll No)</th>
+          <th>Name</th>
+          <th>Actions</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="students"></tbody>
+    </table>
 
-        <table>
-          <thead>
-            <tr>
-              <th>UID (Roll No)</th>
-              <th>Name</th>
-              <th>Actions</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="students"></tbody>
-        </table>
-
-        <button class="save-btn" onclick="saveAttendance()">💾 Save Attendance</button>
-
-        <div id="summary" style="margin-top: 20px;"></div>
-      </div>
-    </div>
+    <button class="save-btn" onclick="saveAttendance()">💾 Save Attendance</button>
+    <div id="summary" style="margin-top: 20px;"></div>
   </div>
 </div>
 
-<!-- Overlay used on small screens when sidebar open -->
-<div id="overlay" class="overlay" onclick="closeSidebar()"></div>
-
-
+<script>
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('active');
+}
+</script>
+<script src="/static/js/admin-attendance.js"></script>
 </body>
 </html>

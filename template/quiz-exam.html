@@ -3,34 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>quiz-exam</title>
+<title>Quick Quiz</title>
 <link rel="stylesheet" href="/static/css/quiz-exam.css">
-<script src="/static/js/quiz-exam.js"></script>
-
 </head>
 <body>
 
-<div class="sidebar">
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
   <h2>Menu</h2>
-  <ul>
-     <li><a href="{{ url_for('student_dashboard') }}">🏠 Home</a></li>
-  <li><a href="{{ url_for('student_notes') }}">📘 Notes</a></li>
-  <li><a href="{{ url_for('student_performance') }}">📊 Performance</a></li>
-  <li><a href="{{ url_for('student_updates') }}">📝 Exams</a></li>
+  <ul class="menu">
+    <li><a href="{{ url_for('student_dashboard') }}">🏠 Home</a></li>
+    <li><a href="{{ url_for('student_notes') }}">📘 Notes</a></li>
+    <li><a href="{{ url_for('student_performance') }}">📊 Performance</a></li>
+    <li><a href="{{ url_for('student_updates') }}" class="active">📝 Exams</a></li>
   </ul>
 </div>
 
+<!-- Main Content -->
 <div class="main">
   <div class="topbar">
+    <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">☰</button>
     <h1>Quick Quiz</h1>
     <button class="logout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
   </div>
 
   <div class="quiz-container">
-    <div class="quiz-question" id="quizQ"></div>
+    <div class="quiz-question" id="quizQ">Question will appear here</div>
     <div class="quiz-options" id="quizOptions"></div>
     <div class="score" id="scoreDisplay">Score: 0</div>
   </div>
 </div>
+
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const menuToggle = document.getElementById('menuToggle');
+
+  menuToggle.addEventListener('click', function() {
+      sidebar.classList.toggle('active');
+  });
+
+  // Click outside to close sidebar on small screens
+  document.addEventListener('click', function(event) {
+      if(window.innerWidth <= 768) {
+          if(!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+              sidebar.classList.remove('active');
+          }
+      }
+  });
+</script>
+
+
 </body>
 </html>
