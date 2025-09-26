@@ -1,9 +1,8 @@
-
-
 // Sidebar toggle for mobile
-const sidebar = document.getElementById('sidebar');
-const menuToggle = document.getElementById('menuToggle');
-menuToggle.addEventListener('click', ()=>{sidebar.classList.toggle('active');});
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("active");
+}
+
 
 // Example: Button actions
 function startExam(type){

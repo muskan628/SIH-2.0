@@ -16,7 +16,7 @@ body {background:#f5f5f5; display:flex; justify-content:center; align-items:cent
 /* Left Panel */
 .left-panel {
   flex:1;
-  background:#4facfe;
+  background:#1e3a8a;
   color:white;
   display:flex;
   flex-direction:column;
@@ -53,7 +53,7 @@ body {background:#f5f5f5; display:flex; justify-content:center; align-items:cent
   font-size:15px;
 }
 .login-form button {
-  background:#4facfe;
+  background:#1e3a8a;
   color:white;
   padding:12px;
   border:none;
@@ -63,19 +63,19 @@ body {background:#f5f5f5; display:flex; justify-content:center; align-items:cent
   cursor:pointer;
   transition:0.3s;
 }
-.login-form button:hover {background:#3a9edb;}
+.login-form button:hover {background:#2563eb;}
 .register-link {
   margin-top:15px;
   font-size:14px;
   text-align:center;
 }
 .register-link a {
-  color:#4facfe;
+  color:#1e3a8a;
   text-decoration:none;
   font-weight:bold;
   transition:0.3s;
 }
-.register-link a:hover {color:#3a9edb;}
+.register-link a:hover {color:#2563eb;}
 
 /* Responsive */
 @media(max-width:768px){

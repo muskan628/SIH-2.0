@@ -1,7 +1,8 @@
-// Hamburger toggle
-const sidebar = document.getElementById('sidebar');
-const hamburger = document.getElementById('hamburger');
-hamburger.addEventListener('click', () => sidebar.classList.toggle('active'));
+// Sidebar toggle
+document.getElementById("hamburger").addEventListener("click", function() {
+  document.getElementById("sidebar").classList.toggle("active");
+});
+
 
 // Close sidebar on link click (mobile)
 document.querySelectorAll('.sidebar ul li a').forEach(link => {
