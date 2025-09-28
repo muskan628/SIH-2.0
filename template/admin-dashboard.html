@@ -3,19 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teacher Dashboard</title>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/static/css/common.css">
   <link rel="stylesheet" href="/static/css/admin-dashboard.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
 <!-- Hamburger -->
-<button class="hamburger" onclick="toggleSidebar()">☰</button>
+<div class="hamburger" onclick="toggleSidebar()">☰</div>
 
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
   <h2>Menu</h2>
-  <ul class="menu">
+  <ul>
     <li><a href="{{ url_for('admin_home') }}">🏠 Home</a></li>
     <li><a href="{{ url_for('mst_exam') }}">📤 Upload Exam</a></li>
     <li><a href="{{ url_for('quiz_exam') }}">📤 Upload Notes</a></li>
@@ -27,150 +28,236 @@
 <!-- Main Content -->
 <div class="main">
   <div class="topbar">
-    <h1>👋 Welcome, Teacher</h1>
+    <h1>👋 Welcome, Admin</h1>
     <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
   </div>
 
-  <!-- Teacher Profile -->
-  <div class="section">
-    <h2>👨‍🏫 Teacher Profile</h2>
-    <div class="profile-card">
-      <!-- <img src="https://via.placeholder.com/90?text=👤" alt="Teacher"> -->
-      <div class="profile-info">
-        <h3>Mr. John Doe</h3>
+  <!-- Admin Stats Cards -->
+  <div class="cards">
+    <div class="card">
+      <h3>📊 Total Students</h3>
+      <p id="totalStudents">150</p>
+    </div>
+    <div class="card">
+      <h3>📝 Active Exams</h3>
+      <p id="activeExams">8</p>
+    </div>
+    <div class="card">
+      <h3>📋 Forms Submitted</h3>
+      <p id="formsSubmitted">45</p>
+    </div>
+    <div class="card">
+      <h3>📈 Attendance Rate</h3>
+      <p id="attendanceRate">94%</p>
+    </div>
+  </div>
+
+  <!-- Admin Profile Card -->
+  <div class="admin-card">
+    <div class="admin-info">
+      <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Admin">
+      <div>
+        <h2>Mr. John Doe</h2>
+        <p>Administrator</p>
         <p>Email: johndoe@school.edu</p>
-        <p>Department: Mathematics</p>
-        <p>Experience: 8 years</p>
       </div>
     </div>
-  </div>
 
-  <!-- Upload Assignments -->
-  <div class="section">
-    <h2>📂 Upload Assignments</h2>
-    <div class="upload-box">
-      <input type="file" id="fileInput">
-      <button onclick="uploadAssignment()">Upload</button>
-    </div>
-    <table id="assignmentTable">
-      <tr><th>File Name</th><th>Date Uploaded</th><th>Action</th></tr>
-      <tr><td colspan="3">No files uploaded yet</td></tr>
+    <table>
+      <tr><th>Details</th><th>Info</th></tr>
+      <tr><td>Department</td><td>Mathematics</td></tr>
+      <tr><td>Experience</td><td>8 years</td></tr>
+      <tr><td>Last Login</td><td>Today, 9:30 AM</td></tr>
+      <tr><td>Status</td><td><span class="status-active">Active</span></td></tr>
     </table>
-
-    <!-- Interactive Links -->
-    <!-- <div class="form-links">
-      <a href="{{ url_for('examination_form') }}" class="form-card">📝 Examination Form</a>
-      <a href="{{ url_for('mentor_form') }}" class="form-card">👨‍🏫 Mentor Form</a>
-    </div> -->
   </div>
 
-  <!-- Unlock Forms -->
+  <!-- Quick Actions -->
   <div class="section">
-    <h2>🔓 Unlock Forms & Exams</h2>
-    <div><label><input type="checkbox" id="unlockMentor"> Unlock Mentor Form for Students</label></div>
-    <div><label><input type="checkbox" id="unlockExamForm"> Unlock Examination Form for Students</label></div>
-    <div><label><input type="checkbox" id="unlockMst"> Unlock MST Exams</label></div>
-    <div><label><input type="checkbox" id="unlockQuiz"> Unlock Quiz Exams</label></div>
-    <button onclick="saveUnlocks()">Save</button>
-  </div>
-
-  <!-- Create Exams (MST / Quiz) -->
-  <div class="section">
-    <h2>📝 Create MST Exam</h2>
-    <div class="upload-box">
-      <input type="text" id="mstTitle" placeholder="MST Title" style="width:100%;margin:5px 0;">
-      <input type="number" id="mstDuration" placeholder="Duration (minutes)" value="30" style="width:100%;margin:5px 0;">
-      <div id="mstQuestions">
-        <h4>Questions:</h4>
-        <div class="question-item">
-          <input type="text" placeholder="Question 1" class="question-text" style="width:100%;margin:5px 0;">
-          <input type="text" placeholder="Option A" class="option" style="width:48%;margin:2px 1%;">
-          <input type="text" placeholder="Option B" class="option" style="width:48%;margin:2px 1%;">
-          <input type="text" placeholder="Option C" class="option" style="width:48%;margin:2px 1%;">
-          <input type="text" placeholder="Option D" class="option" style="width:48%;margin:2px 1%;">
-          <select class="correct-answer" style="width:100%;margin:5px 0;">
-            <option value="A">Correct Answer: A</option>
-            <option value="B">Correct Answer: B</option>
-            <option value="C">Correct Answer: C</option>
-            <option value="D">Correct Answer: D</option>
-          </select>
+    <h2>⚡ Quick Actions</h2>
+    <div class="cards">
+      <div class="card action-card">
+        <h3>📂 Upload Assignment</h3>
+        <div class="upload-box">
+          <input type="file" id="fileInput" class="form-control">
+          <button onclick="uploadAssignment()" class="btn">Upload</button>
         </div>
       </div>
-      <button onclick="addMstQuestion()" style="margin:5px;">+ Add Question</button>
-      <button onclick="createMst()" style="margin:5px;">Create MST</button>
-    </div>
-  </div>
-
-  <div class="section">
-    <h2>📝 Create Quiz</h2>
-    <div class="upload-box">
-      <input type="text" id="quizTitle" placeholder="Quiz Title" style="width:100%;margin:5px 0;">
-      <input type="number" id="quizDuration" placeholder="Duration (minutes)" value="10" style="width:100%;margin:5px 0;">
-      <div id="quizQuestions">
-        <h4>Questions:</h4>
-        <div class="question-item">
-          <input type="text" placeholder="Question 1" class="question-text" style="width:100%;margin:5px 0;">
-          <input type="text" placeholder="Option A" class="option" style="width:48%;margin:2px 1%;">
-          <input type="text" placeholder="Option B" class="option" style="width:48%;margin:2px 1%;">
-          <input type="text" placeholder="Option C" class="option" style="width:48%;margin:2px 1%;">
-          <input type="text" placeholder="Option D" class="option" style="width:48%;margin:2px 1%;">
-          <select class="correct-answer" style="width:100%;margin:5px 0;">
-            <option value="A">Correct Answer: A</option>
-            <option value="B">Correct Answer: B</option>
-            <option value="C">Correct Answer: C</option>
-            <option value="D">Correct Answer: D</option>
-          </select>
+      <div class="card action-card">
+        <h3>📝 Forms</h3>
+        <div class="form-links">
+          <a href="{{ url_for('examination_form') }}" class="btn">Examination Form</a>
+          <a href="{{ url_for('mentor_form') }}" class="btn">Mentor Form</a>
         </div>
       </div>
-      <button onclick="addQuizQuestion()" style="margin:5px;">+ Add Question</button>
-      <button onclick="createQuiz()" style="margin:5px;">Create Quiz</button>
+    </div>
+    
+    <div class="card">
+      <h3>📋 Recent Assignments</h3>
+      <table id="assignmentTable" class="table">
+        <tr><th>File Name</th><th>Date Uploaded</th><th>Action</th></tr>
+        <tr><td colspan="3">No files uploaded yet</td></tr>
+      </table>
     </div>
   </div>
 
-  <!-- Existing Exams -->
+  <!-- Feature Control -->
   <div class="section">
-    <h2>📚 Existing Exams</h2>
-    <h3>MST</h3>
-    <table id="mstList">
-      <tr><th>ID</th><th>Title</th><th>Created</th></tr>
-    </table>
-    <h3>Quiz</h3>
-    <table id="quizList">
-      <tr><th>ID</th><th>Title</th><th>Created</th></tr>
-    </table>
-  </div>
-
-  <!-- View Submitted Forms -->
-  <div class="section">
-    <h2>📋 View Submitted Forms</h2>
-    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-      <a href="{{ url_for('view_mentor_forms') }}" class="form-link-btn">📝 View Mentor Forms</a>
-      <a href="{{ url_for('view_examination_forms') }}" class="form-link-btn">📋 View Exam Forms</a>
+    <h2>🔓 Feature Control</h2>
+    <div class="card">
+      <h3>Enable/Disable Features for Students</h3>
+      <div class="form-row">
+        <label class="checkbox-label">
+          <input type="checkbox" id="unlockMentor">
+          <span>Mentor Form</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="unlockExamForm">
+          <span>Examination Form</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="unlockMst">
+          <span>MST Exams</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="unlockQuiz">
+          <span>Quiz Exams</span>
+        </label>
+      </div>
+      <button onclick="saveUnlocks()" class="btn">Save Settings</button>
     </div>
   </div>
 
-  <!-- Timetable -->
+  <!-- Exam Creation -->
   <div class="section">
-    <h2>🗓 Weekly Timetable</h2>
-    <table>
-      <tr><th>Day</th><th>Time</th><th>Class</th><th>Subject</th></tr>
-      <tr><td>Monday</td><td>9:00 - 10:00</td><td>10A</td><td>Math</td></tr>
-      <tr><td>Monday</td><td>11:00 - 12:00</td><td>10B</td><td>Physics</td></tr>
-      <tr><td>Tuesday</td><td>10:00 - 11:00</td><td>10C</td><td>Math</td></tr>
-      <tr><td>Wednesday</td><td>12:00 - 1:00</td><td>9A</td><td>Computer Science</td></tr>
-    </table>
+    <h2>📝 Create Exams</h2>
+    <div class="cards">
+      <!-- MST Exam Card -->
+      <div class="card exam-card">
+        <h3>📝 Create MST Exam</h3>
+        <div class="form-row">
+          <input type="text" id="mstTitle" placeholder="MST Title" class="form-control">
+          <input type="number" id="mstDuration" placeholder="Duration (minutes)" value="30" class="form-control">
+        </div>
+        <div id="mstQuestions">
+          <h4>Questions:</h4>
+          <div class="question-item">
+            <input type="text" placeholder="Question 1" class="question-text form-control">
+            <div class="form-row">
+              <input type="text" placeholder="Option A" class="option form-control">
+              <input type="text" placeholder="Option B" class="option form-control">
+            </div>
+            <div class="form-row">
+              <input type="text" placeholder="Option C" class="option form-control">
+              <input type="text" placeholder="Option D" class="option form-control">
+            </div>
+            <select class="correct-answer form-control">
+              <option value="A">Correct Answer: A</option>
+              <option value="B">Correct Answer: B</option>
+              <option value="C">Correct Answer: C</option>
+              <option value="D">Correct Answer: D</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <button onclick="addMstQuestion()" class="btn secondary">+ Add Question</button>
+          <button onclick="createMst()" class="btn">Create MST</button>
+        </div>
+      </div>
+
+      <!-- Quiz Exam Card -->
+      <div class="card exam-card">
+        <h3>📝 Create Quiz</h3>
+        <div class="form-row">
+          <input type="text" id="quizTitle" placeholder="Quiz Title" class="form-control">
+          <input type="number" id="quizDuration" placeholder="Duration (minutes)" value="10" class="form-control">
+        </div>
+        <div id="quizQuestions">
+          <h4>Questions:</h4>
+          <div class="question-item">
+            <input type="text" placeholder="Question 1" class="question-text form-control">
+            <div class="form-row">
+              <input type="text" placeholder="Option A" class="option form-control">
+              <input type="text" placeholder="Option B" class="option form-control">
+            </div>
+            <div class="form-row">
+              <input type="text" placeholder="Option C" class="option form-control">
+              <input type="text" placeholder="Option D" class="option form-control">
+            </div>
+            <select class="correct-answer form-control">
+              <option value="A">Correct Answer: A</option>
+              <option value="B">Correct Answer: B</option>
+              <option value="C">Correct Answer: C</option>
+              <option value="D">Correct Answer: D</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <button onclick="addQuizQuestion()" class="btn secondary">+ Add Question</button>
+          <button onclick="createQuiz()" class="btn">Create Quiz</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Subjects & Classes -->
+  <!-- Exam Management -->
   <div class="section">
-    <h2>📘 My Subjects & Classes</h2>
-    <table>
-      <tr><th>Subject</th><th>Class</th><th>No. of Students</th></tr>
-      <tr><td>Mathematics</td><td>10A</td><td>32</td></tr>
-      <tr><td>Mathematics</td><td>10C</td><td>28</td></tr>
-      <tr><td>Physics</td><td>10B</td><td>30</td></tr>
-      <tr><td>Computer Science</td><td>9A</td><td>25</td></tr>
-    </table>
+    <h2>📚 Exam Management</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>📝 MST Exams</h3>
+        <table id="mstList" class="table">
+          <tr><th>ID</th><th>Title</th><th>Created</th><th>Actions</th></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>📝 Quiz Exams</h3>
+        <table id="quizList" class="table">
+          <tr><th>ID</th><th>Title</th><th>Created</th><th>Actions</th></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forms Management -->
+  <div class="section">
+    <h2>📋 Forms Management</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>📝 View Submitted Forms</h3>
+        <div class="form-links">
+          <a href="{{ url_for('view_mentor_forms') }}" class="btn">View Mentor Forms</a>
+          <a href="{{ url_for('view_examination_forms') }}" class="btn">View Exam Forms</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Schedule & Classes -->
+  <div class="section">
+    <h2>📅 Schedule & Classes</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>🗓 Weekly Timetable</h3>
+        <table class="table">
+          <tr><th>Day</th><th>Time</th><th>Class</th><th>Subject</th></tr>
+          <tr><td>Monday</td><td>9:00 - 10:00</td><td>10A</td><td>Math</td></tr>
+          <tr><td>Monday</td><td>11:00 - 12:00</td><td>10B</td><td>Physics</td></tr>
+          <tr><td>Tuesday</td><td>10:00 - 11:00</td><td>10C</td><td>Math</td></tr>
+          <tr><td>Wednesday</td><td>12:00 - 1:00</td><td>9A</td><td>Computer Science</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>📘 Subjects & Classes</h3>
+        <table class="table">
+          <tr><th>Subject</th><th>Class</th><th>Students</th></tr>
+          <tr><td>Mathematics</td><td>10A</td><td>32</td></tr>
+          <tr><td>Mathematics</td><td>10C</td><td>28</td></tr>
+          <tr><td>Physics</td><td>10B</td><td>30</td></tr>
+          <tr><td>Computer Science</td><td>9A</td><td>25</td></tr>
+        </table>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -326,12 +413,16 @@ function addQuestion(containerId){
   const div = document.createElement('div');
   div.className = 'question-item';
   div.innerHTML = `
-    <input type="text" placeholder="Question ${count}" class="question-text" style="width:100%;margin:5px 0;">
-    <input type="text" placeholder="Option A" class="option" style="width:48%;margin:2px 1%;">
-    <input type="text" placeholder="Option B" class="option" style="width:48%;margin:2px 1%;">
-    <input type="text" placeholder="Option C" class="option" style="width:48%;margin:2px 1%;">
-    <input type="text" placeholder="Option D" class="option" style="width:48%;margin:2px 1%;">
-    <select class="correct-answer" style="width:100%;margin:5px 0;">
+    <input type="text" placeholder="Question ${count}" class="question-text form-control">
+    <div class="form-row">
+      <input type="text" placeholder="Option A" class="option form-control">
+      <input type="text" placeholder="Option B" class="option form-control">
+    </div>
+    <div class="form-row">
+      <input type="text" placeholder="Option C" class="option form-control">
+      <input type="text" placeholder="Option D" class="option form-control">
+    </div>
+    <select class="correct-answer form-control">
       <option value="A">Correct Answer: A</option>
       <option value="B">Correct Answer: B</option>
       <option value="C">Correct Answer: C</option>
@@ -345,20 +436,107 @@ document.addEventListener('DOMContentLoaded', ()=>{ loadFlags(); loadExams(); })
 </script>
 
 <style>
-.form-link-btn {
-  background: #1e3a8a;
-  color: white;
-  padding: 12px 20px;
-  text-decoration: none;
-  border-radius: 6px;
-  display: inline-block;
-  transition: background 0.3s;
+/* Admin-specific styles */
+.admin-card {
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  padding: 20px;
+  margin-bottom: 20px;
 }
 
-.form-link-btn:hover {
-  background: #1d4ed8;
+.admin-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.admin-info img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.admin-info h2 {
+  margin: 0;
+  color: var(--brand);
+}
+
+.admin-info p {
+  margin: 5px 0;
+  color: var(--muted);
+}
+
+.status-active {
+  background: #10b981;
   color: white;
-  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.action-card {
+  min-height: 200px;
+}
+
+.exam-card {
+  min-height: 400px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.checkbox-label:hover {
+  background: #f3f4f6;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin: 0;
+}
+
+.form-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.question-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #f9fafb;
+}
+
+.question-item h4 {
+  margin: 0 0 10px 0;
+  color: var(--brand);
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .admin-info {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .form-links {
+    flex-direction: column;
+  }
+  
+  .exam-card {
+    min-height: auto;
+  }
 }
 </style>
 
