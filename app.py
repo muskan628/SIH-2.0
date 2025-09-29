@@ -5,6 +5,8 @@ from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
+from datetime import datetime
+
 
 # --- App Configuration ---
 basedir = os.path.abspath(os.path.dirname(__file__))
