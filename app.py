@@ -1,10 +1,16 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
+import datetime
+from datetime import datetime
+from datetime import timezone
+from datetime import timedelta
+from datetime import date
+from datetime import time
+from datetime import datetime
 
 # --- App Configuration ---
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -19,8 +25,11 @@ app = Flask(
 app.secret_key = os.environ.get("SECRET_KEY", "a_hard_to_guess_default_secret_key")
 
 # --- Database Configuration ---
-# Format: postgresql://user:password@host:port/dbname
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2004@localhost:5432/testdb'
+# Use DATABASE_URL if provided, otherwise default to a local SQLite DB for easy setup
+default_sqlite_path = os.path.join(basedir, "sih.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+    'DATABASE_URL', f'sqlite:///{default_sqlite_path}'
+)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -61,7 +70,7 @@ class MSTExam(db.Model):
     __tablename__ = "mst_exams"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=True)
-    config = db.Column(JSON, nullable=True)  # questions, timing etc.
+    config = db.Column(db.JSON, nullable=True)  # questions, timing etc.
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
@@ -70,7 +79,7 @@ class QuizExam(db.Model):
     __tablename__ = "quiz_exams"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=True)
-    config = db.Column(JSON, nullable=True)
+    config = db.Column(db.JSON, nullable=True)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
@@ -139,6 +148,29 @@ class Assignment(db.Model):
     file_url = db.Column(db.String(500), nullable=True)
     due_date = db.Column(db.Date, nullable=True)
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+
+# --- Classes & Schedule ---
+class ClassSection(db.Model):
+    __tablename__ = "class_sections"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), nullable=False)  # e.g., 10A
+    subject = db.Column(db.String(120), nullable=True)
+    students_count = db.Column(db.Integer, nullable=True)
+    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+
+class ScheduleEntry(db.Model):
+    __tablename__ = "schedule_entries"
+    id = db.Column(db.Integer, primary_key=True)
+    day = db.Column(db.String(16), nullable=False)  # Monday ... Sunday
+    start_time = db.Column(db.String(16), nullable=False)  # HH:MM
+    end_time = db.Column(db.String(16), nullable=False)    # HH:MM
+    class_name = db.Column(db.String(64), nullable=False)  # e.g., 10A
+    subject = db.Column(db.String(120), nullable=True)
+    teacher = db.Column(db.String(120), nullable=True)
+    room = db.Column(db.String(64), nullable=True)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
 
 
@@ -254,34 +286,32 @@ def ensure_schema():
     from sqlalchemy import inspect, text
 
     inspector = inspect(db.engine)
+    dialect = db.engine.dialect.name
 
-    # Ensure 'users' table has 'email' column
-    if 'users' in inspector.get_table_names():
-        user_columns = {col['name'] for col in inspector.get_columns('users')}
+    # Ensure users table columns only on PostgreSQL; for SQLite/MySQL rely on create_all
+    users_table = User.__table__.name
+    if dialect == 'postgresql' and users_table in inspector.get_table_names():
+        user_columns = {col['name'] for col in inspector.get_columns(users_table)}
         if 'email' not in user_columns:
-            # Add email column as nullable first to allow backfill
-            db.session.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(120)"))
-            # Backfill email values for existing rows
-            db.session.execute(text("UPDATE users SET email = CONCAT(username, '@local') WHERE email IS NULL"))
-            # Add unique constraint if not exists (name guarded) and set NOT NULL
+            db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS email VARCHAR(120)"))
+            db.session.execute(text(f"UPDATE {users_table} SET email = CONCAT(username, '@local') WHERE email IS NULL"))
             try:
-                db.session.execute(text("ALTER TABLE users ADD CONSTRAINT users_email_key UNIQUE (email)"))
+                db.session.execute(text(f"ALTER TABLE {users_table} ADD CONSTRAINT {users_table}_email_key UNIQUE (email)"))
             except Exception:
-                # Constraint likely exists; ignore
                 pass
-            db.session.execute(text("ALTER TABLE users ALTER COLUMN email SET NOT NULL"))
+            db.session.execute(text(f"ALTER TABLE {users_table} ALTER COLUMN email SET NOT NULL"))
             db.session.commit()
 
         # Add temp_id and permanent_id if missing
-        user_columns = {col['name'] for col in inspector.get_columns('users')}
+        user_columns = {col['name'] for col in inspector.get_columns(users_table)}
         if 'temp_id' not in user_columns:
-            db.session.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS temp_id VARCHAR(32) UNIQUE"))
+            db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS temp_id VARCHAR(32) UNIQUE"))
         if 'permanent_id' not in user_columns:
-            db.session.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS permanent_id VARCHAR(32) UNIQUE"))
+            db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS permanent_id VARCHAR(32) UNIQUE"))
         db.session.commit()
 
-    # Ensure 'registration_students' table exists (create_all handles creation)
-    # Nothing else required here since create_all is called in initial_setup.
+    # Ensure tables exist
+    db.create_all()
 
     # Backfill temp/permanent IDs for existing students if missing
     students_missing_ids = User.query.filter(
@@ -296,7 +326,7 @@ def ensure_schema():
     if students_missing_ids:
         db.session.commit()
 
-    # Ensure new content tables exist
+    # Ensure new content tables exist (idempotent)
     db.create_all()
 
 
@@ -688,6 +718,113 @@ def api_assignments():
     })
 
 
+# --- Classes APIs ---
+@app.route("/api/classes", methods=["GET", "POST"])
+def api_classes():
+    role = session.get("role")
+    if request.method == "POST":
+        if "user_id" not in session or role != "admin":
+            return jsonify({"ok": False, "error": "Unauthorized"}), 401
+        payload = request.get_json(silent=True) or {}
+        rec = ClassSection(
+            name=payload.get("name", ""),
+            subject=payload.get("subject"),
+            students_count=payload.get("students_count")
+        )
+        db.session.add(rec)
+        db.session.commit()
+        return jsonify({"ok": True, "id": rec.id})
+    items = ClassSection.query.order_by(ClassSection.created_at.desc()).all()
+    return jsonify({
+        "ok": True,
+        "items": [
+            {
+                "id": c.id,
+                "name": c.name,
+                "subject": c.subject,
+                "students_count": c.students_count,
+                "created_at": str(c.created_at)
+            } for c in items
+        ]
+    })
+
+
+@app.route("/api/classes/<int:class_id>", methods=["PUT", "DELETE"])
+def api_class_detail(class_id: int):
+    if "user_id" not in session or session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    rec = ClassSection.query.get_or_404(class_id)
+    if request.method == "DELETE":
+        db.session.delete(rec)
+        db.session.commit()
+        return jsonify({"ok": True})
+    payload = request.get_json(silent=True) or {}
+    rec.name = payload.get("name", rec.name)
+    rec.subject = payload.get("subject", rec.subject)
+    rec.students_count = payload.get("students_count", rec.students_count)
+    db.session.commit()
+    return jsonify({"ok": True})
+
+
+# --- Schedule APIs ---
+@app.route("/api/schedule", methods=["GET", "POST"])
+def api_schedule():
+    role = session.get("role")
+    if request.method == "POST":
+        if "user_id" not in session or role != "admin":
+            return jsonify({"ok": False, "error": "Unauthorized"}), 401
+        payload = request.get_json(silent=True) or {}
+        rec = ScheduleEntry(
+            day=payload.get("day", "Monday"),
+            start_time=payload.get("start_time", "09:00"),
+            end_time=payload.get("end_time", "10:00"),
+            class_name=payload.get("class_name", ""),
+            subject=payload.get("subject"),
+            teacher=payload.get("teacher"),
+            room=payload.get("room")
+        )
+        db.session.add(rec)
+        db.session.commit()
+        return jsonify({"ok": True, "id": rec.id})
+    # GET
+    items = ScheduleEntry.query.order_by(ScheduleEntry.day.asc(), ScheduleEntry.start_time.asc()).all()
+    return jsonify({
+        "ok": True,
+        "items": [
+            {
+                "id": s.id,
+                "day": s.day,
+                "start_time": s.start_time,
+                "end_time": s.end_time,
+                "class_name": s.class_name,
+                "subject": s.subject,
+                "teacher": s.teacher,
+                "room": s.room,
+                "created_at": str(s.created_at)
+            } for s in items
+        ]
+    })
+
+
+@app.route("/api/schedule/<int:entry_id>", methods=["PUT", "DELETE"])
+def api_schedule_detail(entry_id: int):
+    if "user_id" not in session or session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    rec = ScheduleEntry.query.get_or_404(entry_id)
+    if request.method == "DELETE":
+        db.session.delete(rec)
+        db.session.commit()
+        return jsonify({"ok": True})
+    payload = request.get_json(silent=True) or {}
+    rec.day = payload.get("day", rec.day)
+    rec.start_time = payload.get("start_time", rec.start_time)
+    rec.end_time = payload.get("end_time", rec.end_time)
+    rec.class_name = payload.get("class_name", rec.class_name)
+    rec.subject = payload.get("subject", rec.subject)
+    rec.teacher = payload.get("teacher", rec.teacher)
+    rec.room = payload.get("room", rec.room)
+    db.session.commit()
+    return jsonify({"ok": True})
 # --- Exam creation APIs (admin) ---
 @app.route("/api/exams/mst", methods=["POST"])
 def api_create_mst_exam():
