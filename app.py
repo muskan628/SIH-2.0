@@ -4,13 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
-import datetime
 from datetime import datetime
-from datetime import timezone
-from datetime import timedelta
-from datetime import date
-from datetime import time
-from datetime import datetime
+
 
 # --- App Configuration ---
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -25,11 +20,8 @@ app = Flask(
 app.secret_key = os.environ.get("SECRET_KEY", "a_hard_to_guess_default_secret_key")
 
 # --- Database Configuration ---
-# Use DATABASE_URL if provided, otherwise default to a local SQLite DB for easy setup
-default_sqlite_path = os.path.join(basedir, "sih.db")
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'DATABASE_URL', f'sqlite:///{default_sqlite_path}'
-)
+# Format: postgresql://user:password@host:port/dbname
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost:5432/testdb'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)

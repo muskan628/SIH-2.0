@@ -18,8 +18,6 @@
   <h2>Menu</h2>
   <ul>
     <li><a href="{{ url_for('admin_home') }}">🏠 Home</a></li>
-    <li><a href="{{ url_for('mst_exam') }}">📤 Upload Exam</a></li>
-    <li><a href="{{ url_for('quiz_exam') }}">📤 Upload Notes</a></li>
     <li><a href="{{ url_for('student_record') }}">🎓 Student Records</a></li>
     <li><a href="{{ url_for('admin_attendance') }}">📋 Attendance</a></li>
     <li><a href="{{ url_for('admin_proctoring') }}">🔒 Proctoring</a></li>
@@ -279,12 +277,13 @@
 </div>
 
 <script>
-const hamburger = document.querySelector('.hamburger');
-const sidebar = document.getElementById('sidebar');
+  const hamburger = document.querySelector('.hamburger');
+  const sidebar = document.querySelector('.sidebar');
 
-hamburger.addEventListener('click', () => {
+  hamburger.addEventListener('click', () => {
     sidebar.classList.toggle('active');
-});
+  });
+
 
 
 async function loadFlags(){
