@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proctoring Dashboard</title>
+  <link rel="stylesheet" href="/static/css/common.css">
+  <link rel="stylesheet" href="/static/css/admin-dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Hamburger -->
+<div class="hamburger" onclick="toggleSidebar()">☰</div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <h2>Menu</h2>
+  <ul>
+    <li><a href="{{ url_for('admin_home') }}">🏠 Home</a></li>
+    <li><a href="{{ url_for('mst_exam') }}">📤 Upload Exam</a></li>
+    <li><a href="{{ url_for('quiz_exam') }}">📤 Upload Notes</a></li>
+    <li><a href="{{ url_for('student_record') }}">🎓 Student Records</a></li>
+    <li><a href="{{ url_for('admin_attendance') }}">📋 Attendance</a></li>
+    <li><a href="{{ url_for('admin_proctoring') }}" class="active">🔒 Proctoring</a></li>
+  </ul>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+  <div class="topbar">
+    <h1>🔒 Proctoring Dashboard</h1>
+    <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+  </div>
+
+  <!-- Proctoring Stats -->
+  <div class="cards">
+    <div class="card">
+      <h3>🚨 Total Alerts</h3>
+      <p id="totalAlerts">0</p>
+    </div>
+    <div class="card">
+      <h3>⚠️ Critical Issues</h3>
+      <p id="criticalAlerts">0</p>
+    </div>
+    <div class="card">
+      <h3>👥 Active Students</h3>
+      <p id="activeStudents">0</p>
+    </div>
+    <div class="card">
+      <h3>📊 Resolved Issues</h3>
+      <p id="resolvedIssues">0</p>
+    </div>
+  </div>
+
+  <!-- Proctoring Controls -->
+  <div class="section">
+    <h2>⚙️ Proctoring Settings</h2>
+    <div class="card">
+      <h3>System Configuration</h3>
+      <div class="form-row">
+        <label class="checkbox-label">
+          <input type="checkbox" id="enableProctoring" checked>
+          <span>Enable Proctoring System</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="requireCamera" checked>
+          <span>Require Camera Access</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="requireMicrophone" checked>
+          <span>Require Microphone Access</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="enableFaceDetection" checked>
+          <span>Enable Face Detection</span>
+        </label>
+      </div>
+      <div class="form-row">
+        <label>Max Warnings: <input type="number" id="maxWarnings" value="3" min="1" max="10" class="form-control" style="width: 80px;"></label>
+        <label>Alert Threshold: <select id="alertThreshold" class="form-control" style="width: 120px;">
+          <option value="low">Low</option>
+          <option value="medium" selected>Medium</option>
+          <option value="high">High</option>
+        </select></label>
+      </div>
+      <button onclick="saveProctoringSettings()" class="btn">Save Settings</button>
+    </div>
+  </div>
+
+  <!-- Recent Activities -->
+  <div class="section">
+    <h2>📋 Recent Proctoring Activities</h2>
+    <div class="card">
+      <div class="table-controls">
+        <div class="filter-controls">
+          <select id="severityFilter" class="form-control">
+            <option value="">All Severities</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+          </select>
+          <select id="statusFilter" class="form-control">
+            <option value="">All Status</option>
+            <option value="unresolved">Unresolved</option>
+            <option value="resolved">Resolved</option>
+          </select>
+          <button onclick="filterActivities()" class="btn secondary">Filter</button>
+          <button onclick="refreshActivities()" class="btn">Refresh</button>
+        </div>
+      </div>
+      
+      <table id="proctoringTable" class="table">
+        <tr>
+          <th>Time</th>
+          <th>Student ID</th>
+          <th>Exam ID</th>
+          <th>Activity</th>
+          <th>Severity</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+        <tr><td colspan="7">Loading activities...</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Live Monitoring -->
+  <div class="section">
+    <h2>📹 Live Monitoring</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Active Exams</h3>
+        <div id="activeExamsList">
+          <p>No active exams</p>
+        </div>
+      </div>
+      <div class="card">
+        <h3>System Status</h3>
+        <div class="status-indicators">
+          <div class="status-item">
+            <span class="status-icon">📹</span>
+            <span>Camera System</span>
+            <span class="status-dot online"></span>
+          </div>
+          <div class="status-item">
+            <span class="status-icon">🎤</span>
+            <span>Audio System</span>
+            <span class="status-dot online"></span>
+          </div>
+          <div class="status-item">
+            <span class="status-icon">👤</span>
+            <span>Face Detection</span>
+            <span class="status-dot online"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('active');
+}
+
+// Load proctoring activities
+async function loadProctoringActivities() {
+  try {
+    const response = await fetch('/api/proctoring/activities');
+    const data = await response.json();
+    
+    if (data.ok) {
+      updateProctoringTable(data.activities);
+      updateStats(data.stats);
+    } else {
+      console.error('Failed to load proctoring activities:', data.error);
+    }
+  } catch (error) {
+    console.error('Error loading proctoring activities:', error);
+  }
+}
+
+function updateProctoringTable(activities) {
+  const table = document.getElementById('proctoringTable');
+  const tbody = table.querySelector('tbody') || table;
+  
+  // Clear existing rows except header
+  const rows = tbody.querySelectorAll('tr:not(:first-child)');
+  rows.forEach(row => row.remove());
+  
+  if (activities.length === 0) {
+    const row = tbody.insertRow(-1);
+    row.insertCell(0).innerHTML = '<td colspan="7" style="text-align: center;">No activities found</td>';
+    return;
+  }
+  
+  activities.forEach(activity => {
+    const row = tbody.insertRow(-1);
+    row.insertCell(0).textContent = new Date(activity.timestamp).toLocaleString();
+    row.insertCell(1).textContent = activity.student_id;
+    row.insertCell(2).textContent = activity.exam_id;
+    row.insertCell(3).textContent = activity.description;
+    
+    const severityCell = row.insertCell(4);
+    severityCell.innerHTML = `<span class="severity-badge ${activity.severity}">${activity.severity.toUpperCase()}</span>`;
+    
+    const statusCell = row.insertCell(5);
+    statusCell.innerHTML = `<span class="status-badge ${activity.resolved ? 'resolved' : 'unresolved'}">${activity.resolved ? 'Resolved' : 'Unresolved'}</span>`;
+    
+    const actionsCell = row.insertCell(6);
+    if (!activity.resolved) {
+      actionsCell.innerHTML = `<button onclick="resolveActivity(${activity.id})" class="btn secondary">Resolve</button>`;
+    } else {
+      actionsCell.innerHTML = `<span style="color: #666;">Resolved</span>`;
+    }
+  });
+}
+
+function updateStats(stats) {
+  document.getElementById('totalAlerts').textContent = stats.total_alerts || 0;
+  document.getElementById('criticalAlerts').textContent = stats.critical_alerts || 0;
+  document.getElementById('activeStudents').textContent = stats.active_students || 0;
+  document.getElementById('resolvedIssues').textContent = stats.resolved_issues || 0;
+}
+
+async function resolveActivity(activityId) {
+  try {
+    const response = await fetch(`/api/proctoring/activities/${activityId}/resolve`, {
+      method: 'POST'
+    });
+    
+    if (response.ok) {
+      alert('Activity resolved successfully');
+      loadProctoringActivities(); // Refresh the table
+    } else {
+      alert('Failed to resolve activity');
+    }
+  } catch (error) {
+    console.error('Error resolving activity:', error);
+    alert('Error resolving activity');
+  }
+}
+
+function filterActivities() {
+  // Implement filtering logic
+  loadProctoringActivities();
+}
+
+function refreshActivities() {
+  loadProctoringActivities();
+}
+
+async function saveProctoringSettings() {
+  const settings = {
+    enable_proctoring: document.getElementById('enableProctoring').checked,
+    require_camera: document.getElementById('requireCamera').checked,
+    require_microphone: document.getElementById('requireMicrophone').checked,
+    enable_face_detection: document.getElementById('enableFaceDetection').checked,
+    max_warnings: parseInt(document.getElementById('maxWarnings').value),
+    alert_threshold: document.getElementById('alertThreshold').value
+  };
+  
+  try {
+    const response = await fetch('/api/proctoring/settings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(settings)
+    });
+    
+    if (response.ok) {
+      alert('Settings saved successfully');
+    } else {
+      alert('Failed to save settings');
+    }
+  } catch (error) {
+    console.error('Error saving settings:', error);
+    alert('Error saving settings');
+  }
+}
+
+// Load activities when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  loadProctoringActivities();
+  
+  // Refresh every 30 seconds
+  setInterval(loadProctoringActivities, 30000);
+});
+</script>
+
+<style>
+.severity-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.severity-badge.low {
+  background: #d4edda;
+  color: #155724;
+}
+
+.severity-badge.medium {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.severity-badge.high {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.severity-badge.critical {
+  background: #f5c6cb;
+  color: #721c24;
+  font-weight: bold;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge.resolved {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-badge.unresolved {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.table-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filter-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.status-indicators {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #dc3545;
+}
+
+.status-dot.online {
+  background: #28a745;
+}
+
+@media (max-width: 768px) {
+  .table-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filter-controls {
+    justify-content: center;
+  }
+}
+</style>
+
+</body>
+</html>

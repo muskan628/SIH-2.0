@@ -165,6 +165,20 @@ class FeatureFlag(db.Model):
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
 
+class ProctoringActivity(db.Model):
+    __tablename__ = "proctoring_activities"
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.String(50), nullable=False)
+    exam_id = db.Column(db.String(50), nullable=False)
+    activity_type = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    severity = db.Column(db.String(20), default='medium')  # low, medium, high, critical
+    ip_address = db.Column(db.String(45), nullable=False)
+    user_agent = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    resolved = db.Column(db.Boolean, default=False)
+
+
 # --- One-Time Setup Function ---
 def initial_setup():
     """Creates database tables and a default admin and student user."""
@@ -1055,6 +1069,178 @@ def api_get_examination_forms():
             } for form in forms
         ]
     })
+
+
+# --- Proctoring APIs ---
+@app.route("/api/proctoring/activity", methods=["POST"])
+def api_record_proctoring_activity():
+    """Record suspicious activity during exams"""
+    if "user_id" not in session:
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    
+    data = request.get_json()
+    if not data:
+        return jsonify({"ok": False, "error": "No data provided"}), 400
+    
+    try:
+        # Determine severity based on activity type
+        activity = data.get("activity", "")
+        severity = "low"
+        if "page hidden" in activity.lower() or "window lost focus" in activity.lower():
+            severity = "medium"
+        elif "face not detected" in activity.lower() or "looking away" in activity.lower():
+            severity = "high"
+        elif "blocked shortcut" in activity.lower() or "right-click" in activity.lower():
+            severity = "critical"
+        
+        # Save to database
+        proctoring_activity = ProctoringActivity(
+            student_id=str(session.get("user_id")),
+            exam_id=data.get("examId", "unknown"),
+            activity_type="suspicious_behavior",
+            description=activity,
+            severity=severity,
+            ip_address=request.remote_addr,
+            user_agent=request.headers.get("User-Agent", "")
+        )
+        
+        db.session.add(proctoring_activity)
+        db.session.commit()
+        
+        print(f"PROCTORING ALERT: {activity} - Severity: {severity}")
+        
+        return jsonify({"ok": True, "message": "Activity recorded", "severity": severity})
+        
+    except Exception as e:
+        print(f"Error recording proctoring activity: {e}")
+        db.session.rollback()
+        return jsonify({"ok": False, "error": "Failed to record activity"}), 500
+
+
+@app.route("/api/proctoring/status", methods=["GET"])
+def api_get_proctoring_status():
+    """Get proctoring status for current exam"""
+    if "user_id" not in session:
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    
+    # Return proctoring configuration
+    return jsonify({
+        "ok": True,
+        "proctoring_enabled": True,
+        "camera_required": True,
+        "microphone_required": True,
+        "face_detection": True,
+        "eye_tracking": True,
+        "max_warnings": 3
+    })
+
+
+@app.route("/admin/proctoring")
+def admin_proctoring():
+    """Admin proctoring dashboard"""
+    if "user_id" not in session or session.get("role") != "admin":
+        return redirect(url_for("login"))
+    
+    return render_template("admin-proctoring.html")
+
+
+@app.route("/api/proctoring/activities", methods=["GET"])
+def api_get_proctoring_activities():
+    """Get all proctoring activities for admin"""
+    if "user_id" not in session or session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    
+    try:
+        # Get filter parameters
+        severity_filter = request.args.get("severity", "")
+        status_filter = request.args.get("status", "")
+        
+        # Build query
+        query = ProctoringActivity.query
+        
+        if severity_filter:
+            query = query.filter(ProctoringActivity.severity == severity_filter)
+        
+        if status_filter == "resolved":
+            query = query.filter(ProctoringActivity.resolved == True)
+        elif status_filter == "unresolved":
+            query = query.filter(ProctoringActivity.resolved == False)
+        
+        # Get activities ordered by timestamp (newest first)
+        activities = query.order_by(ProctoringActivity.timestamp.desc()).limit(100).all()
+        
+        # Calculate stats
+        total_alerts = ProctoringActivity.query.count()
+        critical_alerts = ProctoringActivity.query.filter(ProctoringActivity.severity == "critical").count()
+        resolved_issues = ProctoringActivity.query.filter(ProctoringActivity.resolved == True).count()
+        
+        return jsonify({
+            "ok": True,
+            "activities": [
+                {
+                    "id": activity.id,
+                    "student_id": activity.student_id,
+                    "exam_id": activity.exam_id,
+                    "activity_type": activity.activity_type,
+                    "description": activity.description,
+                    "severity": activity.severity,
+                    "resolved": activity.resolved,
+                    "timestamp": activity.timestamp.isoformat(),
+                    "ip_address": activity.ip_address
+                } for activity in activities
+            ],
+            "stats": {
+                "total_alerts": total_alerts,
+                "critical_alerts": critical_alerts,
+                "resolved_issues": resolved_issues,
+                "active_students": 0  # This would need to be calculated based on active sessions
+            }
+        })
+        
+    except Exception as e:
+        print(f"Error getting proctoring activities: {e}")
+        return jsonify({"ok": False, "error": "Failed to get activities"}), 500
+
+
+@app.route("/api/proctoring/activities/<int:activity_id>/resolve", methods=["POST"])
+def api_resolve_proctoring_activity(activity_id):
+    """Mark a proctoring activity as resolved"""
+    if "user_id" not in session or session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    
+    try:
+        activity = ProctoringActivity.query.get_or_404(activity_id)
+        activity.resolved = True
+        db.session.commit()
+        
+        return jsonify({"ok": True, "message": "Activity resolved"})
+        
+    except Exception as e:
+        print(f"Error resolving proctoring activity: {e}")
+        db.session.rollback()
+        return jsonify({"ok": False, "error": "Failed to resolve activity"}), 500
+
+
+@app.route("/api/proctoring/settings", methods=["POST"])
+def api_save_proctoring_settings():
+    """Save proctoring settings"""
+    if "user_id" not in session or session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    
+    data = request.get_json()
+    if not data:
+        return jsonify({"ok": False, "error": "No data provided"}), 400
+    
+    try:
+        # In a real implementation, you would save these settings to a database
+        # For now, we'll just log them
+        print(f"Proctoring settings updated: {data}")
+        
+        return jsonify({"ok": True, "message": "Settings saved"})
+        
+    except Exception as e:
+        print(f"Error saving proctoring settings: {e}")
+        return jsonify({"ok": False, "error": "Failed to save settings"}), 500
 
 
 # --- Main Execution ---
