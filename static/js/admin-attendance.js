@@ -4,34 +4,17 @@ let currentClass = '';
 let students = [];
 let attendanceData = {};
 
-// Sample student data for different classes
-const sampleStudents = {
-  'BCA 1st Year': [
-    { uid: 'BCA001', name: 'John Doe', rollNo: 'BCA001' },
-    { uid: 'BCA002', name: 'Jane Smith', rollNo: 'BCA002' },
-    { uid: 'BCA003', name: 'Mike Johnson', rollNo: 'BCA003' },
-    { uid: 'BCA004', name: 'Sarah Wilson', rollNo: 'BCA004' },
-    { uid: 'BCA005', name: 'David Brown', rollNo: 'BCA005' }
-  ],
-  'BCA 2nd Year': [
-    { uid: 'BCA201', name: 'Alice Johnson', rollNo: 'BCA201' },
-    { uid: 'BCA202', name: 'Bob Smith', rollNo: 'BCA202' },
-    { uid: 'BCA203', name: 'Carol Davis', rollNo: 'BCA203' },
-    { uid: 'BCA204', name: 'Daniel Wilson', rollNo: 'BCA204' }
-  ],
-  'B.Tech CSE 1st Year': [
-    { uid: 'CSE001', name: 'Emma Thompson', rollNo: 'CSE001' },
-    { uid: 'CSE002', name: 'James Miller', rollNo: 'CSE002' },
-    { uid: 'CSE003', name: 'Lisa Anderson', rollNo: 'CSE003' },
-    { uid: 'CSE004', name: 'Tom Wilson', rollNo: 'CSE004' },
-    { uid: 'CSE005', name: 'Amy Garcia', rollNo: 'CSE005' },
-    { uid: 'CSE006', name: 'Chris Lee', rollNo: 'CSE006' }
-  ]
-};
-
-function openClass(className) {
+async function openClass(className) {
   currentClass = className;
-  students = sampleStudents[className] || [];
+  // fetch students from attendance baseline (users with this class in recent attendance)
+  try{
+    const res = await fetch('/api/attendance/template?class_name=' + encodeURIComponent(className));
+    const data = await res.json();
+    students = (data.students||[]);
+  }catch(e){
+    console.error('Failed to load students for class', e);
+    students = [];
+  }
   
   // Show student list, hide class list
   document.getElementById('classList').style.display = 'none';

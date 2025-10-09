@@ -232,6 +232,32 @@
     </div>
   </div>
 
+  <!-- AI Report & SMS -->
+  <div class="section">
+    <h2>🤖 AI Report & SMS to Parents</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Preview Report (Single Student)</h3>
+        <div class="form-row">
+          <input type="number" id="smsStudentId" placeholder="Student ID" class="form-control">
+          <button class="btn" onclick="previewSmsReport()">Preview</button>
+        </div>
+        <textarea id="smsPreview" class="form-control" rows="4" placeholder="Preview will appear here..."></textarea>
+        <div class="form-row" style="margin-top:10px">
+          <button class="btn" onclick="sendSmsToStudent()">Send SMS to Parent</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Send to Whole Class</h3>
+        <div class="form-row">
+          <input type="text" id="smsClassName" placeholder="Class (e.g., 10A)" class="form-control">
+          <button class="btn" onclick="sendSmsToClass()">Send to Class</button>
+        </div>
+        <p style="color:var(--muted);margin-top:8px">Sends summary to all students that have a parent phone on record.</p>
+      </div>
+    </div>
+  </div>
+
   <!-- Schedule & Classes -->
   <div class="section">
     <h2>📅 Schedule & Classes</h2>
@@ -547,6 +573,34 @@ async function deleteSchedule(id){
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{ loadClasses(); loadSchedule(); });
+
+// --- AI Report & SMS ---
+async function previewSmsReport(){
+  const id = parseInt(document.getElementById('smsStudentId').value);
+  if(!id){ alert('Enter student id'); return; }
+  const res = await fetch(`/api/admin/report/preview/${id}`);
+  const data = await res.json();
+  if(data && data.ok){ document.getElementById('smsPreview').value = data.message; }
+  else { alert('Preview failed'); }
+}
+
+async function sendSmsToStudent(){
+  const id = parseInt(document.getElementById('smsStudentId').value);
+  if(!id){ alert('Enter student id'); return; }
+  const res = await fetch('/api/admin/report/send', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({student_id:id})});
+  const data = await res.json();
+  if(data && data.ok){ alert(`Sent: ${data.sent.length}, Failed: ${data.failed.length}`); }
+  else { alert('Send failed'); }
+}
+
+async function sendSmsToClass(){
+  const cls = document.getElementById('smsClassName').value.trim();
+  if(!cls){ alert('Enter class name'); return; }
+  const res = await fetch('/api/admin/report/send', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({class_name:cls})});
+  const data = await res.json();
+  if(data && data.ok){ alert(`Sent: ${data.sent.length}, Failed: ${data.failed.length}`); }
+  else { alert('Send failed'); }
+}
 </script>
 
 <style>

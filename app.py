@@ -3,8 +3,13 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 import uuid
 from datetime import datetime
+import base64
+import urllib.parse
+import urllib.request
+import os
 
 
 # --- App Configuration ---
@@ -21,7 +26,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "a_hard_to_guess_default_secret_ke
 
 # --- Database Configuration ---
 # Format: postgresql://user:password@host:port/dbname
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost:5432/testdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2004@localhost:5432/testdb'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -44,6 +49,62 @@ class User(db.Model):
     # Student identifiers
     temp_id = db.Column(db.String(32), unique=True, nullable=True)
     permanent_id = db.Column(db.String(32), unique=True, nullable=True)
+    state = db.Column(db.String(64), nullable=True)
+    phone = db.Column(db.String(20), nullable=True)
+    is_verified = db.Column(db.Boolean, default=False)
+
+# Extended student profile for admission form
+class StudentAdmissionProfile(db.Model):
+    __tablename__ = "student_admission_profiles"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, unique=True)
+    auid = db.Column(db.String(64), nullable=True)
+    full_name = db.Column(db.String(200), nullable=True)
+    father_name = db.Column(db.String(200), nullable=True)
+    mother_name = db.Column(db.String(200), nullable=True)
+    guardian_name = db.Column(db.String(200), nullable=True)
+    guardian_relationship = db.Column(db.String(50), nullable=True)
+    father_occupation = db.Column(db.String(100), nullable=True)
+    father_occupation_type = db.Column(db.String(50), nullable=True)  # Govt/Private/Retired/NA
+    family_annual_income = db.Column(db.Integer, nullable=True)
+    date_of_birth = db.Column(db.Date, nullable=True)
+    aadhaar_student = db.Column(db.String(20), nullable=True)
+    aadhaar_father = db.Column(db.String(20), nullable=True)
+    aadhaar_mother = db.Column(db.String(20), nullable=True)
+    gender = db.Column(db.String(10), nullable=True)
+    nationality = db.Column(db.String(50), nullable=True)
+    religion = db.Column(db.String(50), nullable=True)
+    category = db.Column(db.String(20), nullable=True)  # Gen/SC/ST/BC/OBC/EWS
+    sub_caste = db.Column(db.String(50), nullable=True)
+    is_domicile_punjab = db.Column(db.Boolean, nullable=True)
+    marital_status = db.Column(db.String(20), nullable=True)
+    permanent_address = db.Column(db.Text, nullable=True)
+    correspondence_address = db.Column(db.Text, nullable=True)
+    father_contact = db.Column(db.String(20), nullable=True)
+    mother_contact = db.Column(db.String(20), nullable=True)
+    student_contact = db.Column(db.String(20), nullable=True)
+    email = db.Column(db.String(120), nullable=True)
+    territory_code = db.Column(db.String(20), nullable=True)  # Urban/Rural/Tribal
+    facility_hostel = db.Column(db.Boolean, default=False)
+    facility_transport = db.Column(db.Boolean, default=False)
+    facility_self_transport = db.Column(db.Boolean, default=False)
+    transport_boarding_place = db.Column(db.String(200), nullable=True)
+    # Educational details
+    exam_10_2_year = db.Column(db.String(10), nullable=True)
+    exam_10_2_school = db.Column(db.String(200), nullable=True)
+    exam_10_2_board = db.Column(db.String(100), nullable=True)
+    exam_10_2_marks = db.Column(db.Float, nullable=True)
+    exam_degree_year = db.Column(db.String(10), nullable=True)
+    exam_degree_school = db.Column(db.String(200), nullable=True)
+    exam_degree_board = db.Column(db.String(100), nullable=True)
+    exam_degree_marks = db.Column(db.Float, nullable=True)
+    # Additional fields
+    sibling_concession = db.Column(db.Boolean, default=False)
+    sibling_auid = db.Column(db.String(64), nullable=True)
+    sibling_programme = db.Column(db.String(100), nullable=True)
+    rank_holder = db.Column(db.String(200), nullable=True)
+    photo_url = db.Column(db.String(500), nullable=True)
+    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
 
 class StudentRegistration(db.Model):
     __tablename__ = "registration_students"
@@ -300,6 +361,12 @@ def ensure_schema():
             db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS temp_id VARCHAR(32) UNIQUE"))
         if 'permanent_id' not in user_columns:
             db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS permanent_id VARCHAR(32) UNIQUE"))
+        if 'state' not in user_columns:
+            db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS state VARCHAR(64)"))
+        if 'phone' not in user_columns:
+            db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS phone VARCHAR(20)"))
+        if 'is_verified' not in user_columns:
+            db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS is_verified BOOLEAN DEFAULT FALSE"))
         db.session.commit()
 
     # Ensure tables exist
@@ -431,11 +498,60 @@ def register():
                 username=username,
                 email=email,
                 password=hashed_password,
+                state=request.form.get("state", "").strip(),
+                phone=request.form.get("phone", "").strip(),
                 temp_id=generate_temp_id() if role == 'student' else None,
                 permanent_id=generate_permanent_id() if role == 'student' else None,
             )
             db.session.add(new_user)
             db.session.commit()
+            
+            # If student, create admission profile and save form data
+            if role == 'student':
+                profile = StudentAdmissionProfile(user_id=new_user.id)
+                
+                # Save all form data to profile
+                profile.auid = request.form.get("auid", "").strip()
+                profile.full_name = request.form.get("full_name", "").strip()
+                profile.father_name = request.form.get("father_name", "").strip()
+                profile.mother_name = request.form.get("mother_name", "").strip()
+                profile.father_occupation = request.form.get("father_occupation", "").strip()
+                profile.father_occupation_type = request.form.get("father_occupation_type", "").strip()
+                profile.family_annual_income = request.form.get("family_annual_income", "").strip()
+                profile.aadhaar_student = request.form.get("aadhaar_student", "").strip()
+                profile.gender = request.form.get("gender", "").strip()
+                profile.nationality = request.form.get("nationality", "").strip()
+                profile.religion = request.form.get("religion", "").strip()
+                profile.category = request.form.get("category", "").strip()
+                profile.territory_code = request.form.get("territory_code", "").strip()
+                profile.marital_status = request.form.get("marital_status", "").strip()
+                profile.permanent_address = request.form.get("permanent_address", "").strip()
+                profile.correspondence_address = request.form.get("correspondence_address", "").strip()
+                profile.father_contact = request.form.get("father_contact", "").strip()
+                profile.exam_10_2_year = request.form.get("exam_10_2_year", "").strip()
+                profile.exam_10_2_school = request.form.get("exam_10_2_school", "").strip()
+                profile.exam_10_2_board = request.form.get("exam_10_2_board", "").strip()
+                profile.exam_10_2_marks = request.form.get("exam_10_2_marks", "").strip()
+                profile.exam_degree_year = request.form.get("exam_degree_year", "").strip()
+                profile.exam_degree_school = request.form.get("exam_degree_school", "").strip()
+                profile.exam_degree_board = request.form.get("exam_degree_board", "").strip()
+                profile.exam_degree_marks = request.form.get("exam_degree_marks", "").strip()
+                profile.transport_boarding_place = request.form.get("transport_boarding_place", "").strip()
+                
+                # Handle checkboxes
+                profile.facility_hostel = 'facility_hostel' in request.form
+                profile.facility_transport = 'facility_transport' in request.form
+                profile.facility_self_transport = 'facility_self_transport' in request.form
+                
+                # Handle date of birth
+                if request.form.get("date_of_birth"):
+                    try:
+                        profile.date_of_birth = datetime.strptime(request.form.get("date_of_birth"), '%Y-%m-%d').date()
+                    except:
+                        pass
+                
+                db.session.add(profile)
+                db.session.commit()
             
             print(f"User registered successfully: {username} with role {role}")
             flash("Registration successful! Please log in.", "success")
@@ -447,6 +563,50 @@ def register():
             return redirect(url_for("register"))
 
     return render_template("register.html")
+
+@app.route("/api/admission-form", methods=["POST"])
+def api_admission_form():
+    """Save admission form data"""
+    if "user_id" not in session:
+        return jsonify({"ok": False, "error": "Not logged in"}), 401
+    
+    user_id = session["user_id"]
+    data = request.get_json()
+    
+    # Create or update admission profile
+    profile = StudentAdmissionProfile.query.filter_by(user_id=user_id).first()
+    if not profile:
+        profile = StudentAdmissionProfile(user_id=user_id)
+        db.session.add(profile)
+    
+    # Update profile with form data
+    for field in ['auid', 'full_name', 'father_name', 'mother_name', 'guardian_name', 
+                  'guardian_relationship', 'father_occupation', 'father_occupation_type',
+                  'family_annual_income', 'aadhaar_student', 'aadhaar_father', 'aadhaar_mother',
+                  'gender', 'nationality', 'religion', 'category', 'sub_caste',
+                  'is_domicile_punjab', 'marital_status', 'permanent_address',
+                  'correspondence_address', 'father_contact', 'mother_contact',
+                  'student_contact', 'email', 'territory_code', 'facility_hostel',
+                  'facility_transport', 'facility_self_transport', 'transport_boarding_place',
+                  'exam_10_2_year', 'exam_10_2_school', 'exam_10_2_board', 'exam_10_2_marks',
+                  'exam_degree_year', 'exam_degree_school', 'exam_degree_board', 'exam_degree_marks',
+                  'sibling_concession', 'sibling_auid', 'sibling_programme', 'rank_holder']:
+        if field in data:
+            setattr(profile, field, data[field])
+    
+    # Handle date of birth
+    if 'date_of_birth' in data and data['date_of_birth']:
+        try:
+            profile.date_of_birth = datetime.strptime(data['date_of_birth'], '%Y-%m-%d').date()
+        except:
+            pass
+    
+    db.session.commit()
+    
+    return jsonify({
+        "ok": True,
+        "message": "Admission form submitted successfully"
+    })
 
 
 @app.route("/test-users")
@@ -953,6 +1113,27 @@ def api_save_attendance():
     return jsonify({"ok": True, "saved": len(created)})
 
 
+@app.route("/api/attendance/template", methods=["GET"])
+def api_attendance_template():
+    if "user_id" not in session or session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    class_name = request.args.get("class_name", "").strip()
+    if not class_name:
+        return jsonify({"ok": False, "error": "class_name required"}), 400
+
+    # Derive student list from previous attendance entries for this class
+    recent = Attendance.query.filter_by(class_name=class_name).order_by(Attendance.created_at.desc()).limit(500).all()
+    seen = {}
+    students = []
+    for r in recent:
+        key = r.uid or f"{r.student_name}"
+        if key in seen:
+            continue
+        seen[key] = True
+        students.append({"uid": r.uid or "", "name": r.student_name or ""})
+
+    return jsonify({"ok": True, "students": students})
+
 @app.route("/api/attendance/me", methods=["GET"])
 def api_my_attendance():
     if "user_id" not in session or session.get("role") != "student":
@@ -1370,6 +1551,117 @@ def api_save_proctoring_settings():
     except Exception as e:
         print(f"Error saving proctoring settings: {e}")
         return jsonify({"ok": False, "error": "Failed to save settings"}), 500
+
+
+# --- AI-like Student Report + SMS ---
+def _calc_attendance_pct_for_user(user: User) -> int:
+    uid_candidates = [user.permanent_id, user.temp_id, user.username]
+    q = Attendance.query.filter(Attendance.uid.in_(uid_candidates))
+    total = q.count()
+    present = q.filter_by(status="Present").count()
+    return int((present / total) * 100) if total else 0
+
+
+def _generate_student_report_text(user: User) -> str:
+    attendance_pct = _calc_attendance_pct_for_user(user)
+    latest_mentor = MentorForm.query.filter_by(student_id=user.id).order_by(MentorForm.created_at.desc()).first()
+    pending_fees = latest_mentor.pending_fees if latest_mentor else 0
+    activities = (latest_mentor.activities or "-") if latest_mentor else "-"
+
+    student_name = user.username
+    profile = StudentAdmissionProfile.query.filter_by(user_id=user.id).first()
+    if profile and profile.full_name:
+        student_name = profile.full_name
+
+    summary = (
+        f"Akal University: Progress update for {student_name}. "
+        f"Attendance: {attendance_pct}%. "
+        f"Pending fees: Rs {pending_fees}. "
+        f"Recent activity: {activities[:60]}"
+    )
+    return summary[:300]
+
+
+def _send_sms_text(phone_number: str, message: str) -> bool:
+    """Send SMS via Twilio if configured, otherwise print to console and return True.
+    Set env: TWILIO_SID, TWILIO_TOKEN, TWILIO_FROM.
+    """
+    sid = os.environ.get("TWILIO_SID")
+    token = os.environ.get("TWILIO_TOKEN")
+    sender = os.environ.get("TWILIO_FROM")
+    if not (sid and token and sender):
+        print("[SMS DEBUG]", phone_number, message)
+        return True
+    try:
+        import requests
+        url = f"https://api.twilio.com/2010-04-01/Accounts/{sid}/Messages.json"
+        data = {"From": sender, "To": phone_number, "Body": message}
+        resp = requests.post(url, data=data, auth=(sid, token), timeout=10)
+        ok = 200 <= resp.status_code < 300
+        if not ok:
+            print("Twilio error:", resp.status_code, resp.text)
+        return ok
+    except Exception as e:
+        print("SMS send failed:", e)
+        return False
+
+
+@app.route("/api/admin/report/preview/<int:student_id>", methods=["GET"])
+def api_admin_report_preview(student_id: int):
+    if "user_id" not in session or session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    user = User.query.get_or_404(student_id)
+    text = _generate_student_report_text(user)
+    return jsonify({"ok": True, "student_id": student_id, "message": text})
+
+
+@app.route("/api/admin/report/send", methods=["POST"])
+def api_admin_report_send():
+    if "user_id" not in session or session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    payload = request.get_json(silent=True) or {}
+    student_id = payload.get("student_id")
+    class_name = payload.get("class_name")
+
+    sent = []
+    failed = []
+
+    targets = []
+    if student_id:
+        u = User.query.get(student_id)
+        if u:
+            targets.append(u)
+    elif class_name:
+        uid_to_user = {u.permanent_id: u for u in User.query.filter_by(role="student").all() if u.permanent_id}
+        recent = Attendance.query.filter_by(class_name=class_name).order_by(Attendance.date.desc()).limit(500).all()
+        for it in recent:
+            u = uid_to_user.get(it.uid)
+            if u and u not in targets:
+                targets.append(u)
+    else:
+        return jsonify({"ok": False, "error": "student_id or class_name required"}), 400
+
+    for u in targets:
+        phone = None
+        prof = StudentAdmissionProfile.query.filter_by(user_id=u.id).first()
+        if prof and prof.father_contact:
+            phone = prof.father_contact
+        if not phone:
+            mf = MentorForm.query.filter_by(student_id=u.id).order_by(MentorForm.created_at.desc()).first()
+            if mf and mf.father_contact:
+                phone = mf.father_contact
+        if not phone:
+            failed.append({"student": u.username, "reason": "No parent phone"})
+            continue
+
+        msg = _generate_student_report_text(u)
+        ok = _send_sms_text(phone, msg)
+        if ok:
+            sent.append({"student": u.username, "phone": phone})
+        else:
+            failed.append({"student": u.username, "phone": phone})
+
+    return jsonify({"ok": True, "sent": sent, "failed": failed})
 
 
 # --- Main Execution ---

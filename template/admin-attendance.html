@@ -34,9 +34,11 @@
 
   <div class="section class-list" id="classList">
     <h2>Select a Class</h2>
-    <div class="class-item" onclick="openClass('BCA 1st Year')">BCA 1st Year</div>
-    <div class="class-item" onclick="openClass('BCA 2nd Year')">BCA 2nd Year</div>
-    <div class="class-item" onclick="openClass('B.Tech CSE 1st Year')">B.Tech CSE 1st Year</div>
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+      <select id="classSelect" class="form-control" style="min-width:220px"></select>
+      <button class="btn" onclick="loadStudentsForSelectedClass()">Load Students</button>
+    </div>
+    <p id="classHint" style="color:var(--muted); margin-top:8px;">Classes are loaded from database.</p>
   </div>
 
   <div class="section student-list" id="studentList" style="display:none;">
@@ -92,5 +94,31 @@ function toggleSidebar() {
 }
 </script>
 <script src="/static/js/admin-attendance.js"></script>
+<script>
+// populate classes on load
+document.addEventListener('DOMContentLoaded', async function(){
+  try{
+    const res = await fetch('/api/classes');
+    const data = await res.json();
+    const sel = document.getElementById('classSelect');
+    sel.innerHTML = '';
+    (data.items||[]).forEach(c=>{
+      const opt = document.createElement('option');
+      opt.value = c.name; opt.textContent = `${c.name}${c.subject? ' - '+c.subject: ''}`;
+      sel.appendChild(opt);
+    });
+    if(!sel.options.length){
+      const opt = document.createElement('option');
+      opt.value=''; opt.textContent='No classes yet'; sel.appendChild(opt);
+    }
+  }catch(e){ console.error('Failed to load classes', e); }
+});
+
+function loadStudentsForSelectedClass(){
+  const sel = document.getElementById('classSelect');
+  if(!sel || !sel.value){ alert('Please select a class'); return; }
+  openClass(sel.value);
+}
+</script>
 </body>
 </html>
