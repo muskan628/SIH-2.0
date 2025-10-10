@@ -132,13 +132,19 @@
 </head>
 <body>
     <div class="form-container">
-        <div class="form-header">
+        <div class="form-header" style="position: relative;">
+            <div style="position:absolute; top:20px; right:20px; width:110px; text-align:center;">
+                <div style="width:110px; height:130px; border:2px solid #fff; border-radius:6px; overflow:hidden; background:#f3f4f6; display:flex; align-items:center; justify-content:center;">
+                    <img id="photoPreview" src="" alt="Photo" style="max-width:100%; max-height:100%; display:none;" />
+                </div>
+                <input type="file" id="photo" name="photo" accept="image/*" style="margin-top:8px; width:110px; font-size:12px;" />
+            </div>
             <h1>AKAL UNIVERSITY TALWANDI SABO</h1>
             <h2>STUDENT REGISTRATION FORM 2025-26</h2>
             <p>Please fill all required fields carefully</p>
         </div>
 
-        <form method="POST" enctype="multipart/form-data">
+        <form id="registerForm" method="POST" enctype="multipart/form-data">
             <!-- Basic Account Information -->
             <div class="form-section">
                 <h3>1. Account Information</h3>
@@ -209,6 +215,16 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
+                        <label for="guardian_name">Guardian Name</label>
+                        <input type="text" id="guardian_name" name="guardian_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="guardian_relationship">Relationship with Guardian</label>
+                        <input type="text" id="guardian_relationship" name="guardian_relationship" placeholder="Father/Mother/Other">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
                         <label for="date_of_birth">Date of Birth <span class="required">*</span></label>
                         <input type="date" id="date_of_birth" name="date_of_birth" required>
                     </div>
@@ -251,6 +267,16 @@
                     <div class="form-group">
                         <label for="father_contact">Father's Contact Number <span class="required">*</span></label>
                         <input type="tel" id="father_contact" name="father_contact" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="mother_contact">Mother's Contact Number</label>
+                        <input type="tel" id="mother_contact" name="mother_contact">
+                    </div>
+                    <div class="form-group">
+                        <label for="student_contact">Student Contact Number</label>
+                        <input type="tel" id="student_contact" name="student_contact">
                     </div>
                 </div>
             </div>
@@ -331,6 +357,16 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
+                        <label for="aadhaar_father">Father's Aadhaar</label>
+                        <input type="text" id="aadhaar_father" name="aadhaar_father">
+                    </div>
+                    <div class="form-group">
+                        <label for="aadhaar_mother">Mother's Aadhaar</label>
+                        <input type="text" id="aadhaar_mother" name="aadhaar_mother">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
                         <label for="religion">Religion</label>
                         <input type="text" id="religion" name="religion">
                     </div>
@@ -344,6 +380,20 @@
                             <option value="BC">BC</option>
                             <option value="OBC">OBC</option>
                             <option value="EWS">EWS</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sub_caste">Sub-caste</label>
+                        <input type="text" id="sub_caste" name="sub_caste">
+                    </div>
+                    <div class="form-group">
+                        <label for="is_domicile_punjab">Domicile of Punjab</label>
+                        <select id="is_domicile_punjab" name="is_domicile_punjab">
+                            <option value="">Select</option>
+                            <option value="True">Yes</option>
+                            <option value="False">No</option>
                         </select>
                     </div>
                 </div>
@@ -366,6 +416,12 @@
                         </select>
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email_profile">Student Email</label>
+                        <input type="email" id="email_profile" name="email_profile" placeholder="name@example.com">
+                    </div>
+                </div>
             </div>
 
             <!-- Facilities -->
@@ -373,16 +429,16 @@
                 <h3>7. Facilities Required</h3>
                 <div class="checkbox-group">
                     <div class="checkbox-item">
-                        <input type="checkbox" id="facility_hostel" name="facility_hostel">
-                        <label for="facility_hostel">Hostel</label>
+                        <input type="radio" id="facility_choice_hostel" name="facility_choice" value="hostel">
+                        <label for="facility_choice_hostel">Hostel</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="facility_transport" name="facility_transport">
-                        <label for="facility_transport">University Transport</label>
+                        <input type="radio" id="facility_choice_transport" name="facility_choice" value="transport">
+                        <label for="facility_choice_transport">University Transport</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="facility_self_transport" name="facility_self_transport">
-                        <label for="facility_self_transport">Self Transport</label>
+                        <input type="radio" id="facility_choice_self" name="facility_choice" value="self">
+                        <label for="facility_choice_self">Self Transport</label>
                     </div>
                 </div>
                 <div class="form-group">
@@ -391,9 +447,31 @@
                 </div>
             </div>
 
+            <!-- Sibling Concession -->
+            <div class="form-section">
+                <h3>8. Sibling Concession</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sibling_concession">Applying for sibling concession?</label>
+                        <select id="sibling_concession" name="sibling_concession">
+                            <option value="False">No</option>
+                            <option value="True">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sibling_auid">Sibling AUID</label>
+                        <input type="text" id="sibling_auid" name="sibling_auid">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="sibling_programme">Programme</label>
+                    <input type="text" id="sibling_programme" name="sibling_programme">
+                </div>
+            </div>
+
             <!-- Declaration -->
             <div class="form-section">
-                <h3>8. Declaration</h3>
+                <h3>9. Declaration</h3>
                 <p>I declare that all the information provided above is correct to the best of my knowledge and nothing has been concealed. I understand that any incorrect or concealed information may lead to cancellation of my admission.</p>
                 <div class="checkbox-item">
                     <input type="checkbox" id="declaration" name="declaration" required>
@@ -410,6 +488,20 @@
     </div>
 
     <script>
+        // Photo preview
+        document.getElementById('photo').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const img = document.getElementById('photoPreview');
+            if (file) {
+                const url = URL.createObjectURL(file);
+                img.src = url;
+                img.style.display = 'block';
+            } else {
+                img.src = '';
+                img.style.display = 'none';
+            }
+        });
+
         // Password confirmation validation
         document.getElementById('confirmPassword').addEventListener('input', function() {
             const password = document.getElementById('password').value;
@@ -429,6 +521,15 @@
                 const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
                 this.value = `232${timestamp}${random}`;
             }
+        });
+
+        // Enforce single-select facility additional validation
+        const transportBoarding = document.getElementById('transport_boarding_place');
+        document.querySelectorAll('input[name="facility_choice"]').forEach(r => {
+            r.addEventListener('change', () => {
+                transportBoarding.disabled = r.value !== 'transport' ? true : false;
+                if (r.value !== 'transport') transportBoarding.value = '';
+            });
         });
 
         // Form validation

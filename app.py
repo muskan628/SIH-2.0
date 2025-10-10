@@ -515,19 +515,31 @@ def register():
                 profile.full_name = request.form.get("full_name", "").strip()
                 profile.father_name = request.form.get("father_name", "").strip()
                 profile.mother_name = request.form.get("mother_name", "").strip()
+                profile.guardian_name = request.form.get("guardian_name", "").strip()
+                profile.guardian_relationship = request.form.get("guardian_relationship", "").strip()
                 profile.father_occupation = request.form.get("father_occupation", "").strip()
                 profile.father_occupation_type = request.form.get("father_occupation_type", "").strip()
                 profile.family_annual_income = request.form.get("family_annual_income", "").strip()
                 profile.aadhaar_student = request.form.get("aadhaar_student", "").strip()
+                profile.aadhaar_father = request.form.get("aadhaar_father", "").strip()
+                profile.aadhaar_mother = request.form.get("aadhaar_mother", "").strip()
                 profile.gender = request.form.get("gender", "").strip()
                 profile.nationality = request.form.get("nationality", "").strip()
                 profile.religion = request.form.get("religion", "").strip()
                 profile.category = request.form.get("category", "").strip()
+                profile.sub_caste = request.form.get("sub_caste", "").strip()
+                # boolean from select
+                dom_val = request.form.get("is_domicile_punjab", "").strip()
+                if dom_val in ["True", "False"]:
+                    profile.is_domicile_punjab = True if dom_val == "True" else False
                 profile.territory_code = request.form.get("territory_code", "").strip()
                 profile.marital_status = request.form.get("marital_status", "").strip()
                 profile.permanent_address = request.form.get("permanent_address", "").strip()
                 profile.correspondence_address = request.form.get("correspondence_address", "").strip()
                 profile.father_contact = request.form.get("father_contact", "").strip()
+                profile.mother_contact = request.form.get("mother_contact", "").strip()
+                profile.student_contact = request.form.get("student_contact", "").strip()
+                profile.email = request.form.get("email_profile", "").strip()
                 profile.exam_10_2_year = request.form.get("exam_10_2_year", "").strip()
                 profile.exam_10_2_school = request.form.get("exam_10_2_school", "").strip()
                 profile.exam_10_2_board = request.form.get("exam_10_2_board", "").strip()
@@ -538,10 +550,17 @@ def register():
                 profile.exam_degree_marks = request.form.get("exam_degree_marks", "").strip()
                 profile.transport_boarding_place = request.form.get("transport_boarding_place", "").strip()
                 
-                # Handle checkboxes
-                profile.facility_hostel = 'facility_hostel' in request.form
-                profile.facility_transport = 'facility_transport' in request.form
-                profile.facility_self_transport = 'facility_self_transport' in request.form
+                # Handle facilities: only one option can be selected
+                facility_choice = request.form.get("facility_choice", "").strip()
+                profile.facility_hostel = facility_choice == "hostel"
+                profile.facility_transport = facility_choice == "transport"
+                profile.facility_self_transport = facility_choice == "self"
+
+                # Sibling concession
+                sib_raw = request.form.get("sibling_concession", "False").strip()
+                profile.sibling_concession = True if sib_raw == "True" else False
+                profile.sibling_auid = request.form.get("sibling_auid", "").strip()
+                profile.sibling_programme = request.form.get("sibling_programme", "").strip()
                 
                 # Handle date of birth
                 if request.form.get("date_of_birth"):
@@ -549,6 +568,21 @@ def register():
                         profile.date_of_birth = datetime.strptime(request.form.get("date_of_birth"), '%Y-%m-%d').date()
                     except:
                         pass
+
+                # Handle photo upload
+                try:
+                    photo = request.files.get('photo')
+                    if photo and photo.filename:
+                        uploads_dir = os.path.join(basedir, 'static', 'uploads')
+                        os.makedirs(uploads_dir, exist_ok=True)
+                        ext = os.path.splitext(photo.filename)[1]
+                        safe_name = secure_filename(f"{uuid.uuid4().hex}{ext}")
+                        file_path = os.path.join(uploads_dir, safe_name)
+                        photo.save(file_path)
+                        profile.photo_url = f"/static/uploads/{safe_name}"
+                except Exception as _e:
+                    # Non-fatal: continue without photo
+                    pass
                 
                 db.session.add(profile)
                 db.session.commit()
