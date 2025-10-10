@@ -164,7 +164,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="phone">Phone Number <span class="required">*</span></label>
+                        <label for="phone">Phone Number (Student) <span class="required">*</span></label>
                         <input type="tel" id="phone" name="phone" required>
                     </div>
                     <div class="form-group">
@@ -184,9 +184,54 @@
                 <input type="hidden" name="role" value="student">
             </div>
 
+            <!-- Admission Details (from booklet cover) -->
+            <div class="form-section">
+                <h3>2. Admission Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="serial_no">Serial No.</label>
+                        <input type="text" id="serial_no" name="serial_no" placeholder="e.g., 1954">
+                    </div>
+                    <div class="form-group">
+                        <label for="date_of_admission">Date of Admission</label>
+                        <input type="date" id="date_of_admission" name="date_of_admission">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="course_applied">Course Applied For</label>
+                        <input type="text" id="course_applied" name="course_applied" placeholder="e.g., BCA (Hons)">
+                    </div>
+                    <div class="form-group">
+                        <label for="semester_applied">Semester</label>
+                        <input type="text" id="semester_applied" name="semester_applied" placeholder="e.g., 3rd Year / Sem">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="programme">Programme</label>
+                        <input type="text" id="programme" name="programme" placeholder="e.g., Undergraduate">
+                    </div>
+                    <div class="form-group">
+                        <label for="referred_by">Referred By</label>
+                        <input type="text" id="referred_by" name="referred_by">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tid">TID</label>
+                        <input type="text" id="tid" name="tid">
+                    </div>
+                    <div class="form-group">
+                        <label for="uid">UID</label>
+                        <input type="text" id="uid" name="uid">
+                    </div>
+                </div>
+            </div>
+
             <!-- Personal Information -->
             <div class="form-section">
-                <h3>2. Personal Information</h3>
+                <h3>3. Personal Information</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="full_name">Full Name (In Block Letters) <span class="required">*</span></label>
@@ -226,7 +271,17 @@
 
             <!-- Family Information -->
             <div class="form-section">
-                <h3>3. Family Information</h3>
+                <h3>4. Family Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="guardian_name">Guardian's Name (If applicable)</label>
+                        <input type="text" id="guardian_name" name="guardian_name" placeholder="In Block Letters">
+                    </div>
+                    <div class="form-group">
+                        <label for="guardian_relationship">Guardian Relationship</label>
+                        <input type="text" id="guardian_relationship" name="guardian_relationship" placeholder="e.g., Father, Mother, Uncle">
+                    </div>
+                </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="father_occupation">Father's Occupation <span class="required">*</span></label>
@@ -253,11 +308,21 @@
                         <input type="tel" id="father_contact" name="father_contact" required>
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="mother_contact">Mother's Contact Number</label>
+                        <input type="tel" id="mother_contact" name="mother_contact">
+                    </div>
+                    <div class="form-group">
+                        <label for="student_contact">Student Contact Number</label>
+                        <input type="tel" id="student_contact" name="student_contact" placeholder="If different from Phone Number">
+                    </div>
+                </div>
             </div>
 
             <!-- Address Information -->
             <div class="form-section">
-                <h3>4. Address Information</h3>
+                <h3>5. Address Information</h3>
                 <div class="form-group">
                     <label for="permanent_address">Permanent Address (In Block Letters) <span class="required">*</span></label>
                     <textarea id="permanent_address" name="permanent_address" rows="3" required></textarea>
@@ -270,7 +335,21 @@
 
             <!-- Educational Information -->
             <div class="form-section">
-                <h3>5. Educational Information</h3>
+                <h3>6. Educational Information</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="stream">Stream</label>
+                        <select id="stream" name="stream">
+                            <option value="">Select Stream</option>
+                            <option value="Science">Science</option>
+                            <option value="Commerce">Commerce</option>
+                            <option value="Arts">Arts/Humanities</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
                 <h4>10+2 or Equivalent</h4>
                 <div class="form-row">
                     <div class="form-group">
@@ -318,7 +397,7 @@
 
             <!-- Additional Information -->
             <div class="form-section">
-                <h3>6. Additional Information</h3>
+                <h3>7. Additional Information</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="aadhaar_student">Aadhaar Card Number (Student)</label>
@@ -327,6 +406,16 @@
                     <div class="form-group">
                         <label for="nationality">Nationality</label>
                         <input type="text" id="nationality" name="nationality" value="Indian">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="aadhaar_father">Father's Aadhaar Card No.</label>
+                        <input type="text" id="aadhaar_father" name="aadhaar_father" placeholder="1234 5678 9012">
+                    </div>
+                    <div class="form-group">
+                        <label for="aadhaar_mother">Mother's Aadhaar Card No.</label>
+                        <input type="text" id="aadhaar_mother" name="aadhaar_mother" placeholder="1234 5678 9012">
                     </div>
                 </div>
                 <div class="form-row">
@@ -344,7 +433,50 @@
                             <option value="BC">BC</option>
                             <option value="OBC">OBC</option>
                             <option value="EWS">EWS</option>
+                            <option value="Others">Others</option>
                         </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sub_caste">If SC, Sub-caste</label>
+                        <input type="text" id="sub_caste" name="sub_caste">
+                    </div>
+                    <div class="form-group">
+                        <label for="marital_status">Marital Status</label>
+                        <select id="marital_status" name="marital_status">
+                            <option value="">Select Status</option>
+                            <option value="Married">Married</option>
+                            <option value="Unmarried">Unmarried</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Domicile of Punjab</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="radio" id="domicile_yes" name="domicile_punjab" value="Yes">
+                                <label for="domicile_yes">Yes</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" id="domicile_no" name="domicile_punjab" value="No">
+                                <label for="domicile_no">No</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Special Category</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="special_ph" name="special_ph">
+                                <label for="special_ph">Physically Handicapped</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="special_sports" name="special_sports">
+                                <label for="special_sports">Outstanding Sports Person</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-row">
@@ -358,19 +490,15 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="marital_status">Marital Status</label>
-                        <select id="marital_status" name="marital_status">
-                            <option value="">Select Status</option>
-                            <option value="Married">Married</option>
-                            <option value="Unmarried">Unmarried</option>
-                        </select>
+                        <label for="anti_ragging_ref">Anti-ragging Undertaking Ref. No.</label>
+                        <input type="text" id="anti_ragging_ref" name="anti_ragging_ref">
                     </div>
                 </div>
             </div>
 
             <!-- Facilities -->
             <div class="form-section">
-                <h3>7. Facilities Required</h3>
+                <h3>8. Facilities Required</h3>
                 <div class="checkbox-group">
                     <div class="checkbox-item">
                         <input type="checkbox" id="facility_hostel" name="facility_hostel">
@@ -391,13 +519,71 @@
                 </div>
             </div>
 
+            <!-- Sibling Concession and Rank -->
+            <div class="form-section">
+                <h3>9. Sibling Concession / Achievements</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Applying for Sibling Concession</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="radio" id="sibling_yes" name="sibling_concession" value="Yes">
+                                <label for="sibling_yes">Yes</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" id="sibling_no" name="sibling_concession" value="No">
+                                <label for="sibling_no">No</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="rank_holder">Rank Holder</label>
+                        <select id="rank_holder" name="rank_holder">
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sibling_details">Sibling Details</label>
+                        <textarea id="sibling_details" name="sibling_details" rows="2" placeholder="Name, relationship, studying in"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="sibling_auid">Sibling AUID</label>
+                        <input type="text" id="sibling_auid" name="sibling_auid" placeholder="If applicable">
+                    </div>
+                </div>
+            </div>
+
             <!-- Declaration -->
             <div class="form-section">
-                <h3>8. Declaration</h3>
+                <h3>10. Declaration</h3>
                 <p>I declare that all the information provided above is correct to the best of my knowledge and nothing has been concealed. I understand that any incorrect or concealed information may lead to cancellation of my admission.</p>
-                <div class="checkbox-item">
+                <div class="checkbox-item" style="margin-bottom: 15px;">
                     <input type="checkbox" id="declaration" name="declaration" required>
                     <label for="declaration">I agree to the above declaration <span class="required">*</span></label>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="place">Place</label>
+                        <input type="text" id="place" name="place" placeholder="e.g., Talwandi Sabo">
+                    </div>
+                    <div class="form-group">
+                        <label for="declaration_date">Date</label>
+                        <input type="date" id="declaration_date" name="declaration_date">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="student_signature">Signature of the Student (type full name)</label>
+                        <input type="text" id="student_signature" name="student_signature" placeholder="Full Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="parent_signature">Signature of Parent/Guardian (type full name)</label>
+                        <input type="text" id="parent_signature" name="parent_signature" placeholder="Full Name">
+                    </div>
                 </div>
             </div>
 
