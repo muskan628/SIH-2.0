@@ -52,6 +52,8 @@ class User(db.Model):
     state = db.Column(db.String(64), nullable=True)
     phone = db.Column(db.String(20), nullable=True)
     is_verified = db.Column(db.Boolean, default=False)
+    department = db.Column(db.String(100), nullable=True)
+    class_name = db.Column(db.String(50), nullable=True)
 
 # Extended student profile for admission form
 class StudentAdmissionProfile(db.Model):
@@ -341,49 +343,79 @@ def ensure_schema():
     inspector = inspect(db.engine)
     dialect = db.engine.dialect.name
 
-    # Ensure users table columns only on PostgreSQL; for SQLite/MySQL rely on create_all
+    # Ensure users table columns
     users_table = User.__table__.name
-    if dialect == 'postgresql' and users_table in inspector.get_table_names():
+    if users_table in inspector.get_table_names():
         user_columns = {col['name'] for col in inspector.get_columns(users_table)}
-        if 'email' not in user_columns:
-            db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS email VARCHAR(120)"))
-            db.session.execute(text(f"UPDATE {users_table} SET email = CONCAT(username, '@local') WHERE email IS NULL"))
-            try:
-                db.session.execute(text(f"ALTER TABLE {users_table} ADD CONSTRAINT {users_table}_email_key UNIQUE (email)"))
-            except Exception:
-                pass
-            db.session.execute(text(f"ALTER TABLE {users_table} ALTER COLUMN email SET NOT NULL"))
+        
+        # Add missing columns for SQLite
+        if dialect == 'sqlite':
+            if 'email' not in user_columns:
+                db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN email VARCHAR(120)"))
+            if 'temp_id' not in user_columns:
+                db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN temp_id VARCHAR(32)"))
+            if 'permanent_id' not in user_columns:
+                db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN permanent_id VARCHAR(32)"))
+            if 'state' not in user_columns:
+                db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN state VARCHAR(64)"))
+            if 'phone' not in user_columns:
+                db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN phone VARCHAR(20)"))
+            if 'is_verified' not in user_columns:
+                db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN is_verified BOOLEAN DEFAULT FALSE"))
+            if 'department' not in user_columns:
+                db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN department VARCHAR(100)"))
+            if 'class_name' not in user_columns:
+                db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN class_name VARCHAR(50)"))
             db.session.commit()
+        
+        # PostgreSQL specific migrations
+        elif dialect == 'postgresql':
+            if 'email' not in user_columns:
+                db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS email VARCHAR(120)"))
+                db.session.execute(text(f"UPDATE {users_table} SET email = CONCAT(username, '@local') WHERE email IS NULL"))
+                try:
+                    db.session.execute(text(f"ALTER TABLE {users_table} ADD CONSTRAINT {users_table}_email_key UNIQUE (email)"))
+                except Exception:
+                    pass
+                db.session.execute(text(f"ALTER TABLE {users_table} ALTER COLUMN email SET NOT NULL"))
+                db.session.commit()
 
-        # Add temp_id and permanent_id if missing
-        user_columns = {col['name'] for col in inspector.get_columns(users_table)}
-        if 'temp_id' not in user_columns:
-            db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS temp_id VARCHAR(32) UNIQUE"))
-        if 'permanent_id' not in user_columns:
-            db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS permanent_id VARCHAR(32) UNIQUE"))
-        if 'state' not in user_columns:
-            db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS state VARCHAR(64)"))
-        if 'phone' not in user_columns:
-            db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS phone VARCHAR(20)"))
-        if 'is_verified' not in user_columns:
-            db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS is_verified BOOLEAN DEFAULT FALSE"))
-        db.session.commit()
+            # Add temp_id and permanent_id if missing
+            user_columns = {col['name'] for col in inspector.get_columns(users_table)}
+            if 'temp_id' not in user_columns:
+                db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS temp_id VARCHAR(32) UNIQUE"))
+            if 'permanent_id' not in user_columns:
+                db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS permanent_id VARCHAR(32) UNIQUE"))
+            if 'state' not in user_columns:
+                db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS state VARCHAR(64)"))
+            if 'phone' not in user_columns:
+                db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS phone VARCHAR(20)"))
+            if 'is_verified' not in user_columns:
+                db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS is_verified BOOLEAN DEFAULT FALSE"))
+            if 'department' not in user_columns:
+                db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS department VARCHAR(100)"))
+            if 'class_name' not in user_columns:
+                db.session.execute(text(f"ALTER TABLE {users_table} ADD COLUMN IF NOT EXISTS class_name VARCHAR(50)"))
+            db.session.commit()
 
     # Ensure tables exist
     db.create_all()
 
     # Backfill temp/permanent IDs for existing students if missing
-    students_missing_ids = User.query.filter(
-        User.role == 'student',
-        (User.temp_id.is_(None)) | (User.permanent_id.is_(None))
-    ).all()
-    for s in students_missing_ids:
-        if not s.temp_id:
-            s.temp_id = generate_temp_id()
-        if not s.permanent_id:
-            s.permanent_id = generate_permanent_id()
-    if students_missing_ids:
-        db.session.commit()
+    try:
+        students_missing_ids = User.query.filter(
+            User.role == 'student',
+            (User.temp_id.is_(None)) | (User.permanent_id.is_(None))
+        ).all()
+        for s in students_missing_ids:
+            if not s.temp_id:
+                s.temp_id = generate_temp_id()
+            if not s.permanent_id:
+                s.permanent_id = generate_permanent_id()
+        if students_missing_ids:
+            db.session.commit()
+    except Exception as e:
+        print(f"Warning: Could not backfill IDs: {e}")
 
     # Ensure new content tables exist (idempotent)
     db.create_all()
@@ -500,6 +532,8 @@ def register():
                 password=hashed_password,
                 state=request.form.get("state", "").strip(),
                 phone=request.form.get("phone", "").strip(),
+                department=request.form.get("department", "").strip() if role == 'student' else None,
+                class_name=request.form.get("class_name", "").strip() if role == 'student' else None,
                 temp_id=generate_temp_id() if role == 'student' else None,
                 permanent_id=generate_permanent_id() if role == 'student' else None,
             )
@@ -519,7 +553,8 @@ def register():
                 profile.guardian_relationship = request.form.get("guardian_relationship", "").strip()
                 profile.father_occupation = request.form.get("father_occupation", "").strip()
                 profile.father_occupation_type = request.form.get("father_occupation_type", "").strip()
-                profile.family_annual_income = request.form.get("family_annual_income", "").strip()
+                family_income = request.form.get("family_annual_income", "").strip()
+                profile.family_annual_income = int(family_income) if family_income else None
                 profile.aadhaar_student = request.form.get("aadhaar_student", "").strip()
                 profile.aadhaar_father = request.form.get("aadhaar_father", "").strip()
                 profile.aadhaar_mother = request.form.get("aadhaar_mother", "").strip()
@@ -543,11 +578,13 @@ def register():
                 profile.exam_10_2_year = request.form.get("exam_10_2_year", "").strip()
                 profile.exam_10_2_school = request.form.get("exam_10_2_school", "").strip()
                 profile.exam_10_2_board = request.form.get("exam_10_2_board", "").strip()
-                profile.exam_10_2_marks = request.form.get("exam_10_2_marks", "").strip()
+                exam_10_2_marks = request.form.get("exam_10_2_marks", "").strip()
+                profile.exam_10_2_marks = float(exam_10_2_marks) if exam_10_2_marks else None
                 profile.exam_degree_year = request.form.get("exam_degree_year", "").strip()
                 profile.exam_degree_school = request.form.get("exam_degree_school", "").strip()
                 profile.exam_degree_board = request.form.get("exam_degree_board", "").strip()
-                profile.exam_degree_marks = request.form.get("exam_degree_marks", "").strip()
+                exam_degree_marks = request.form.get("exam_degree_marks", "").strip()
+                profile.exam_degree_marks = float(exam_degree_marks) if exam_degree_marks else None
                 profile.transport_boarding_place = request.form.get("transport_boarding_place", "").strip()
                 
                 # Handle facilities: only one option can be selected
@@ -655,9 +692,24 @@ def test_users():
             "role": user.role,
             "email": user.email,
             "temp_id": user.temp_id,
-            "permanent_id": user.permanent_id
+            "permanent_id": user.permanent_id,
+            "department": user.department,
+            "class_name": user.class_name,
+            "phone": user.phone,
+            "state": user.state
         })
     return jsonify({"users": result})
+
+
+@app.route("/admin/students")
+def admin_students():
+    """Admin view of all registered students"""
+    if "user_id" not in session or session.get("role") != "admin":
+        flash("You must be logged in as an admin to view this page.", "warning")
+        return redirect(url_for("login"))
+    
+    students = User.query.filter_by(role="student").all()
+    return render_template("admin-students.html", students=students)
 
 
 @app.route("/test-password")
@@ -1702,6 +1754,6 @@ def api_admin_report_send():
 if __name__ == "__main__":
     # Create an app context to run the initial setup
     with app.app_context():
-        initial_setup()
         ensure_schema()
+        initial_setup()
     app.run(debug=True)
