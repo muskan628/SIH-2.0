@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func
+from sqlalchemy import func, text
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import uuid
@@ -26,10 +26,15 @@ app.secret_key = os.environ.get("SECRET_KEY", "a_hard_to_guess_default_secret_ke
 
 # --- Database Configuration ---
 # Format: postgresql://user:password@host:port/dbname
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2004@localhost:5432/sih'
-
+# Allow override via env var DATABASE_URL
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+    'DATABASE_URL',
+    'postgresql://postgres:1234@localhost:5432/testdb'
+)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Optional: enable SQL echo logs when SQL_ECHO=true
+app.config['SQLALCHEMY_ECHO'] = os.environ.get('SQL_ECHO', 'false').lower() in ('1', 'true', 'yes')
 db = SQLAlchemy(app)
 def generate_temp_id() -> str:
     return f"T-{uuid.uuid4().hex[:10].upper()}"
@@ -420,6 +425,43 @@ def ensure_schema():
 
     # Ensure new content tables exist (idempotent)
     db.create_all()
+
+
+# --- Health & DB Debug ---
+@app.route("/healthz")
+def healthz():
+    return jsonify({"ok": True})
+
+
+@app.route("/debug/db")
+def debug_db():
+    """Quick DB connectivity and table counts check."""
+    try:
+        # Simple connectivity check
+        db.session.execute(text("SELECT 1"))
+        status = {"connected": True, "dialect": db.engine.dialect.name}
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+    try:
+        info = {
+            "users": User.query.count(),
+            "student_admission_profiles": StudentAdmissionProfile.query.count(),
+            "mentor_forms": MentorForm.query.count(),
+            "examination_forms": ExaminationForm.query.count(),
+            "attendance": Attendance.query.count(),
+            "notes": Note.query.count(),
+            "assignments": Assignment.query.count(),
+            "class_sections": ClassSection.query.count(),
+            "schedule_entries": ScheduleEntry.query.count(),
+            "mst_exams": MSTExam.query.count(),
+            "quiz_exams": QuizExam.query.count(),
+            "feature_flags": FeatureFlag.query.count(),
+            "proctoring_activities": ProctoringActivity.query.count(),
+        }
+        return jsonify({"ok": True, **status, "counts": info})
+    except Exception as e:
+        return jsonify({"ok": False, **status, "error": str(e)})
 
 
 # --- Routes ---
