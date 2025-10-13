@@ -26,7 +26,8 @@ app.secret_key = os.environ.get("SECRET_KEY", "a_hard_to_guess_default_secret_ke
 
 # --- Database Configuration ---
 # Format: postgresql://user:password@host:port/dbname
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sih.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2004@localhost:5432/sih'
+
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -1750,10 +1751,11 @@ def api_admin_report_send():
     return jsonify({"ok": True, "sent": sent, "failed": failed})
 
 
-# --- Main Execution ---
-if __name__ == "__main__":
-    # Create an app context to run the initial setup
+if __name__ == '__main__':
     with app.app_context():
-        ensure_schema()
-        initial_setup()
+        # Run one of the setup functions (choose only one)
+        # initial_setup()  # This creates default admin/student users
+        ensure_schema()   # This creates all tables if they don't exist
+
+    print("✅ Tables created successfully in PostgreSQL!")
     app.run(debug=True)
