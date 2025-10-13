@@ -280,7 +280,7 @@ def initial_setup():
     if not User.query.filter_by(username="admin").first():
         print("Creating default admin user...")
         # Hash the password before storing it
-        hashed_password_admin = generate_password_hash("shabadchahal")
+        hashed_password_admin = generate_password_hash("1234")
         admin = User(
             role="admin",
             username="admin",
@@ -909,18 +909,28 @@ def api_student_me():
     present = q.filter_by(status="Present").count()
     attendance_pct = int((present / total) * 100) if total else 0
 
+    # Pull extended profile if available
+    profile = StudentAdmissionProfile.query.filter_by(user_id=user.id).first()
+
     # Get pending fees from latest mentor form if present
     latest_mentor = MentorForm.query.filter_by(student_id=user.id).order_by(MentorForm.created_at.desc()).first()
     pending_fees = latest_mentor.pending_fees if latest_mentor else 0
 
+    name = (profile.full_name if profile and profile.full_name else None) or user.username
+    roll_no = user.permanent_id or user.temp_id or user.username
+    contact = (profile.student_contact if profile and profile.student_contact else None) or (user.phone or "")
+    father_name = profile.father_name if profile and profile.father_name else ""
+    father_contact = profile.father_contact if profile and profile.father_contact else ""
+    stream = user.department or ""
+
     data = {
         "ok": True,
-        "name": user.username,
-        "stream": "",
-        "roll_no": user.permanent_id or user.temp_id or user.username,
-        "contact": "",
-        "father_name": "",
-        "father_contact": "",
+        "name": name,
+        "stream": stream,
+        "roll_no": roll_no,
+        "contact": contact,
+        "father_name": father_name,
+        "father_contact": father_contact,
         "attendance": attendance_pct,
         "pending_fees": pending_fees,
         "performance": "",
