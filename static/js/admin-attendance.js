@@ -6,12 +6,22 @@ let attendanceData = {};
 
 async function openClass(className) {
   currentClass = className;
-  // fetch students from attendance baseline (users with this class in recent attendance)
-  try{
-    const res = await fetch('/api/attendance/template?class_name=' + encodeURIComponent(className));
-    const data = await res.json();
-    students = (data.students||[]);
-  }catch(e){
+  // Try to fetch current roster for the class; fallback to attendance template
+  try {
+    let res = await fetch('/api/classes/' + encodeURIComponent(className) + '/students');
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.ok && Array.isArray(data.students)) {
+        students = data.students;
+      }
+    }
+    if (!Array.isArray(students) || students.length === 0) {
+      // fallback to template derived from previous attendance
+      res = await fetch('/api/attendance/template?class_name=' + encodeURIComponent(className));
+      const data2 = await res.json();
+      students = (data2.students || []);
+    }
+  } catch (e) {
     console.error('Failed to load students for class', e);
     students = [];
   }

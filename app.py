@@ -464,6 +464,70 @@ def debug_db():
         return jsonify({"ok": False, **status, "error": str(e)})
 
 
+@app.route("/admin/bootstrap", methods=["POST"])
+def admin_bootstrap():
+    """One-time bootstrap: create default admin/student and sample flags.
+    Protected by BOOTSTRAP_TOKEN env or allowed in debug only.
+    """
+    token = (request.get_json(silent=True) or {}).get("token") or request.args.get("token", "")
+    env_token = os.environ.get("BOOTSTRAP_TOKEN", "")
+    if not (env_token and token == env_token) and not app.debug:
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    try:
+        initial_setup()
+        return jsonify({"ok": True, "message": "Bootstrap complete"})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
+@app.route("/admin/users/reset-password", methods=["POST"])
+def admin_reset_user_password():
+    """Admin-only: reset a user's password by username or email."""
+    if "user_id" not in session or session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    payload = request.get_json(silent=True) or {}
+    username = (payload.get("username") or "").strip()
+    email = (payload.get("email") or "").strip()
+    new_password = (payload.get("new_password") or "").strip()
+    if not new_password or (not username and not email):
+        return jsonify({"ok": False, "error": "username/email and new_password required"}), 400
+    q = None
+    if username:
+        q = User.query.filter_by(username=username).first()
+    if not q and email:
+        q = User.query.filter_by(email=email).first()
+    if not q:
+        return jsonify({"ok": False, "error": "User not found"}), 404
+    q.password = generate_password_hash(new_password)
+    db.session.commit()
+    return jsonify({"ok": True, "message": "Password updated"})
+
+
+@app.route("/debug/users-vs-profiles", methods=["GET"])
+def debug_users_vs_profiles():
+    """Admin-only: quick view of users and their admission profiles linkage."""
+    if "user_id" not in session or session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+    users = User.query.all()
+    profiles = StudentAdmissionProfile.query.all()
+    uid_to_profile = {p.user_id: p for p in profiles}
+    data = []
+    for u in users:
+        prof = uid_to_profile.get(u.id)
+        data.append({
+            "id": u.id,
+            "username": u.username,
+            "email": u.email,
+            "role": u.role,
+            "class_name": u.class_name,
+            "has_profile": prof is not None,
+            "profile_full_name": prof.full_name if prof else None,
+            "profile_auid": prof.auid if prof else None
+        })
+    return jsonify({"ok": True, "items": data})
+
+
 # --- Routes ---
 @app.route("/", methods=["GET", "POST"])
 def login():
@@ -1028,6 +1092,33 @@ def api_classes():
             } for c in items
         ]
     })
+
+
+@app.route("/api/classes/<class_name>/students", methods=["GET"])
+def api_class_students(class_name: str):
+    """Return students enrolled in a given class by looking at User.class_name.
+    Admin-only.
+    """
+    if "user_id" not in session or session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 401
+
+    class_name = (class_name or "").strip()
+    if not class_name:
+        return jsonify({"ok": False, "error": "class_name required"}), 400
+
+    # Find students by class_name
+    students = User.query.filter_by(role="student", class_name=class_name).all()
+
+    def student_to_template_item(u: User) -> dict:
+        # Prefer permanent_id, then temp_id, then username as UID
+        uid = u.permanent_id or u.temp_id or u.username
+        # Prefer full_name from admission profile if present
+        prof = StudentAdmissionProfile.query.filter_by(user_id=u.id).first()
+        display_name = (prof.full_name if prof and prof.full_name else None) or u.username
+        return {"uid": uid or "", "name": display_name or ""}
+
+    items = [student_to_template_item(u) for u in students]
+    return jsonify({"ok": True, "students": items})
 
 
 @app.route("/api/classes/<int:class_id>", methods=["PUT", "DELETE"])
