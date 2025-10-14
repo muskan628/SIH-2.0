@@ -1,378 +1,558 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registered Students - Admin Dashboard</title>
-    <link rel="stylesheet" href="/static/css/common.css">
-    <style>
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            border-left: 4px solid #1e3a8a;
-        }
-        
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #1e3a8a;
-        }
-        
-        .stat-label {
-            color: #6b7280;
-            margin-top: 5px;
-        }
-        
-        .students-table {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-        
-        .table-header {
-            background: #f8f9fa;
-            padding: 20px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        
-        .table-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #1e3a8a;
-            margin: 0;
-        }
-        
-        .table-container {
-            overflow-x: auto;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        
-        th {
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #374151;
-            position: sticky;
-            top: 0;
-        }
-        
-        tr:hover {
-            background: #f9fafb;
-        }
-        
-        .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .badge-student {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-        
-        .badge-admin {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .btn-view {
-            background: #3b82f6;
-            color: white;
-        }
-        
-        .btn-edit {
-            background: #10b981;
-            color: white;
-        }
-        
-        .btn-delete {
-            background: #ef4444;
-            color: white;
-        }
-        
-        .search-bar {
-            margin-bottom: 20px;
-        }
-        
-        .search-input {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: #1e3a8a;
-        }
-        
-        .no-data {
-            text-align: center;
-            padding: 40px;
-            color: #6b7280;
-        }
-        
-        .back-link {
-            margin-bottom: 20px;
-        }
-        
-        .back-link a {
-            color: #1e3a8a;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        
-        .back-link a:hover {
-            text-decoration: underline;
-        }
-        
-        .sidebar {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-        
-        .sidebar h2 {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: #1e3a8a;
-            margin-bottom: 15px;
-        }
-        
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .sidebar li {
-            margin-bottom: 10px;
-        }
-        
-        .sidebar a {
-            color: #374151;
-            text-decoration: none;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-radius: 6px;
-            transition: background 0.3s;
-        }
-        
-        .sidebar a:hover {
-            background: #e2e8f0;
-        }
-        
-        .sidebar a svg {
-            margin-right: 8px;
-            width: 1.25rem;
-            height: 1.25rem;
-            fill: currentColor;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registered Students - Admin Dashboard</title>
+  <link rel="stylesheet" href="/static/css/common.css" />
+  <style>
+    /* ===== Base Styling ===== */
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #f3f4f6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      border-left: 4px solid #1e3a8a;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #1e3a8a;
+    }
+
+    .stat-label {
+      color: #6b7280;
+      margin-top: 5px;
+    }
+
+    .students-table {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .table-header {
+      background: #f8f9fa;
+      padding: 20px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .table-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #1e3a8a;
+      margin: 0;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+
+    th,
+    td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    th {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #374151;
+      position: sticky;
+      top: 0;
+    }
+
+    tr:hover {
+      background: #f9fafb;
+    }
+
+    .badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-student {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .badge-admin {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-view {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .btn-edit {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-delete {
+      background: #ef4444;
+      color: white;
+    }
+
+    .search-bar {
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #1e3a8a;
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+
+    /* ===== Sidebar ===== */
+    .sidebar {
+      width: 200px;
+      background: #1e3a8a;
+      color: #fff;
+      padding: 20px 15px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      overflow-y: auto;
+      transition: transform 0.3s ease-in-out;
+      z-index: 1000;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      margin: 12px 0;
+    }
+
+    .sidebar ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-size: 16px;
+      display: block;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+
+    .sidebar ul li a:hover,
+    .sidebar ul li a.active {
+      background: #2563eb;
+    }
+
+    /* ===== Hamburger ===== */
+    .hamburger {
+      display: none;
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      font-size: 22px;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      z-index: 1100;
+    }
+
+    .hamburger:hover {
+      background: #1d4ed8;
+    }
+
+    /* ===== Overlay ===== */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    /* ===== Main Content ===== */
+    .main {
+      margin-left: 240px;
+      padding: 30px;
+      transition: margin-left 0.3s ease;
+    }
+
+    /* ===== Topbar ===== */
+/* ===== Topbar ===== */
+.topbar {
+  display: flex;
+  justify-content: center; /* centers content horizontally */
+  align-items: center;
+  position: relative; /* allows absolute positioning for logout */
+  margin-bottom: 20px;
+  padding: 10px 0;
+}
+
+.topbar h1 {
+  font-size: 28px;
+  color: #1e3a8a;
+  margin: 0;
+  text-align: center;
+  flex-grow: 1;
+}
+
+/* Keep Logout button on right corner */
+.logout-btn {
+  position: absolute;
+  right: 0;
+  background: #1e3a8a;
+  color: #fff;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.logout-btn:hover {
+  background: #1d4ed8;
+}
+
+
+/* ===== Action Buttons ===== */
+.action-buttons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: nowrap; /* keep all buttons in a line */
+}
+
+.action-buttons .btn {
+  flex-shrink: 0; /* prevent button shrink */
+}
+
+/* ===== Responsive Fixes ===== */
+@media (max-width: 992px) {
+  .main {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .topbar {
+    flex-direction: row; /* keep items on same line */
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .topbar h1 {
+    font-size: 20px;
+  }
+
+  .logout-btn {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
+  th,
+  td {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .btn {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  .action-buttons {
+    gap: 4px;
+    flex-wrap: nowrap; /* never stack */
+  }
+
+  .header h1 {
+    font-size: 22px;
+  }
+
+  .header p {
+    font-size: 14px;
+  }
+}
+
+  </style>
 </head>
 <body>
+  <!-- Overlay -->
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+  <!-- Hamburger -->
+  <button class="hamburger" id="hamburger">☰</button>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <h2>Menu</h2>
+    <ul>
+      <li><a href="{{ url_for('admin_home') }}">🏠 Home</a></li>
+      <li><a href="{{ url_for('admin_students') }}" class="active">👥 Registered Students</a></li>
+      <li><a href="{{ url_for('student_record') }}">🎓 Student Records</a></li>
+      <li><a href="{{ url_for('admin_attendance') }}">📋 Attendance</a></li>
+      <li><a href="{{ url_for('admin_proctoring') }}">🔒 Proctoring</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <div class="topbar">
+      <!-- <h1>👋 Welcome, Admin</h1> -->
+       <h1>Registered Students</h1>
+      <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </div>
+
     <div class="container">
-        <div class="back-link">
-            <a href="/admin/dashboard">← Back to Admin Dashboard</a>
-        </div>
+      <div class="header">
         
-        <div class="header">
-            <h1>Registered Students</h1>
-            <p>View and manage all registered students</p>
+        <p>View and manage all registered students</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">{{ students|length }}</div>
+          <div class="stat-label">Total Students</div>
         </div>
-        
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number">{{ students|length }}</div>
-                <div class="stat-label">Total Students</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ students|selectattr('department')|list|length }}</div>
-                <div class="stat-label">With Department</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ students|selectattr('class_name')|list|length }}</div>
-                <div class="stat-label">With Class</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ students|selectattr('is_verified', 'equalto', true)|list|length }}</div>
-                <div class="stat-label">Verified</div>
-            </div>
+        <div class="stat-card">
+          <div class="stat-number">{{ students|selectattr('department')|list|length }}</div>
+          <div class="stat-label">With Department</div>
         </div>
-        
-        <div class="students-table">
-            <div class="table-header">
-                <h2 class="table-title">Student Records</h2>
-                <div class="search-bar">
-                    <input type="text" class="search-input" id="searchInput" placeholder="Search students by name, email, department, or class...">
-                </div>
-            </div>
-            
-            <div class="table-container">
-                {% if students %}
-                <table id="studentsTable">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Department</th>
-                            <th>Class</th>
-                            <th>Phone</th>
-                            <th>State</th>
-                            <th>Student ID</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for student in students %}
-                        <tr>
-                            <td>{{ student.id }}</td>
-                            <td>{{ student.username }}</td>
-                            <td>{{ student.email }}</td>
-                            <td>{{ student.department or 'Not assigned' }}</td>
-                            <td>{{ student.class_name or 'Not assigned' }}</td>
-                            <td>{{ student.phone or 'Not provided' }}</td>
-                            <td>{{ student.state or 'Not provided' }}</td>
-                            <td>
-                                <span style="font-family: monospace; font-size: 0.8rem;">
-                                    {{ student.permanent_id or student.temp_id or 'Pending' }}
-                                </span>
-                            </td>
-                            <td>
-                                <span class="badge badge-student">
-                                    {% if student.is_verified %}Verified{% else %}Pending{% endif %}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <a href="#" class="btn btn-view" onclick="handleAction('view', '{{ student.id }}')">View</a>
-                                    <a href="#" class="btn btn-edit" onclick="handleAction('edit', '{{ student.id }}')">Edit</a>
-                                    <a href="#" class="btn btn-delete" onclick="handleAction('delete', '{{ student.id }}')">Delete</a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                <div class="no-data">
-                    <h3>No students registered yet</h3>
-                    <p>Students will appear here once they complete the registration process.</p>
-                </div>
-                {% endif %}
-            </div>
+        <div class="stat-card">
+          <div class="stat-number">{{ students|selectattr('class_name')|list|length }}</div>
+          <div class="stat-label">With Class</div>
         </div>
+        <div class="stat-card">
+          <div class="stat-number">{{ students|selectattr('is_verified', 'equalto', true)|list|length }}</div>
+          <div class="stat-label">Verified</div>
+        </div>
+      </div>
+
+      <div class="students-table">
+        <div class="table-header">
+          <h2 class="table-title">Student Records</h2>
+          <div class="search-bar">
+            <input
+              type="text"
+              class="search-input"
+              id="searchInput"
+              placeholder="Search students by name, email, department, or class..."
+            />
+          </div>
+        </div>
+
+        <div class="table-container">
+          {% if students %}
+          <table id="studentsTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Class</th>
+                <th>Phone</th>
+                <th>State</th>
+                <th>Student ID</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for student in students %}
+              <tr>
+                <td>{{ student.id }}</td>
+                <td>{{ student.username }}</td>
+                <td>{{ student.email }}</td>
+                <td>{{ student.department or 'Not assigned' }}</td>
+                <td>{{ student.class_name or 'Not assigned' }}</td>
+                <td>{{ student.phone or 'Not provided' }}</td>
+                <td>{{ student.state or 'Not provided' }}</td>
+                <td>
+                  <span style="font-family: monospace; font-size: 0.8rem">
+                    {{ student.permanent_id or student.temp_id or 'Pending' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge badge-student">
+                    {% if student.is_verified %}Verified{% else %}Pending{% endif %}
+                  </span>
+                </td>
+                <td>
+                  <div class="action-buttons">
+                    <a href="#" class="btn btn-view" onclick="handleAction('view', '{{ student.id }}')">View</a>
+                    <a href="#" class="btn btn-edit" onclick="handleAction('edit', '{{ student.id }}')">Edit</a>
+                    <a href="#" class="btn btn-delete" onclick="handleAction('delete', '{{ student.id }}')">Delete</a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <div class="no-data">
+            <h3>No students registered yet</h3>
+            <p>Students will appear here once they complete the registration process.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="sidebar" id="sidebar">
-        <h2>Menu</h2>
-        <ul>
-            <li><a href="{{ url_for('admin_home') }}">🏠 Home</a></li>
-            <li><a href="{{ url_for('admin_students') }}">👥 Registered Students</a></li>
-            <li><a href="{{ url_for('student_record') }}">🎓 Student Records</a></li>
-            <li><a href="{{ url_for('admin_attendance') }}">📋 Attendance</a></li>
-            <li><a href="{{ url_for('admin_proctoring') }}">🔒 Proctoring</a></li>
-        </ul>
-    </div>
+  <script>
+    const sidebar = document.getElementById("sidebar");
+    const hamburger = document.getElementById("hamburger");
+    const overlay = document.getElementById("overlay");
 
-    <script>
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const table = document.getElementById('studentsTable');
-            const rows = table.getElementsByTagName('tr');
+    // Open Sidebar
+    hamburger.addEventListener("click", () => {
+      sidebar.classList.add("active");
+      overlay.classList.add("active");
+    });
 
-            for (let i = 1; i < rows.length; i++) {
-                const row = rows[i];
-                const text = row.textContent.toLowerCase();
+    // Close Sidebar
+    function closeSidebar() {
+      sidebar.classList.remove("active");
+      overlay.classList.remove("active");
+    }
 
-                if (text.includes(searchTerm)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            }
-        });
+    // Search functionality
+    document.getElementById("searchInput").addEventListener("input", function () {
+      const searchTerm = this.value.toLowerCase();
+      const table = document.getElementById("studentsTable");
+      const rows = table.getElementsByTagName("tr");
 
-        // Action functions
-        function handleAction(action, id) {
-            switch (action) {
-                case 'view':
-                    alert('View student details for ID: ' + id);
-                    // Implement view functionality
-                    break;
-                case 'edit':
-                    alert('Edit student for ID: ' + id);
-                    // Implement edit functionality
-                    break;
-                case 'delete':
-                    if (confirm('Are you sure you want to delete this student?')) {
-                        alert('Delete student for ID: ' + id);
-                        // Implement delete functionality
-                    }
-                    break;
-            }
-        }
-    </script>
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? "" : "none";
+      }
+    });
+
+    // Action buttons
+    function handleAction(action, id) {
+      switch (action) {
+        case "view":
+          alert("View student details for ID: " + id);
+          break;
+        case "edit":
+          alert("Edit student for ID: " + id);
+          break;
+        case "delete":
+          if (confirm("Are you sure you want to delete this student?")) {
+            alert("Deleted student with ID: " + id);
+          }
+          break;
+      }
+    }
+  </script>
 </body>
 </html>
-
