@@ -1897,8 +1897,8 @@ def api_admin_report_send():
 if __name__ == '__main__':
     with app.app_context():
         # Run one of the setup functions (choose only one)
-        # initial_setup()  # This creates default admin/student users
         ensure_schema()   # This creates all tables if they don't exist
+        initial_setup()  # Ensure default admin/student users exist
 
-    print("✅ Tables created successfully in PostgreSQL!")
+    print("✅ Tables created successfully and default users ensured!")
     app.run(debug=True)
