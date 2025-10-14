@@ -27,10 +27,9 @@ app.secret_key = os.environ.get("SECRET_KEY", "a_hard_to_guess_default_secret_ke
 # --- Database Configuration ---
 # Format: postgresql://user:password@host:port/dbname
 # Allow override via env var DATABASE_URL
-# For testing, using SQLite if PostgreSQL is not available
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'DATABASE_URL',
-    'sqlite:///instance/sih.db'  # Using SQLite for testing
+    'postgresql://postgres:1234@localhost:5432/testdb'
 )
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -281,7 +280,7 @@ def initial_setup():
     if not User.query.filter_by(username="admin").first():
         print("Creating default admin user...")
         # Hash the password before storing it
-        hashed_password_admin = generate_password_hash("admin123")
+        hashed_password_admin = generate_password_hash("1234")
         admin = User(
             role="admin",
             username="admin",
@@ -289,12 +288,6 @@ def initial_setup():
             password=hashed_password_admin,
         )
         db.session.add(admin)
-    else:
-        # Update existing admin user password to admin123
-        admin_user = User.query.filter_by(username="admin").first()
-        if admin_user:
-            admin_user.password = generate_password_hash("admin123")
-            print("Updated admin user password to admin123")
 
     # Check if the default student user exists
     if not User.query.filter_by(username="nitin").first():
@@ -509,31 +502,6 @@ def admin_reset_user_password():
     q.password = generate_password_hash(new_password)
     db.session.commit()
     return jsonify({"ok": True, "message": "Password updated"})
-
-
-@app.route("/fix-admin-password", methods=["POST"])
-def fix_admin_password():
-    """Fix admin password to admin123 - no authentication required for this emergency fix."""
-    try:
-        admin_user = User.query.filter_by(username="admin", role="admin").first()
-        if admin_user:
-            admin_user.password = generate_password_hash("admin123")
-            db.session.commit()
-            return jsonify({"ok": True, "message": "Admin password updated to admin123"})
-        else:
-            # Create admin user if it doesn't exist
-            admin = User(
-                role="admin",
-                username="admin",
-                email="admin@example.com",
-                password=generate_password_hash("admin123"),
-            )
-            db.session.add(admin)
-            db.session.commit()
-            return jsonify({"ok": True, "message": "Admin user created with password admin123"})
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"ok": False, "error": str(e)}), 500
 
 
 @app.route("/debug/users-vs-profiles", methods=["GET"])
@@ -1929,8 +1897,8 @@ def api_admin_report_send():
 if __name__ == '__main__':
     with app.app_context():
         # Run one of the setup functions (choose only one)
-        # initial_setup()  # This creates default admin/student users
         ensure_schema()   # This creates all tables if they don't exist
+        initial_setup()  # Ensure default admin/student users exist
 
-    print("✅ Tables created successfully in PostgreSQL!")
+    print("✅ Tables created successfully and default users ensured!")
     app.run(debug=True)
