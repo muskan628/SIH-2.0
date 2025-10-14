@@ -41,3 +41,11 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem(sidebarKey, isActive ? 'active' : 'inactive');
   });
 });
+
+// Expose a global toggle for inline onclick handlers
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  if (sidebar) {
+    sidebar.classList.toggle('active');
+  }
+}

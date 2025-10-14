@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const goStudent = document.getElementById("goStudent");
   if (goStudent) {
     goStudent.addEventListener("click", () => {
-      window.location.href = "student-dashboard.html";
+      window.location.href = "/student/dashboard";
     });
   }
 
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const goTeacher = document.getElementById("goTeacher");
   if (goTeacher) {
     goTeacher.addEventListener("click", () => {
-      window.location.href = "admin-dashboard.html";
+      window.location.href = "/admin/dashboard";
     });
   }
 
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.querySelector(".logout-btn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
-      window.location.href = "login.html"; 
+      window.location.href = "/logout"; 
     });
   }
 });
